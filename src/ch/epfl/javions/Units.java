@@ -1,11 +1,29 @@
 package ch.epfl.javions;
 
+/**
+ * Class containing units conversions functions.
+ * @author Roman Batut (356158)
+ * @author Guillaume Chevallier (360709)
+ */
 public final class Units {
-    private Units (){}
-
+    
     public static final double CENTI = 1e-2;
     public static final double KILO = 1e3;
 
+    //* Constructor
+
+    /**
+     * Private constructor to prevent instantiation
+     */
+    private Units (){}
+
+
+    //* Methods
+
+
+    /**
+     * Important constants of angles, lengths, times and speeds in different units expressed in SI units
+     */
     public final class Angle{
         public static final double RADIAN = 1;
         public static final double TURN = 2*Math.PI *RADIAN;
@@ -34,17 +52,29 @@ public final class Units {
         public static final double KILOMETER_PER_HOUR = Length.KILOMETER/Time.HOUR ;
     }
 
+    /**
+     * Converts a value from one unit to another from previously defined constants
+     * @param value the value to be converted
+     * @param fromUnit the unit of the value
+     * @param toUnit the unit to convert to
+     * @return the converted value
+     */
     public static double convert(double value, double fromUnit, double toUnit){
         value *= (fromUnit/toUnit);
         return value;
     }
 
+    /**
+     * Same as convert but considers toUnit = 1
+     */
     public static double convertFrom(double value, double fromUnit){
         return convert(value, fromUnit, 1);
     }
 
+    /**
+     * Same as convert but considers fromUnit = 1
+     */
     public static double convertTo(double value, double toUnit){
         return convert(value, 1, toUnit);
     }
-
 }
