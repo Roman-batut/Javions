@@ -1,10 +1,7 @@
 package ch.epfl.javions;
 
-
-import java.nio.FloatBuffer;
-
-public record Geopos(int longitudeT32, int latitudeT32) {
-    public Geopos{
+public record GeoPos(int longitudeT32, int latitudeT32) {
+    public GeoPos {
         if(!isValidLatitudeT32(latitudeT32)){
             throw new IllegalArgumentException();
         }
@@ -30,6 +27,6 @@ public record Geopos(int longitudeT32, int latitudeT32) {
     public String toString() {
         double latdeg = Units.convert(latitudeT32, Units.Angle.T32, Units.Angle.DEGREE);
         double longdeg = Units.convert(longitudeT32, Units.Angle.T32, Units.Angle.DEGREE);
-        return (latdeg +""+ longdeg);
+        return ("("+latdeg+"°, "+ longdeg+"°)");
     }
 }
