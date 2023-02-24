@@ -8,12 +8,10 @@ public record GeoPos(int longitudeT32, int latitudeT32) {
     }
 
     public static boolean isValidLatitudeT32(int latitudeT32) {
-        if (latitudeT32 == Math2.clamp((int) Math.scalb(1, -30), latitudeT32, (int) Math.scalb(1, 30))) {
-            return true;
-        } else {
-            return false;
-        }
+        return -Math.pow(2,30)<=latitudeT32 && Math.pow(2,30)>=latitudeT32;
     }
+
+
     public double longitude(){
         double longrad = Units.convertFrom(longitudeT32, Units.Angle.T32);
         return longrad;

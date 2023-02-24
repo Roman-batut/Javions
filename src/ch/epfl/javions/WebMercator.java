@@ -5,12 +5,17 @@ public class WebMercator {
     }
 
     public static double x(int zoomLevel, double longitude){
-        double x = Math.scalb(Units.convertTo(longitude, Units.Angle.TURN)+(1/2),8+zoomLevel);
+        int power = 8+zoomLevel;
+//        double x = Math.scalb((Units.convertTo(longitude, Units.Angle.TURN)+(1/2)),power);
+        double x = Math.pow(2,power)*(Units.convertTo(longitude, Units.Angle.TURN)+(1/2));
         return x;
+
     }
 
     public static double y(int zoomLevel, double latitude){
-        double y = Math.scalb(Units.convertTo(-Math2.asinh(Math.tan(latitude)),Units.Angle.TURN)+(1/2),8+zoomLevel);
+        int power = 8+zoomLevel;
+        double y = Math.scalb(Units.convertTo(-Math2.asinh(Math.tan(latitude)),Units.Angle.TURN)+(1/2),power)+256;
+
         return y;
     }
 }
