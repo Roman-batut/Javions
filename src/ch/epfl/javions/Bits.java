@@ -35,9 +35,9 @@ public class Bits {
             throw new IllegalArgumentException();
         }
         Objects.checkFromIndexSize(start, size, Long.SIZE);
-        long sl = (long)(Math.pow(2,size)-1);
+        long sl = (long)(Math.pow(2,size) - 1);
         value = (value>>start) ;
-        value= value & (sl);
+        value = value & (sl);
         return (int)value;
     }
 
@@ -51,7 +51,7 @@ public class Bits {
     public static boolean testBit(long value, int index) {
         Objects.checkIndex(index, Long.SIZE);
         value = value >> index;
-        if (value % 2 == 0) {
+        if(value%2 == 0) {
             return false;
         } else {
             return true;
