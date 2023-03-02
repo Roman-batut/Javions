@@ -15,7 +15,7 @@ public final class Crc24 {
     public int crc(byte[] message){
         int crc = 0;
         for(byte oct : message){
-            int av = crc >> INDEX;
+            int av = crc >>> INDEX;
             crc = ((crc << 8) | oct) ^ table[av-1];
         }
         crc = Bits.extractUInt(crc, 8,INDEX);
@@ -29,15 +29,17 @@ public final class Crc24 {
         for(byte oct : message ) {
             byte bitav = 0;
             for (int i = 0; i < 8; i++) {
-                byte bit = (byte) ((1000_0000 >> i) & oct);
+                byte bit = (byte) ((1000_0000 >>> i) & oct);
                 crc = (byte) (((crc << 1) | bit) ^ table[bitav]);
+                //TO REWORK tab position reprendre le Crc du tuto
                 bitav = bit;
             }
         }
         for(int i = 0; i < 24; i++) {
              byte bit = (0000_0000);
-             int av = crc >> (INDEX - 1);
-             crc = (byte) (((crc << 1) | bit) ^ table[av]);
+             int av = crc >>> (INDEX);
+             crc = (byte) (((crc << 1) | bit) ^ table[(av-1)%2]);
+             //TO REWORK tab position reprendre le Crc du tuto
         }
 
         return crc;
