@@ -51,7 +51,4 @@ public final class Crc24 {
         }
         return table;
     }
-
-
-
 }
