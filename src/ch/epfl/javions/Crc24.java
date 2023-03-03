@@ -1,28 +1,57 @@
 package ch.epfl.javions;
 
+/**
+ *  Class representing a CRC24
+ *  @author Roman Batut (356158)
+ *  @author Guillaume Chevallier (360709)
+ */
 public final class Crc24 {
 
-    public static int GENERATOR = 0xFFF409;
+    public static final int GENERATOR = 0xFFF409;
     private static final int INDEX = 24;
 
     private int[] table;
 
+    //* Constructor
+
+    /**
+     *  Constructor of a CRC24
+     *  @param generator the generator of the CRC24
+     */
     public Crc24(int generator){
-        GENERATOR = generator;
-        table = Buildtable();
+        table = Buildtable(generator);
     }
 
+
+    //* Methods
+
+
+    /**
+     *  Returns the CRC24 of a message, 
+     *  functions byte by byte therefore faster than the crcBitwise function
+     *  @param message the message
+     */
     public int crc(byte[] message){
         int crc = 0;
-        for(byte oct : message){
-            int av = crc >>> INDEX;
-            crc = ((crc << 8) | oct) ^ table[av-1];
+
+        for (byte oct : message) {
+            crc = ((crc << 8) | Byte.toUnsignedInt(oct)) ^ table[Bits.extractUInt(crc, INDEX-8, 8)];
         }
-        crc = Bits.extractUInt(crc, 8,INDEX);
-        return crc;
-     }
 
+        for (int i=0 ; i<3 ; i++) {
+            crc = (crc << 8) ^ table[Bits.extractUInt(crc, INDEX-8, 8)];
+        }
 
+        return Bits.extractUInt(crc, 0, INDEX);
+
+    }
+
+    /**
+     *  Returns the CRC24 of a message, function used to build the table,
+     *  functions bitwise therefore slower than the crc function
+     *  @param generator the generator of the CRC24
+     *  @param message the message
+     */
     private static int crcBitwise(int generator, byte[] message){
         int crc = 0;
         int[] table = new int[] {0, generator};
@@ -40,12 +69,18 @@ public final class Crc24 {
         return Bits.extractUInt(crc, 0, INDEX);
     }
 
-    private static int[] Buildtable(){
+    /**
+     *  Returns the table of the CRC24,
+     *  uses the crcBitwise function to build the table
+     *  @param generator the generator of the CRC24
+     */
+    private static int[] Buildtable(int generator){
         int[] table = new int[256];
         for(int i=0 ; i<256 ; i++){
             byte[] num = new byte[] {(byte) i};
             table[i] = crcBitwise(GENERATOR, num);
         }
+
         return table;
     }
 }

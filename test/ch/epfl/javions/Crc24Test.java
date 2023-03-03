@@ -2,6 +2,8 @@ package ch.epfl.javions;
 
 import org.junit.jupiter.api.Test;
 
+import ch.epfl.javions.Crc24;
+
 import java.util.HexFormat;
 
 import static org.junit.jupiter.api.Assertions.*;
