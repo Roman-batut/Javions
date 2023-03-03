@@ -24,25 +24,20 @@ public final class Crc24 {
 
 
     private static int crcBitwise(int generator, byte[] message){
-        byte crc = 0;
-        byte[] table = new byte[]{0, (byte)generator};
-        for(byte oct : message ) {
-            byte bitav = 0;
-            for (int i = 0; i < 8; i++) {
-                byte bit = (byte) ((1000_0000 >>> i) & oct);
-                crc = (byte) (((crc << 1) | bit) ^ table[bitav]);
-                //TO REWORK tab position reprendre le Crc du tuto
-                bitav = bit;
+        int crc = 0;
+        int[] table = new int[] {0, generator};
+
+        for (byte oct : message) {
+            for (int i=7 ; i>=0 ; i--) {
+                int bit = Bits.extractUInt(oct, i, 1);
+                crc = ((crc << 1) | bit) ^ table[Bits.extractUInt(crc, INDEX-1, 1)];
             }
         }
-        for(int i = 0; i < 24; i++) {
-             byte bit = (0000_0000);
-             int av = crc >>> (INDEX);
-             crc = (byte) (((crc << 1) | bit) ^ table[(av-1)%2]);
-             //TO REWORK tab position reprendre le Crc du tuto
+        for (int i=0 ; i<24 ; i++) {
+            crc = (crc << 1) ^ table[Bits.extractUInt(crc, INDEX-1, 1)];
         }
 
-        return crc;
+        return Bits.extractUInt(crc, 0, INDEX);
     }
 
     private static int[] Buildtable(){

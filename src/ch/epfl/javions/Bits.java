@@ -38,6 +38,7 @@ public class Bits {
         long sl = (long)(Math.pow(2,size) - 1);
         value = (value>>start) ;
         value = value & (sl);
+
         return (int)value;
     }
 
