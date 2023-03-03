@@ -15,7 +15,7 @@ public final class Crc24 {
     //* Constructor
 
     /**
-     *  Constructor of a CRC24
+     *  Constructor of a CRC24, constructs the table
      *  @param generator the generator of the CRC24
      */
     public Crc24(int generator){
