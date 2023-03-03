@@ -34,7 +34,7 @@ public class AircraftDatabase {
 
 
     /**
-     *  Returns the aircraft data corresponding, in the zip file, to the given ICAO address or null if the ICAO address is not found
+     *  Returns the aircraft data corresponding to the given ICAO address or null if the ICAO address is not found
      *  @param address the ICAO address
      *  @throws IOException if an I/O error occurs
      *  @throws NullPointerException if the ICAO address is null
