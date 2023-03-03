@@ -25,8 +25,7 @@ class AircraftDatabaseTest {
     }
 
     @Test
-    void Chexnotokfile() throws IOException{
-
+    void Chexnotokfile() throws IOException {
         assertEquals(null, tocompare.get(new IcaoAddress("000000")));
 
     }
