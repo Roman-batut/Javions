@@ -28,7 +28,7 @@ public record GeoPos(int longitudeT32, int latitudeT32) {
      * @param latitudeT32 the latitude to be tested
      * @return true if the given value is a valid latitude in T32 format
      */
-    public static boolean isValidLatitudeT32(int latitudeT32) {
+    public static boolean isValidLatitudeT32(int latitudeT32){
         return Math.scalb(-1d,30)<=latitudeT32 &&  Math.scalb(1d,30)>=latitudeT32;
     }
 
@@ -56,7 +56,7 @@ public record GeoPos(int longitudeT32, int latitudeT32) {
      * @return a string representation of the object in degrees
      */ 
     @Override
-    public String toString() {
+    public String toString(){
         double latdeg = Units.convert(latitudeT32, Units.Angle.T32, Units.Angle.DEGREE);
         double longdeg = Units.convert(longitudeT32, Units.Angle.T32, Units.Angle.DEGREE);
         return ("("+latdeg+"°, "+ longdeg+"°)");

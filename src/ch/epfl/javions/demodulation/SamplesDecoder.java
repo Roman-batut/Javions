@@ -1,7 +1,6 @@
 package ch.epfl.javions.demodulation;
 
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 
 public final class SamplesDecoder {
 

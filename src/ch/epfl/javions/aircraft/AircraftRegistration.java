@@ -16,7 +16,7 @@ public record AircraftRegistration(String string) {
      *  @param string the string representing the aircraft registration
      *  @throws IllegalArgumentException if the string is not a valid aircraft registration or is empty
      */
-    public AircraftRegistration {
+    public AircraftRegistration{
         Pattern pattern = Pattern.compile("[A-Z0-9 .?/_+-]+");
         if(!pattern.matcher(string).matches() || string.isEmpty()){
             throw new IllegalArgumentException();

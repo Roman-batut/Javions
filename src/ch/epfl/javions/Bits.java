@@ -49,7 +49,7 @@ public class Bits {
      * @return true if the bit at the given index is set, false otherwise
      * @throws IndexOutOfBoundsException if the index is not valid
      */
-    public static boolean testBit(long value, int index) {
+    public static boolean testBit(long value, int index){
         Objects.checkIndex(index, Long.SIZE);
         value = value >> index;
         if(value%2 == 0) {

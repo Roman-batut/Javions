@@ -2,6 +2,7 @@ package ch.epfl.javions.demodulation;
 
 import java.io.IOException;
 import java.io.InputStream;
+
 public final class PowerWindow {
 
     private int windowSize;
@@ -20,10 +21,11 @@ public final class PowerWindow {
     }
 
     public int size(){
-        return 0;
+        return windowSize;
     }
 
     public long position(){
+
         return 0;
     }
 

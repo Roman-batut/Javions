@@ -21,7 +21,7 @@ public class AircraftDatabase {
      *  @param fileName the name of the file containing the aircraft database
      *  @throws NullPointerException if the file name is null
      */
-    public AircraftDatabase(String fileName) {
+    public AircraftDatabase(String fileName){
         if (fileName == null) {
             throw new NullPointerException();
         }
@@ -39,7 +39,7 @@ public class AircraftDatabase {
      *  @throws IOException if an I/O error occurs
      *  @throws NullPointerException if the ICAO address is null
      */
-    public AircraftData get(IcaoAddress address) throws IOException {
+    public AircraftData get(IcaoAddress address) throws IOException{
 
         String sAddress = address.string();
         String file = sAddress.substring(sAddress.length() - 2) + ".csv";

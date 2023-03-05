@@ -20,7 +20,7 @@ public enum WakeTurbulenceCategory {
      *  Constructor of a wake turbulence category
      *  @param s the string representing the wake turbulence category
      */
-    private WakeTurbulenceCategory(String s) {
+    private WakeTurbulenceCategory(String s){
         letter = s;
     }
 
