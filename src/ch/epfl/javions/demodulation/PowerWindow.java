@@ -17,8 +17,10 @@ public final class PowerWindow {
         }
 
         this.windowSize = windowSize;
-        computer = new PowerComputer(stream, windowSize);
+        position = 0;
 
+        computer = new PowerComputer(stream, windowSize);
+        computer.readBatch(batchpowerOne);
     }
 
     public int size(){
@@ -26,8 +28,7 @@ public final class PowerWindow {
     }
 
     public long position(){
-
-        return 0;
+        return position;
     }
 
     public boolean isFull(){

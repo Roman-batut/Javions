@@ -19,7 +19,9 @@ class PowerComputerTest {
         int[] batch = new int[16];
         s.readBatch(batch);
         System.out.print(Arrays.toString(batch));
+
     }
     //bonne valeur mais faut décaler de trois vers la droite et puis
     //réduire la table du tableau mais prometteur
+    //opti ou pas et pourquoi 10
 }

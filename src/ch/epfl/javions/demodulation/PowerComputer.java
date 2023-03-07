@@ -24,14 +24,11 @@ public final class PowerComputer {
     public int readBatch(int[] batch) throws IOException{
         int size = decoder.readBatch(batchD);
 
-        for (int i=0 ; i<8 ; i++){
-            echanP[i] = batchD [i];
-        }
-
         int k = 0;
-        for(int i=8 ; i<size ; i+=2){
+        for(int i=0 ; i<size ; i+=2){
             int Pn =0;
-
+            echanP[i%8] = batchD[i];
+            echanP[(i+1)%8] = batchD[i+1];
             if(k%2 == 0){
                 Pn = (echanP[6]-echanP[4]+echanP[2]-echanP[0])*(echanP[6]-echanP[4]+echanP[2]-echanP[0])
                         +(echanP[7]-echanP[5]+echanP[3]-echanP[1])*(echanP[7]-echanP[5]+echanP[3]-echanP[1]);
@@ -41,8 +38,7 @@ public final class PowerComputer {
             }
             batch[k] = Pn;
 
-            echanP[i%8] = batchD[i];
-            echanP[(i+1)%8] = batchD[i+1];
+
             k++;
         }
 
