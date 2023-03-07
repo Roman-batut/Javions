@@ -38,7 +38,7 @@ public final class SamplesDecoder {
             byte strong = batchtab[i+1];
             byte weak = batchtab[i];
             short fin = (short)((strong<<8|weak));
-            if(fin > Math.scalb(1d,11)-1 ||fin< -Math.scalb(1d,11)){
+            if(fin > Math.scalb(1d,11)-1 || fin< -Math.scalb(1d,11)){
                 fin -= Math.scalb(1d,11);
             }
             batch[k] = fin;
