@@ -8,6 +8,7 @@ import java.io.InputStream;
  *  @author Roman Batut (356158)
  *  @author Guillaume Chevallier (360709)
  */
+
 public final class PowerWindow {
 
     private int windowSize;
@@ -34,7 +35,8 @@ public final class PowerWindow {
 
         this.windowSize = windowSize;
         position = 0;
-
+        batchpowerOne =new int[(int)Math.scalb(1d, 4)];
+        batchpowerTwo =new int[(int)Math.scalb(1d, 4)];
         computer = new PowerComputer(stream, windowSize);
         sizeB = computer.readBatch(batchpowerOne);
 
@@ -62,7 +64,7 @@ public final class PowerWindow {
      *  Returns true if the window is full
      */
     public boolean isFull(){
-        return (sizeB>position+windowSize);
+        return (sizeB>=position+windowSize);
     }
 
     /**
@@ -74,9 +76,9 @@ public final class PowerWindow {
         if(i<0 || i>windowSize){
             throw new IndexOutOfBoundsException();
         }
-        int relativepos = (int)(position%Math.scalb(1d, 16) +i);
+        int relativepos = (int)(position%Math.scalb(1d, 4) +i);
         if(relativepos > batchpowerOne.length){
-            return batchpowerTwo[relativepos- batchpowerOne.length];
+            return batchpowerTwo[relativepos- batchpowerOne.length-1];
         } else{
             return batchpowerOne[relativepos];
         }
@@ -93,7 +95,7 @@ public final class PowerWindow {
         if(position+windowSize >= sizeB){
             sizeB += computer.readBatch(batchpowerTwo);
         }
-        if(position%Math.scalb(1d, 16) == 0){
+        if(position%Math.scalb(1d, 4) == 0){
             batchpowerOne = batchpowerTwo;
         }
     }

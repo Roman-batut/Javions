@@ -10,13 +10,13 @@ import java.util.Arrays;
 import static org.junit.jupiter.api.Assertions.*;
 
 class PowerComputerTest {
-
+    String directory;
     @Test
     void normalPowercomputerTest() throws IOException {
-        String directory = getClass().getResource("/samples.bin").getFile();
+        directory = getClass().getResource("/samples.bin").getFile();
         InputStream stream = new FileInputStream(directory);
-        PowerComputer s =new PowerComputer(stream, 16);
-        int[] batch = new int[16];
+        PowerComputer s =new PowerComputer(stream, 24);
+        int[] batch = new int[24];
         s.readBatch(batch);
         System.out.print(Arrays.toString(batch));
 
