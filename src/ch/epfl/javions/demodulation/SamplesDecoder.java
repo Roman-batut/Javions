@@ -1,6 +1,7 @@
 package ch.epfl.javions.demodulation;
 
 import java.io.*;
+import java.util.Arrays;
 
 
 public final class SamplesDecoder {
@@ -27,11 +28,11 @@ public final class SamplesDecoder {
         }
 
         batchtab = stream.readNBytes((batchSize*2));
-        stream.close();
 
         int lenght = batchSize*2;
-        if(batchtab.length < batchSize*2){
-            lenght = batchSize;
+
+        if(batchtab.length <batchSize*2){
+            lenght = batchtab.length/2;
         }
 
         int k = 0;
