@@ -34,11 +34,12 @@ public final class PowerWindow {
 
         this.windowSize = windowSize;
         position = 0;
-        batchpowerOne =new int[(int)Math.scalb(1d, 4)];
-        batchpowerTwo =new int[(int)Math.scalb(1d, 4)];
+
+        batchpowerOne = new int[(int)Math.scalb(1d, 4)];
+        batchpowerTwo = new int[(int)Math.scalb(1d, 4)];
+
         computer = new PowerComputer(stream, windowSize);
         sizeB = computer.readBatch(batchpowerOne);
-
     }
 
 
@@ -81,7 +82,6 @@ public final class PowerWindow {
         } else{
             return batchpowerOne[relativepos];
         }
-
     }
 
     /**

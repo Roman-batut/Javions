@@ -27,7 +27,7 @@ public final class SamplesDecoder {
         if(batchSize <= 0 ){
             throw new IllegalArgumentException();
         }
-        if(stream.equals(InputStream.nullInputStream())){
+        if(stream.equals(InputStream.nullInputStream()) || stream == null){
             throw new NullPointerException();
         }
 

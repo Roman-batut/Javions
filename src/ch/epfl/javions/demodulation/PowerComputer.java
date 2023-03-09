@@ -20,7 +20,7 @@ public final class PowerComputer {
      *  Constructor of a power computer
      *  @param stream the stream of samples
      *  @param batchSize the size of the batch
-     *  @throws IllegalArgumentException if the batch size is not positive
+     *  @throws IllegalArgumentException if the batch size is not positive or cannot be divided by 8
      *  @throws NullPointerException if the stream is null
      */
     public PowerComputer(InputStream stream, int batchSize){
@@ -31,7 +31,6 @@ public final class PowerComputer {
         echanP = new short[8];
         batchD = new short[batchSize*2];
         this.decoder = new SamplesDecoder(stream, batchSize*2);
-
     }
 
 
