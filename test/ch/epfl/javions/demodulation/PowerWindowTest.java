@@ -17,7 +17,7 @@ class PowerWindowTest {
             {
         try {
             stream = new FileInputStream(directory);
-            window = new PowerWindow(stream, 16);
+            window = new PowerWindow(stream, 600);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -27,7 +27,7 @@ class PowerWindowTest {
 
     @Test
     void size() {
-        assertEquals(16, window.size());
+        assertEquals(600, window.size());
     }
 
     @Test
@@ -42,9 +42,9 @@ class PowerWindowTest {
     @Test
     void isFull() throws IOException{
         assertTrue(window.isFull());
-        window.advanceBy(1184);
+        window.advanceBy(1);
         assertTrue(window.isFull());
-        window.advanceBy(2);
+        window.advanceBy(1180);
         assertFalse(window.isFull());
     }
 
@@ -52,7 +52,8 @@ class PowerWindowTest {
     void get() throws IOException{
         assertEquals(73, window.get(0));
         window.advanceBy(1);
-        assertEquals(1370, window.get(16));
+        assertEquals(292, window.get(0));
+        assertEquals(1370, window.get(15));
     }
 
     @Test

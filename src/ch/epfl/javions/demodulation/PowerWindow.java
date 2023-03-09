@@ -38,7 +38,7 @@ public final class PowerWindow {
         batchpowerOne = new int[(int)Math.scalb(1d, 16)];
         batchpowerTwo = new int[(int)Math.scalb(1d, 16)];
 
-        computer = new PowerComputer(stream, windowSize);
+        computer = new PowerComputer(stream, (int) Math.scalb(1d, 16));
         sizeB = computer.readBatch(batchpowerOne);
     }
 
@@ -73,12 +73,12 @@ public final class PowerWindow {
      *  @throws IndexOutOfBoundsException if the position is not in the window
      */
     public int get(int i){
-        if(i<0 || i>windowSize){
+        if(i<0 || i>=windowSize){
             throw new IndexOutOfBoundsException();
         }
-        int relativepos = (int)(position%Math.scalb(1d, 16) +i);
-        if(relativepos > batchpowerOne.length){
-            return batchpowerTwo[relativepos- batchpowerOne.length-1];
+        int relativepos = (int) (position%Math.scalb(1d, 16) + i);
+        if(relativepos >= batchpowerOne.length){
+            return batchpowerTwo[relativepos - batchpowerOne.length];
         } else{
             return batchpowerOne[relativepos];
         }
