@@ -51,8 +51,13 @@ public final class PowerWindow {
     }
 
     public void advance() throws IOException{
-        position++;
-
+        position ++;
+        if(position+windowSize >= sizeB){
+            sizeB += computer.readBatch(batchpowerTwo);
+        }
+        if(position%Math.scalb(1d, 16) == 0){
+            batchpowerOne = batchpowerTwo;
+        }
     }
 
     public void advanceBy(int offset) throws IOException{
