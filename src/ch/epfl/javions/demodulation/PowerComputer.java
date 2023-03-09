@@ -2,14 +2,27 @@ package ch.epfl.javions.demodulation;
 
 import java.io.InputStream;
 import java.io.IOException;
+
+/**
+ *  Class representing a power computer
+ *  @author Roman Batut (356158)
+ *  @author Guillaume Chevallier (360709)
+ */
 public final class PowerComputer {
 
     private short[] echanP;
-
     private short[] batchD;
-
     private SamplesDecoder decoder;
 
+    //* Constructor
+
+    /**
+     *  Constructor of a power computer
+     *  @param stream the stream of samples
+     *  @param batchSize the size of the batch
+     *  @throws IllegalArgumentException if the batch size is not positive
+     *  @throws NullPointerException if the stream is null
+     */
     public PowerComputer(InputStream stream, int batchSize){
         if (batchSize%8 != 0 || batchSize <=0){
             throw new IllegalArgumentException();
@@ -21,6 +34,17 @@ public final class PowerComputer {
 
     }
 
+
+    //* Methods
+
+
+    /**
+     *  Returns the number of powers computed,
+     *  changes the batch of powers to contain the computed powers
+     *  @param batch the batch of powers
+     *  @throws IOException if an I/O error occurs
+     *  @throws IllegalArgumentException if the batch size is not equal to the batch size of the decoder
+     */
     public int readBatch(int[] batch) throws IOException{
         int size = decoder.readBatch(batchD);
 

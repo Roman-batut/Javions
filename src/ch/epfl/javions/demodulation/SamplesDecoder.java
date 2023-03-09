@@ -2,12 +2,26 @@ package ch.epfl.javions.demodulation;
 
 import java.io.*;
 
+/**
+ *  Class representing a decoder of samples
+ *  @author Roman Batut (356158)
+ *  @author Guillaume Chevallier (360709)
+ */
 public final class SamplesDecoder {
 
     private InputStream stream;
     private int batchSize;
     private byte[] batchtab;
 
+    //* Constructor
+
+    /**
+     *  Constructor of a decoder of samples
+     *  @param stream the stream of samples
+     *  @param batchSize the size of the batch
+     *  @throws IllegalArgumentException if the batch size is not positive
+     *  @throws NullPointerException if the stream is null
+     */
     public SamplesDecoder(InputStream stream, int batchSize){
         if(batchSize <= 0 ){
             throw new IllegalArgumentException();
@@ -20,6 +34,17 @@ public final class SamplesDecoder {
         this.batchSize = batchSize;
     }
 
+
+    //* Methods
+    
+    
+    /**
+     *  Returns the number of samples read,
+     *  changes the batch of samples to contain the read samples
+     *  @param batch the batch of samples
+     *  @throws IOException if an I/O error occurs
+     *  @throws IllegalArgumentException if the batch size is not equal to the batch size of the decoder
+     */
     public int readBatch(short[] batch) throws IOException{
         if(batch.length != batchSize){
             throw new IllegalArgumentException();
