@@ -8,7 +8,6 @@ import java.io.InputStream;
  *  @author Roman Batut (356158)
  *  @author Guillaume Chevallier (360709)
  */
-
 public final class PowerWindow {
 
     private int windowSize;
@@ -64,7 +63,7 @@ public final class PowerWindow {
      *  Returns true if the window is full
      */
     public boolean isFull(){
-        return (sizeB>=position+windowSize);
+        return (sizeB >= position+windowSize);
     }
 
     /**

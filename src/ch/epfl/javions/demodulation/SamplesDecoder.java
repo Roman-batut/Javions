@@ -1,7 +1,6 @@
 package ch.epfl.javions.demodulation;
 
 import java.io.*;
-import java.util.Arrays;
 
 
 /**
@@ -42,7 +41,7 @@ public final class SamplesDecoder {
     
     /**
      *  Returns the number of samples read,
-     *  changes the batch of samples to contain the read samples
+     *  changes the batch of samples to contain the extracted bytes
      *  @param batch the batch of samples
      *  @throws IOException if an I/O error occurs
      *  @throws IllegalArgumentException if the batch size is not equal to the batch size of the decoder
