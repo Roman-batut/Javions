@@ -8,6 +8,7 @@ public final class PowerWindow {
     private int windowSize;
     private int position;
     private PowerComputer computer;
+    private int sizeB;
     private int[] batchpowerOne;
     private int[] batchpowerTwo;
 
@@ -20,7 +21,8 @@ public final class PowerWindow {
         position = 0;
 
         computer = new PowerComputer(stream, windowSize);
-        computer.readBatch(batchpowerOne);
+        sizeB = computer.readBatch(batchpowerOne);
+
     }
 
     public int size(){
@@ -32,19 +34,18 @@ public final class PowerWindow {
     }
 
     public boolean isFull(){
-        return (batchpowerOne.length+batchpowerTwo.length == windowSize); //Faux
+        return (sizeB>position+windowSize);
     }
 
     public int get(int i){
         if(i<0 || i>windowSize){
             throw new IndexOutOfBoundsException();
         }
-
-        if(i+position > batchpowerOne.length){
-            return batchpowerTwo[i-batchpowerOne.length];
-        }
-        else{
-            return batchpowerOne[i];
+        int relativepos = (int)(position%Math.scalb(1d, 16) +i);
+        if(relativepos > batchpowerOne.length){
+            return batchpowerTwo[relativepos- batchpowerOne.length];
+        } else{
+            return batchpowerOne[relativepos];
         }
 
     }
