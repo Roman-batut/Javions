@@ -2,6 +2,7 @@ package ch.epfl.javions.demodulation;
 
 import java.io.InputStream;
 import java.io.IOException;
+
 public final class PowerComputer {
 
     private short[] echanP;

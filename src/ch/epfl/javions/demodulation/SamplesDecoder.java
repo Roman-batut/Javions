@@ -2,6 +2,7 @@ package ch.epfl.javions.demodulation;
 
 import java.io.*;
 
+
 public final class SamplesDecoder {
 
     private InputStream stream;

@@ -3,6 +3,7 @@ package ch.epfl.javions.demodulation;
 import org.junit.jupiter.api.Test;
 
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -10,11 +11,19 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class PowerWindowTest {
     String directory = getClass().getResource("/samples.bin").getFile();
-    InputStream stream = new FileInputStream(directory);
-    PowerWindow window = new PowerWindow(stream, 1200);
+    InputStream stream;
+    PowerWindow window;
 
-    PowerWindowTest() throws IOException {
+            {
+        try {
+            stream = new FileInputStream(directory);
+            window = new PowerWindow(stream, 1200);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
+
+
 
     @Test
     void size() {
@@ -29,11 +38,17 @@ class PowerWindowTest {
     }
 
     @Test
-    void isFull() {
+    void isFull() throws IOException{
+        assertTrue( window.isFull());
+        window.advanceBy(2);
+        assertFalse(window.isFull());
     }
 
     @Test
-    void get() {
+    void get() throws IOException{
+        assertEquals(73, window.get(0));
+        window.advanceBy(1);
+//        assertEquals();
     }
 
     @Test
@@ -42,6 +57,6 @@ class PowerWindowTest {
 
     @Test
     void advanceBy() {
-        
+
     }
 }
