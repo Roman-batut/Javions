@@ -13,6 +13,7 @@ public final class SamplesDecoder {
     private InputStream stream;
     private int batchSize;
     private byte[] batchtab;
+    private final int REGUL = (int)Math.scalb(1d,11);
 
     //* Constructor
 
@@ -64,8 +65,8 @@ public final class SamplesDecoder {
             byte strong = batchtab[i+1];
             byte weak = batchtab[i];
             short fin = (short)((strong<<8|weak));
-            if(fin > Math.scalb(1d,11)-1 || fin< -Math.scalb(1d,11)){
-                fin -= Math.scalb(1d,11);
+            if(fin > REGUL-1 || fin< -REGUL){
+                fin -= REGUL;
             }
             batch[k] = fin;
             k++;
