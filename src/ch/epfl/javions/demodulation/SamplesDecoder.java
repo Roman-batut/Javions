@@ -53,14 +53,14 @@ public final class SamplesDecoder {
 
         batchtab = stream.readNBytes((batchSize*2));
 
-        int lenght = batchSize*2;
+        int length = batchSize*2;
 
         if(batchtab.length < batchSize*2){
-            lenght = batchtab.length/2;
+            length = batchtab.length/2;
         }
 
         int k = 0;
-        for (int i=0 ; i<lenght ; i+=2) {
+        for (int i=0 ; i<length ; i+=2) {
             byte strong = batchtab[i+1];
             byte weak = batchtab[i];
             short fin = (short)((strong<<8|weak));
@@ -71,6 +71,6 @@ public final class SamplesDecoder {
             k++;
         }
 
-        return (int)(lenght*0.5);
+        return (int)(length*0.5);
     }
 }
