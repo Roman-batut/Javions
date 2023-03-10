@@ -12,8 +12,7 @@ class RawMessageTest {
 
     @Test
     void size() {
-        //trop for
-        byte byte0= (byte)10001000;
+        byte byte0= (byte)-118;
         assertEquals(14,RawMessage.size(byte0));
     }
 

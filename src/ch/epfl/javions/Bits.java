@@ -35,8 +35,8 @@ public class Bits {
             throw new IllegalArgumentException();
         }
         Objects.checkFromIndexSize(start, size, Long.SIZE);
-        long sl = (long)(Math.pow(2,size) - 1);
-        value = (value>>start) ;
+        long sl = (long)(Math.scalb(1d,size) - 1);
+        value = (value>>start);
         value = value & (sl);
 
         return (int)value;
