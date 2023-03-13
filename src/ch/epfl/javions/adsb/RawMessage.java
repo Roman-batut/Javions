@@ -6,6 +6,8 @@ import ch.epfl.javions.Crc24;
 import ch.epfl.javions.Preconditions;
 import ch.epfl.javions.aircraft.IcaoAddress;
 
+import java.util.HexFormat;
+
 public record RawMessage(long timeStampNs, ByteString bytes) {
 
     public static final int LENGTH = 14;
@@ -43,11 +45,10 @@ public record RawMessage(long timeStampNs, ByteString bytes) {
     }
 
     public IcaoAddress icaoAddress(){
-        int Icao = (int)bytes.bytesInRange(8,24);
-        new ByteString(Icao);
-        return null;
-//       #TODO la faut un tableau de byte pour icao ducoup faut sortir les bits puis les remettre dans un
-//       dans un tableau et faire un bhtestring avec ce tableau le faire to string et  enfin creer l'icao adress
+        long icao = bytes.bytesInRange(8,24);
+        HexFormat b = HexFormat.of();
+        b.toHexDigits(icao, 6);
+        return new IcaoAddress(b.toString());
     }
 
     public long payload(){
