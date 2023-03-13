@@ -67,8 +67,6 @@ class SamplesDecoderTest {
             var samplesDecoder = new SamplesDecoder(byteStream, actualSamples.length);
             var readSamples = samplesDecoder.readBatch(actualSamples);
             assertEquals(SAMPLES_COUNT, readSamples);
-//            System.out.println(Arrays.toString(expectedSamples));
-            System.out.println(Arrays.toString(actualSamples));
             assertArrayEquals(expectedSamples, actualSamples);
         }
     }

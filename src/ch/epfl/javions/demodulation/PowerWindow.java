@@ -13,7 +13,7 @@ public final class PowerWindow {
     private int windowSize;
     private int position;
     private PowerComputer computer;
-    private int sizeB;
+    private long sizeB;
     private int[] batchpowerOne;
     private int[] batchpowerTwo;
 
@@ -97,6 +97,7 @@ public final class PowerWindow {
         if(position%Math.scalb(1d, 16) == 0){
             batchpowerOne = batchpowerTwo;
         }
+
     }
 
     /**

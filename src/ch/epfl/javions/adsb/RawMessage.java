@@ -52,13 +52,13 @@ public record RawMessage(long timeStampNs, ByteString bytes) {
     }
 
     public long payload(){
-
-        return 0;
+        long mE = bytes.bytesInRange(29,51);
+        return mE;
     }
 
     public int typeCode(){
-
-        return 0;
+        int typeCode = (int)bytes.bytesInRange(24,5);
+        return typeCode;
     }
 
 }

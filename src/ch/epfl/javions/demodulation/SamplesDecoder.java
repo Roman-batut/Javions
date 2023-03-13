@@ -62,17 +62,17 @@ public final class SamplesDecoder {
 
         int k = 0;
         for (int i=0 ; i<length ; i+=2) {
-            short weak = batchtab[i];
-            short strong = batchtab[i+1];
+            int weak =  Byte.toUnsignedInt(batchtab[i]);
+            int strong = Byte.toUnsignedInt(batchtab[i+1]);
 
             short fin = (short)((strong<<8)|weak);
-//            fin -= REGUL;
-//            if(fin > REGUL-1 ){
-//                fin -= REGUL;
-//            }
-//            if( fin< -REGUL){
-//                fin += REGUL;
-//            }
+            fin -= REGUL;
+            if(fin > REGUL-1 ){
+                fin += REGUL;
+            }
+            if( fin< -REGUL){
+                fin -= REGUL;
+            }
             batch[k] = fin;
             k++;
         }

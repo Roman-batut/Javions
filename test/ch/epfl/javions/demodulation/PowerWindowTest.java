@@ -2,10 +2,7 @@ package ch.epfl.javions.demodulation;
 
 import org.junit.jupiter.api.Test;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -13,7 +10,13 @@ class PowerWindowTest {
     String directory = getClass().getResource("/samples.bin").getFile();
     InputStream stream;
     PowerWindow window;
-
+    private static final int BATCH_SIZE = 1 << 16;
+    private static final int BATCH_SIZE_BYTES = bytesForPowerSamples(BATCH_SIZE);
+    private static final int STANDARD_WINDOW_SIZE = 1200;
+    private static final int BIAS = 1 << 11;
+    private static int bytesForPowerSamples(int powerSamplesCount) {
+        return powerSamplesCount * 2 * Short.BYTES;
+    }
             {
         try {
             stream = new FileInputStream(directory);
@@ -39,13 +42,25 @@ class PowerWindowTest {
         assertEquals(201, window.position());
     }
 
+
     @Test
-    void isFull() throws IOException{
-        assertTrue(window.isFull());
-        window.advanceBy(1);
-        assertTrue(window.isFull());
-        window.advanceBy(1180);
-        assertFalse(window.isFull());
+    void powerWindowIsFullWorks() throws IOException {
+        var twoBatchesPlusOneWindowBytes =
+                bytesForPowerSamples(BATCH_SIZE * 2 + STANDARD_WINDOW_SIZE);
+        var twoBatchesPlusOneWindow = new byte[twoBatchesPlusOneWindowBytes];
+        try (var s = new ByteArrayInputStream(twoBatchesPlusOneWindow)) {
+            var w = new PowerWindow(s, STANDARD_WINDOW_SIZE);
+            assertTrue(w.isFull());
+
+            w.advanceBy(BATCH_SIZE);
+            assertTrue(w.isFull());
+
+            w.advanceBy(BATCH_SIZE);
+            assertTrue(w.isFull());
+
+            w.advance();
+            assertFalse(w.isFull());
+        }
     }
 
     @Test
