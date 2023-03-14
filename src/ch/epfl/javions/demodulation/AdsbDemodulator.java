@@ -5,14 +5,36 @@ import ch.epfl.javions.adsb.RawMessage;
 import java.io.IOException;
 import java.io.InputStream;
 
+/**
+ * Class representing a demodulator for ADS-B messages
+ * @author Roman Batut (356158)
+ * @author Guillaume Chevallier (360709)
+ */
 public final class AdsbDemodulator {
 
     PowerWindow window;
+
+    //* Constructor
+
+    /**
+     * Constructor of a demodulator
+     * @param samplesStream the stream of samples
+     * @throws IOException if an I/O error occurs
+     * @throws NullPointerException if the stream is null
+     */
     AdsbDemodulator(InputStream samplesStream) throws IOException{
         window = new PowerWindow(samplesStream, 1200);
 
     }
 
+
+    //* Methods
+    
+    
+    /**
+     * Returns the next message or null if there is no message left
+     * @throws IOException if an I/O error occurs
+     */
     public RawMessage nextMessage() throws IOException{
         //on vérifie sur index 0 (p-1) index 1 (p) et index 2 (p+1)
         //on calcule v à l'index 1

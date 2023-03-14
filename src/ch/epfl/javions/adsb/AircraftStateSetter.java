@@ -1,26 +1,52 @@
 package ch.epfl.javions.adsb;
 import ch.epfl.javions.GeoPos;
 
+/**
+ *  Interface representing a setter for an AircraftState
+ *  @author Roman Batut (356158)
+ *  @author Guillaume Chevallier (360709)
+ */
 public interface AircraftStateSetter {
 
-    //change Aircraft TimeStamp to the given value
+    /**
+     * Changes Aircraft TimeStamp to the given value
+     * @param timeStampNs 
+    */
     void setLastMessageTimeStampNs(long timeStampNs);
 
-    //change Aircraft category to the given value
+    /**
+     * Changes Aircraft category to the given value
+     * @param category
+     */
     void setCategory(int category);
 
-    //change Aircraft callSign to the given value
+    /**
+     * Changes Aircraft callsign to the given value
+     * @param callSign
+     */
     void setCallSign(CallSign callSign);
 
-    //change Aircraft position to the given value
+    /**
+     * Changes Aircraft position to the given value
+     * @param position
+     */
     void setPosition(GeoPos position);
 
-    //change Aircraft altitude to the given value
+    /**
+     * Changes Aircraft altitude to the given value
+     * @param altitude
+     */
     void setAltitude(double altitude);
 
-    //change Aircraft velocity to the given value
+    /**
+     * Changes Aircraft velocity to the given value
+     * @param velocity
+     */
     void setVelocity(double velocity);
 
-    //change Aircraft direction to the given value
+    /**
+     * Changes Aircraft track or heading to the given value
+     * @param trackOrHeading
+     */
     void setTrackOrHeading(double trackOrHeading);
 }
