@@ -10,6 +10,8 @@ import java.io.InputStream;
  */
 public final class PowerWindow {
 
+    private final static int BATCH_SIZE = (int) Math.scalb(1d, 16);
+
     private int windowSize;
     private int position;
     private PowerComputer computer;
@@ -28,18 +30,19 @@ public final class PowerWindow {
      *  @throws NullPointerException if the stream is null
      */
     public PowerWindow(InputStream stream, int windowSize) throws IOException{
-        if(windowSize <= 0 || windowSize>Math.scalb(1d,16)){
+        if(windowSize <= 0 || windowSize>BATCH_SIZE){
             throw new IllegalArgumentException();
         }
 
         this.windowSize = windowSize;
         position = 0;
+        sizeB = 0;
 
-        batchpowerOne = new int[(int)Math.scalb(1d, 16)];
-        batchpowerTwo = new int[(int)Math.scalb(1d, 16)];
+        batchpowerOne = new int[BATCH_SIZE];
+        batchpowerTwo = new int[BATCH_SIZE];
 
-        computer = new PowerComputer(stream, (int) Math.scalb(1d, 16));
-        sizeB = computer.readBatch(batchpowerOne);
+        computer = new PowerComputer(stream, BATCH_SIZE);
+        sizeB += computer.readBatch(batchpowerOne);
     }
 
 
@@ -76,7 +79,7 @@ public final class PowerWindow {
         if(i<0 || i>=windowSize){
             throw new IndexOutOfBoundsException();
         }
-        int relativepos = (int) (position%Math.scalb(1d, 16) + i);
+        int relativepos = (int) (position%BATCH_SIZE + i);
         if(relativepos >= batchpowerOne.length){
             return batchpowerTwo[relativepos - batchpowerOne.length];
         } else{
@@ -94,7 +97,7 @@ public final class PowerWindow {
         if(position+windowSize >= sizeB){
             sizeB += computer.readBatch(batchpowerTwo);
         }
-        if(position%Math.scalb(1d, 16) == 0){
+        if(position%BATCH_SIZE == 0){
             batchpowerOne = batchpowerTwo;
         }
 

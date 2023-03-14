@@ -77,6 +77,6 @@ public final class SamplesDecoder {
             k++;
         }
 
-        return (int)(length*0.5);
+        return (int) (length*0.5);
     }
 }

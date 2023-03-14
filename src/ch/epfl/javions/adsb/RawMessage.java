@@ -35,7 +35,7 @@ public record RawMessage(long timeStampNs, ByteString bytes) {
     }
 
     public static int typeCode(long payload){
-        int typecode = (int)payload >>>51;
+        int typecode = (int)payload >>> 51;
         return typecode;
     }
 
