@@ -57,7 +57,7 @@ public final class SamplesDecoder {
         int length = batchSize*2;
 
         if(batchtab.length < batchSize*2){
-            length = batchtab.length/2;
+            length = batchtab.length;
         }
 
         int k = 0;

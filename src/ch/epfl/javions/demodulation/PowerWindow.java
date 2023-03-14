@@ -67,7 +67,7 @@ public final class PowerWindow {
      *  Returns true if the window is full
      */
     public boolean isFull(){
-        return (sizeB >= position+windowSize);
+        return (sizeB>= windowSize+position);
     }
 
     /**
@@ -94,7 +94,7 @@ public final class PowerWindow {
      */
     public void advance() throws IOException{
         position ++;
-        if(position+windowSize >= sizeB){
+        if(position+windowSize == sizeB){
             sizeB += computer.readBatch(batchpowerTwo);
         }
         if(position%BATCH_SIZE == 0){
