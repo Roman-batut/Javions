@@ -22,9 +22,6 @@ public record AircraftTypeDesignator(String string) {
         if(!string.isEmpty()) {
             Pattern pattern = Pattern.compile("[A-Z0-9]{2,4}");
             Preconditions.checkArgument(pattern.matcher(string).matches());
-            //if (!pattern.matcher(string).matches()) {
-            //    throw new IllegalArgumentException();
-            //}
         }
     }
 }

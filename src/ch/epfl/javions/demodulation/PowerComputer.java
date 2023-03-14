@@ -27,9 +27,6 @@ public final class PowerComputer {
      */
     public PowerComputer(InputStream stream, int batchSize){
         Preconditions.checkArgument(!(batchSize%8 != 0 || batchSize <=0));
-        //if (batchSize%8 != 0 || batchSize <=0){
-        //    throw new IllegalArgumentException();
-        //}
 
         echanP = new short[8];
         batchD = new short[batchSize*2];

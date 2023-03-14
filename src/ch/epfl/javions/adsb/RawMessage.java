@@ -27,8 +27,8 @@ public record RawMessage(long timeStampNs, ByteString bytes) {
      *  @throws IllegalArgumentException if the time stamp is negative or if the bytes are not of length 14
      */
     public RawMessage{
-        Preconditions.checkArgument(timeStampNs<0);
-        Preconditions.checkArgument(bytes.size()!=LENGTH);
+        Preconditions.checkArgument(!(timeStampNs<0));
+        Preconditions.checkArgument(bytes.size()==LENGTH);
     }
 
 
@@ -74,7 +74,6 @@ public record RawMessage(long timeStampNs, ByteString bytes) {
     /**
      *  Returns the down link format of the message,
      *  its DF field (the five most significant bits of the first byte)
-     *  @param byte0 the first byte of the message
      */
     public int downLinkFormat(){
         return (int)bytes.bytesInRange(0,5);
@@ -85,14 +84,13 @@ public record RawMessage(long timeStampNs, ByteString bytes) {
      */
     public IcaoAddress icaoAddress(){
         long icao = bytes.bytesInRange(8,24);
-        HexFormat b = HexFormat.of();
-        b.toHexDigits(icao, 6);
-        return new IcaoAddress(b.toString());
+        String b = HexFormat.of().withUpperCase().toHexDigits(icao,6);
+        return new IcaoAddress(b);
     }
     
     /**
      *  Returns the payload of the message,
-     *  its ME field
+     *  it's ME field
      */
     public long payload(){
         long mE = bytes.bytesInRange(29,51);

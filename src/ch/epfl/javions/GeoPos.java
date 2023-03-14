@@ -15,9 +15,7 @@ public record GeoPos(int longitudeT32, int latitudeT32) {
      */
     public GeoPos {
         Preconditions.checkArgument(isValidLatitudeT32(latitudeT32));
-        //if(!isValidLatitudeT32(latitudeT32)){
-        //    throw new IllegalArgumentException();
-        //}
+
     }
 
 

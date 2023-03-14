@@ -50,6 +50,7 @@ public final class AdsbDemodulator {
             int V = window.get(5) + window.get(15) + window.get(20) + window.get(25) + window.get(30) + window.get(40);
 
             if(previousP < P && P > nextP && P >= 2 * V) {
+                window.advance();
                 //décodage
                 byte[] oct = new byte[window.size()/8];
                 for (int i=0 ; i<window.size() ; i+=8) {

@@ -33,9 +33,6 @@ public final class PowerWindow {
      */
     public PowerWindow(InputStream stream, int windowSize) throws IOException{
         Preconditions.checkArgument(!(windowSize <= 0 || windowSize>BATCH_SIZE));
-        //if(windowSize <= 0 || windowSize>BATCH_SIZE){
-        //    throw new IllegalArgumentException();
-        //}
 
         this.windowSize = windowSize;
         position = 0;

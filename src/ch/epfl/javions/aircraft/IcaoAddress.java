@@ -21,8 +21,5 @@ public record IcaoAddress(String string) {
     public IcaoAddress{
         Pattern pattern = Pattern.compile("[0-9A-F]{6}");
         Preconditions.checkArgument(!(!pattern.matcher(string).matches() || string.isEmpty()));
-        //if(!pattern.matcher(string).matches() || string.isEmpty()){
-        //    throw new IllegalArgumentException();
-        //}
     }
 }

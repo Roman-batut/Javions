@@ -51,10 +51,7 @@ public final class SamplesDecoder {
      *  @throws IllegalArgumentException if the batch size is not equal to the batch size of the decoder
      */
     public int readBatch(short[] batch) throws IOException{
-        Preconditions.checkArgument(!(batch.length != batchSize));
-        //if(batch.length != batchSize){
-        //    throw new IllegalArgumentException();
-        //}
+        Preconditions.checkArgument(batch.length == batchSize);
 
         batchtab = stream.readNBytes((batchSize*2));
 

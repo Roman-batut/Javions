@@ -22,9 +22,6 @@ public record CallSign(String string) {
         if(!string.isEmpty()) {
             Pattern pattern = Pattern.compile("[A-Z0-9 ]{0,8}");
             Preconditions.checkArgument(pattern.matcher(string).matches());
-            //if (!pattern.matcher(string).matches()) {
-            //    throw new IllegalArgumentException();
-            //}
         }
     }
 }
