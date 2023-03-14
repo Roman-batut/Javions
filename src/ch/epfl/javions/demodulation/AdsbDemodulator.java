@@ -1,5 +1,7 @@
 package ch.epfl.javions.demodulation;
 
+import ch.epfl.javions.Bits;
+import ch.epfl.javions.ByteString;
 import ch.epfl.javions.adsb.RawMessage;
 
 import java.io.IOException;
@@ -43,33 +45,27 @@ public final class AdsbDemodulator {
 
         //boucle for du flot ?
 
-        while (true){
-            if(!window.isFull()){
-                return null;
-            }
-
+        while (window.isFull()){
             int previousP = sommeP(0); int P = sommeP(1); int nextP = sommeP(2);
             int V = window.get(5) + window.get(15) + window.get(20) + window.get(25) + window.get(30) + window.get(40);
 
             if(previousP < P && P > nextP && P >= 2 * V) {
                 //décodage
-
+                byte[] oct = new byte[window.size()/8];
                 for (int i=0 ; i<window.size() ; i+=8) {
-                    byte oct = 0;
                     for (int j=0 ; j<8 ; j++){
-                        oct = (byte) (oct | (bitAt(i+j)<<7-j));
+                        oct[i] = (byte) (oct[i] | (bitAt(i + j) <<7-j));
                     }
-
                     //verification DF type 17
-
-
                 }
-
-                window.advanceBy(window.size()); //ou longueur du mess
+                if(RawMessage.size(oct[0]) == RawMessage.LENGTH){
+                    window.advanceBy(window.size());
+                    return new RawMessage(window.position()-window.size(), new ByteString(oct));
+                }
             }
             window.advance();
         }
-
+        return null;
         //hate de supprimer tout ce code quand on va se rendre compte de son inutilité
 
     }
