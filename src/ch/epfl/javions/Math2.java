@@ -26,9 +26,10 @@ public final class Math2 {
      * @throws IllegalArgumentException if the bounds are not valid
      */
     public static int clamp(int min, int v, int max){
-        if(min > max){
-            throw new IllegalArgumentException();
-        }
+        Preconditions.checkArgument(!(min > max));
+        //if(min > max){
+        //    throw new IllegalArgumentException();
+        //}
         if (v > max){
             return max;
         }

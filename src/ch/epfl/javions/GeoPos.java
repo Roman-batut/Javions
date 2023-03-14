@@ -14,9 +14,10 @@ public record GeoPos(int longitudeT32, int latitudeT32) {
      * @throws IllegalArgumentException if the given values are not valid
      */
     public GeoPos {
-        if(!isValidLatitudeT32(latitudeT32)){
-            throw new IllegalArgumentException();
-        }
+        Preconditions.checkArgument(isValidLatitudeT32(latitudeT32));
+        //if(!isValidLatitudeT32(latitudeT32)){
+        //    throw new IllegalArgumentException();
+        //}
     }
 
 

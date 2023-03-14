@@ -1,5 +1,7 @@
 package ch.epfl.javions.demodulation;
 
+import ch.epfl.javions.Preconditions;
+
 import java.io.InputStream;
 import java.io.IOException;
 
@@ -24,9 +26,10 @@ public final class PowerComputer {
      *  @throws NullPointerException if the stream is null
      */
     public PowerComputer(InputStream stream, int batchSize){
-        if (batchSize%8 != 0 || batchSize <=0){
-            throw new IllegalArgumentException();
-        }
+        Preconditions.checkArgument(!(batchSize%8 != 0 || batchSize <=0));
+        //if (batchSize%8 != 0 || batchSize <=0){
+        //    throw new IllegalArgumentException();
+        //}
 
         echanP = new short[8];
         batchD = new short[batchSize*2];

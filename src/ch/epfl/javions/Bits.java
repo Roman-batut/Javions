@@ -31,9 +31,10 @@ public class Bits {
      * @throws IllegalArgumentException if the size is not valid
      */
     public static int extractUInt(long value, int start, int size){
-        if(size<=0 || size >=32) {
-            throw new IllegalArgumentException();
-        }
+        Preconditions.checkArgument(!(size<=0 || size >=32));
+        //if(size<=0 || size >=32) {
+        //    throw new IllegalArgumentException();
+        //}
         Objects.checkFromIndexSize(start, size, Long.SIZE);
         long sl = (long)(Math.scalb(1d,size) - 1);
         value = (value>>start);

@@ -1,5 +1,7 @@
 package ch.epfl.javions.aircraft;
 
+import ch.epfl.javions.Preconditions;
+
 import java.util.regex.Pattern;
 
 /**
@@ -19,9 +21,10 @@ public record AircraftDescription(String string) {
     public AircraftDescription {
         if(!string.isEmpty()) {
             Pattern pattern = Pattern.compile("[ABDGHLPRSTV-][0123468][EJPT-]");
-            if (!pattern.matcher(string).matches()) {
-                throw new IllegalArgumentException();
-            }
+            Preconditions.checkArgument(pattern.matcher(string).matches());
+            //if (!pattern.matcher(string).matches()) {
+            //    throw new IllegalArgumentException();
+            //}
         }
     }
 }

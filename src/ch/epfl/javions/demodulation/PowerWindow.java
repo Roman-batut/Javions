@@ -1,5 +1,7 @@
 package ch.epfl.javions.demodulation;
 
+import ch.epfl.javions.Preconditions;
+
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -30,9 +32,10 @@ public final class PowerWindow {
      *  @throws NullPointerException if the stream is null
      */
     public PowerWindow(InputStream stream, int windowSize) throws IOException{
-        if(windowSize <= 0 || windowSize>BATCH_SIZE){
-            throw new IllegalArgumentException();
-        }
+        Preconditions.checkArgument(!(windowSize <= 0 || windowSize>BATCH_SIZE));
+        //if(windowSize <= 0 || windowSize>BATCH_SIZE){
+        //    throw new IllegalArgumentException();
+        //}
 
         this.windowSize = windowSize;
         position = 0;
@@ -111,9 +114,10 @@ public final class PowerWindow {
      *  @throws IOException if an I/O error occurs
      */
     public void advanceBy(int offset) throws IOException{
-        if(offset < 0){
-            throw new IllegalArgumentException();
-        }
+        Preconditions.checkArgument(!(offset < 0));
+        //if(offset < 0){
+        //    throw new IllegalArgumentException();
+        //}
 
         for (int i=0 ; i<offset ; i++) {
             advance();

@@ -1,5 +1,7 @@
 package ch.epfl.javions.adsb;
 
+import ch.epfl.javions.Preconditions;
+
 import java.util.regex.Pattern;
 
 /**
@@ -19,9 +21,10 @@ public record CallSign(String string) {
     public CallSign{
         if(!string.isEmpty()) {
             Pattern pattern = Pattern.compile("[A-Z0-9 ]{0,8}");
-            if (!pattern.matcher(string).matches()) {
-                throw new IllegalArgumentException();
-            }
+            Preconditions.checkArgument(pattern.matcher(string).matches());
+            //if (!pattern.matcher(string).matches()) {
+            //    throw new IllegalArgumentException();
+            //}
         }
     }
 }
