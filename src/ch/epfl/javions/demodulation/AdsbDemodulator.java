@@ -14,7 +14,8 @@ import java.io.InputStream;
  */
 public final class AdsbDemodulator {
 
-    PowerWindow window;
+    private PowerWindow window;
+    private int timeStampNs;
 
     //* Constructor
 
@@ -37,16 +38,10 @@ public final class AdsbDemodulator {
      * @throws IOException if an I/O error occurs
      */
     public RawMessage nextMessage() throws IOException{
-        //on vérifie sur index 0 (p-1) index 1 (p) et index 2 (p+1)
-        //on calcule v à l'index 1
-        //si conditions bonnes alors => décodage
-        //sinon on avance d'un (advance()) et on recommence
-
-        //boucle for du flot ?
 
         while(window.isFull()){
             int previousP = sommeP(0); int P = sommeP(1); int nextP = sommeP(2);
-            int V = window.get(5) + window.get(15) + window.get(20) + window.get(25) + window.get(30) + window.get(40);
+            int V = window.get(6) + window.get(16) + window.get(21) + window.get(26) + window.get(31) + window.get(41);
 
             if(previousP < P && P > nextP && P >= 2 * V) {
                 window.advance();
@@ -67,12 +62,10 @@ public final class AdsbDemodulator {
         }
         
         return null;
-        //hate de supprimer tout ce code quand on va se rendre compte de son inutilité
-
     }
 
     private int sommeP(int index){
-        return window.get(0+index)+window.get(10+index)+window.get(35+index)+window.get(45+index);
+        return window.get(index)+window.get(10+index)+window.get(35+index)+window.get(45+index);
     }
 
     private byte octAt(int index) {
