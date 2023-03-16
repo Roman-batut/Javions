@@ -68,20 +68,19 @@ public final class AdsbDemodulator {
         return window.get(index)+window.get(10+index)+window.get(35+index)+window.get(45+index);
     }
 
-    private byte octAt(int index) {
-        byte oct = 0;
-        for (int i = 0; i < 8; i++) {
-            oct = (byte) (oct | (bitAt(index*8 + i) << 7 - i));
-        }
-
-        return oct;
-    }
-
-    private int bitAt(int index){
+    private byte bitAt(int index){
         if(window.get(80+10*index) < window.get(85+10*index)){
             return 0;
         }
         return 1;
+    }
+
+    private byte octAt(int index) {
+        byte oct = 0b00_00_00_00;
+        for (int i=0 ; i<8 ; i++) {
+            oct = (byte) ((oct << 1) | bitAt(index * 8 + i));
+        }
+        return oct;
     }
 
 }
