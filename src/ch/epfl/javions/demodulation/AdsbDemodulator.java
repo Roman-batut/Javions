@@ -2,10 +2,12 @@ package ch.epfl.javions.demodulation;
 
 import ch.epfl.javions.Bits;
 import ch.epfl.javions.ByteString;
+import ch.epfl.javions.Units;
 import ch.epfl.javions.adsb.RawMessage;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.HexFormat;
 
 /**
  * Class representing a demodulator for ADS-B messages
@@ -15,7 +17,8 @@ import java.io.InputStream;
 public final class AdsbDemodulator {
 
     private PowerWindow window;
-    private int timeStampNs;
+    private long timeStampNs;
+    public static int i =0;
 
     //* Constructor
 
@@ -25,7 +28,7 @@ public final class AdsbDemodulator {
      * @throws IOException if an I/O error occurs
      * @throws NullPointerException if the stream is null
      */
-    AdsbDemodulator(InputStream samplesStream) throws IOException{
+    public AdsbDemodulator(InputStream samplesStream) throws IOException{
         window = new PowerWindow(samplesStream, 1200);
     }
 
@@ -41,31 +44,38 @@ public final class AdsbDemodulator {
 
         while(window.isFull()){
             int previousP = sommeP(0); int P = sommeP(1); int nextP = sommeP(2);
-            int V = window.get(6) + window.get(16) + window.get(21) + window.get(26) + window.get(31) + window.get(41);
+            int V = (window.get(6) + window.get(16) + window.get(21) + window.get(26) + window.get(31) + window.get(41));
 
-            if(previousP < P && P > nextP && P >= 2 * V) {
+            if((previousP < P) && (P > nextP) && (P >= 2*V)) {
                 window.advance();
 
                 byte[] octs = new byte[RawMessage.LENGTH];
                 octs[0] = octAt(0);
 
-                for(int i=1 ; i<RawMessage.size(octs[0]) ; i++){
-                    octs[i] = octAt(i);
+                if (RawMessage.size(octs[0]) == RawMessage.LENGTH) {
+
+                    for (int i = 1; i < RawMessage.LENGTH; i++) {
+                        octs[i] = octAt(i);
+                    }
+
+                    timeStampNs = (window.position() * 100);
+                    RawMessage v = RawMessage.of(timeStampNs, octs);
+                    if (v != null) {
+                        window.advanceBy(window.size());
+                        i++;
+                        return v;
+                    }
                 }
-
-                timeStampNs = (int)(window.position()*100);
-                window.advanceBy(window.size());
-                return RawMessage.of(timeStampNs, octs);
             }
-
-            window.advance();
+            else{
+                window.advance();
+            }
         }
-        
         return null;
     }
 
     private int sommeP(int index){
-        return window.get(index)+window.get(10+index)+window.get(35+index)+window.get(45+index);
+        return (window.get(index)+window.get(10+index)+window.get(35+index)+window.get(45+index));
     }
 
     private byte bitAt(int index){

@@ -4,6 +4,7 @@ import ch.epfl.javions.Preconditions;
 
 import java.io.InputStream;
 import java.io.IOException;
+import java.util.Arrays;
 
 /**
  *  Class representing a power computer
@@ -60,7 +61,6 @@ public final class PowerComputer {
                         +(-echanP[7]+echanP[5]-echanP[3]+echanP[1])*(-echanP[7]+echanP[5]-echanP[3]+echanP[1]);
             }
             batch[k] = Pn;
-
 
             k++;
         }
