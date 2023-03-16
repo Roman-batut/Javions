@@ -26,7 +26,6 @@ public final class AdsbDemodulator {
      */
     AdsbDemodulator(InputStream samplesStream) throws IOException{
         window = new PowerWindow(samplesStream, 1200);
-
     }
 
 
@@ -45,27 +44,28 @@ public final class AdsbDemodulator {
 
         //boucle for du flot ?
 
-        while (window.isFull()){
+        while(window.isFull()){
             int previousP = sommeP(0); int P = sommeP(1); int nextP = sommeP(2);
             int V = window.get(5) + window.get(15) + window.get(20) + window.get(25) + window.get(30) + window.get(40);
 
             if(previousP < P && P > nextP && P >= 2 * V) {
                 window.advance();
-                //décodage
-                byte[] oct = new byte[window.size()/8];
-                for (int i=0 ; i<window.size() ; i+=8) {
-                    for (int j=0 ; j<8 ; j++){
-                        oct[i] = (byte) (oct[i] | (bitAt(i + j) <<7-j));
-                    }
-                    //verification DF type 17
+
+                byte[] octs = new byte[RawMessage.LENGTH];
+                octs[0] = octAt(0);
+
+                for(int i=1 ; i<RawMessage.size(octs[0]) ; i++){
+                    octs[i] = octAt(i);
                 }
-                if(RawMessage.size(oct[0]) == RawMessage.LENGTH){
-                    window.advanceBy(window.size());
-                    return new RawMessage(window.position()-window.size(), new ByteString(oct));
-                }
+
+                timeStampNs = (int)(window.position()*100);
+                window.advanceBy(window.size());
+                return RawMessage.of(timeStampNs, octs);
             }
+
             window.advance();
         }
+        
         return null;
         //hate de supprimer tout ce code quand on va se rendre compte de son inutilité
 
@@ -75,8 +75,17 @@ public final class AdsbDemodulator {
         return window.get(0+index)+window.get(10+index)+window.get(35+index)+window.get(45+index);
     }
 
+    private byte octAt(int index) {
+        byte oct = 0;
+        for (int i = 0; i < 8; i++) {
+            oct = (byte) (oct | (bitAt(index*8 + i) << 7 - i));
+        }
+
+        return oct;
+    }
+
     private int bitAt(int index){
-        if (window.get(80+10*index) < window.get(85+10*index)){
+        if(window.get(80+10*index) < window.get(85+10*index)){
             return 0;
         }
         return 1;
