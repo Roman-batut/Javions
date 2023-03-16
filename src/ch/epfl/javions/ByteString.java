@@ -69,7 +69,7 @@ public final class ByteString {
      */
     public long bytesInRange(int fromIndex, int toIndex){
         Objects.checkFromToIndex(fromIndex, toIndex, size());
-        Objects.checkFromToIndex(fromIndex, toIndex, (Long.SIZE/8));
+        Preconditions.checkArgument((toIndex-fromIndex) <= (Long.SIZE/8));
         long l = 0;
         for (int i=fromIndex ; i<toIndex ; i++){
             l = l<<8;
@@ -77,6 +77,7 @@ public final class ByteString {
         }
         return l;
     }
+
 
 
     //* Object overrides
