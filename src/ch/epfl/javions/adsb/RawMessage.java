@@ -45,6 +45,7 @@ public record RawMessage(long timeStampNs, ByteString bytes) {
         if(crc24.crc(bytes) != 0) {
             return null;
         }
+
         return new RawMessage(timeStampNs, new ByteString(bytes));
     }
 
@@ -58,6 +59,7 @@ public record RawMessage(long timeStampNs, ByteString bytes) {
         if(b == DF){
             return LENGTH;
         }
+
         return 0;
     }
 
@@ -68,6 +70,7 @@ public record RawMessage(long timeStampNs, ByteString bytes) {
      */
     public static int typeCode(long payload){
         int typecode = (int)(payload >>> 51);
+
         return typecode;
     }
 
@@ -85,6 +88,7 @@ public record RawMessage(long timeStampNs, ByteString bytes) {
     public IcaoAddress icaoAddress(){
         long icao = bytes.bytesInRange(1,4);
         String b = HexFormat.of().withUpperCase().toHexDigits(icao,6);
+
         return new IcaoAddress(b);
     }
 
@@ -94,6 +98,7 @@ public record RawMessage(long timeStampNs, ByteString bytes) {
      */
     public long payload(){
         long mE = bytes.bytesInRange(4,11);
+
         return mE;
     }
 
@@ -103,6 +108,7 @@ public record RawMessage(long timeStampNs, ByteString bytes) {
      */
     public int typeCode(){
         int typeCode = (int)bytes.bytesInRange(4,11);
+
         return typeCode(typeCode);
     }
 

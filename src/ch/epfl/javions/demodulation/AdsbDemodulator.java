@@ -14,7 +14,6 @@ public final class AdsbDemodulator {
 
     private PowerWindow window;
     private long timeStampNs;
-    public static int i = 0; //decode
 
     private int[] tab;
     private int index;
@@ -45,7 +44,6 @@ public final class AdsbDemodulator {
     public RawMessage nextMessage() throws IOException{
 
         while(window.isFull()){
-            //int previousP = tab[index%3]; //sommeP(0); int P = tab[(index+1)%3]; //sommeP(1); int nextP = tab[(index+2)%3]; // sommeP(2);
             int V = (window.get(6) + window.get(16) + window.get(21) + window.get(26) + window.get(31) + window.get(41));
 
             window.advance();
@@ -62,7 +60,7 @@ public final class AdsbDemodulator {
                     RawMessage v = RawMessage.of(timeStampNs, octs);
                     if (v != null) {
                         window.advanceBy(window.size());
-                        i++;
+
                         return v;
                     }
                 }
@@ -73,6 +71,8 @@ public final class AdsbDemodulator {
 
         return null;
     }
+
+    //*Private Methods
 
     /**
      * Returns the P sum of the 4 samples at the given index
@@ -90,6 +90,7 @@ public final class AdsbDemodulator {
         if(window.get(80+10*index) < window.get(85+10*index)){
             return 0;
         }
+
         return 1;
     }
 

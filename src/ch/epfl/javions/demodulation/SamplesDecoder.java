@@ -70,6 +70,7 @@ public final class SamplesDecoder {
             batch[k] = fin;
             k++;
         }
+
         return (int) (length*0.5);
     }
 }

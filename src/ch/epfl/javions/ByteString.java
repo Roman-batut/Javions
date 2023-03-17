@@ -35,6 +35,7 @@ public final class ByteString {
         HexFormat hf = HexFormat.of().withUpperCase();
         byte[] bytes = hf.parseHex(hexString);
         ByteString bytes2 = new ByteString(bytes);
+
         return bytes2;
     }
 
@@ -75,6 +76,7 @@ public final class ByteString {
             l = l<<8;
             l = l | byteAt(i);
         }
+
         return l;
     }
 
@@ -93,6 +95,7 @@ public final class ByteString {
                 return true;
             }
         }
+
         return false;
     }
 
@@ -111,6 +114,7 @@ public final class ByteString {
     public String toString(){
         HexFormat hf = HexFormat.of().withUpperCase();
         String string = hf.formatHex(tab);
+
         return string;
     }
 }

@@ -26,10 +26,11 @@ class AdsbDemodulatorTest {
             while ((m = d.nextMessage()) != null)
                 ;
                 //System.out.println(m);
-        System.out.println(AdsbDemodulator.i);
+        //System.out.println(AdsbDemodulator.i);
         }
         // RawMessage[timeStampNs=235839800, bytes=8D4952999915769CF02089DB69B1]
         // RawMessage[timeStampNs=2804904800, bytes=8D4241A9EA11A898011C08B21C01]
+        //int previousP = tab[index%3]; //sommeP(0); int P = tab[(index+1)%3]; //sommeP(1); int nextP = tab[(index+2)%3]; // sommeP(2);
 
     }
 }
