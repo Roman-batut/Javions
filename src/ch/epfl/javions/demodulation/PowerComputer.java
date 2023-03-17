@@ -50,7 +50,7 @@ public final class PowerComputer {
 
         int k = 0;
         for(int i=0 ; i<size ; i+=2){
-            int Pn =0;
+            int Pn = 0;
             echanP[i%8] = batchD[i];
             echanP[(i+1)%8] = batchD[i+1];
             if(k%2 == 0){

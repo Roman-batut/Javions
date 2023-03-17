@@ -24,14 +24,12 @@ class AdsbDemodulatorTest {
             AdsbDemodulator d = new AdsbDemodulator(s);
             RawMessage m;
             while ((m = d.nextMessage()) != null)
-                System.out.println(m);
-                System.out.println(AdsbDemodulator.i);
+                ;
+                //System.out.println(m);
+        System.out.println(AdsbDemodulator.i);
         }
         // RawMessage[timeStampNs=235839800, bytes=8D4952999915769CF02089DB69B1]
         // RawMessage[timeStampNs=2804904800, bytes=8D4241A9EA11A898011C08B21C01]
-        //
-        //
-
 
     }
 }

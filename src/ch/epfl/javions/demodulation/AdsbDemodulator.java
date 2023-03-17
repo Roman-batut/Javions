@@ -1,13 +1,9 @@
 package ch.epfl.javions.demodulation;
 
-import ch.epfl.javions.Bits;
-import ch.epfl.javions.ByteString;
-import ch.epfl.javions.Units;
 import ch.epfl.javions.adsb.RawMessage;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.HexFormat;
 
 /**
  * Class representing a demodulator for ADS-B messages
@@ -30,6 +26,9 @@ public final class AdsbDemodulator {
      */
     public AdsbDemodulator(InputStream samplesStream) throws IOException{
         window = new PowerWindow(samplesStream, 1200);
+
+        tab = new int[] {sommeP(0), sommeP(1), sommeP(2)};
+        index = 0;
     }
 
 
@@ -43,7 +42,7 @@ public final class AdsbDemodulator {
     public RawMessage nextMessage() throws IOException{
 
         while(window.isFull()){
-            int previousP = sommeP(0); int P = sommeP(1); int nextP = sommeP(2);
+            //int previousP = tab[index%3]; //sommeP(0); int P = tab[(index+1)%3]; //sommeP(1); int nextP = tab[(index+2)%3]; // sommeP(2);
             int V = (window.get(6) + window.get(16) + window.get(21) + window.get(26) + window.get(31) + window.get(41));
 
             if((previousP < P) && (P > nextP) && (P >= 2*V)) {
@@ -53,8 +52,7 @@ public final class AdsbDemodulator {
                 octs[0] = octAt(0);
 
                 if (RawMessage.size(octs[0]) == RawMessage.LENGTH) {
-
-                    for (int i = 1; i < RawMessage.LENGTH; i++) {
+                    for (int i=1 ; i<RawMessage.LENGTH ; i++) {
                         octs[i] = octAt(i);
                     }
 
@@ -71,6 +69,7 @@ public final class AdsbDemodulator {
                 window.advance();
             }
         }
+
         return null;
     }
 
@@ -82,6 +81,7 @@ public final class AdsbDemodulator {
         if(window.get(80+10*index) < window.get(85+10*index)){
             return 0;
         }
+
         return 1;
     }
 
@@ -90,6 +90,7 @@ public final class AdsbDemodulator {
         for (int i=0 ; i<8 ; i++) {
             oct = (byte) ((oct << 1) | bitAt(index * 8 + i));
         }
+
         return oct;
     }
 
