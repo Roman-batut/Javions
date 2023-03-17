@@ -74,18 +74,29 @@ public final class AdsbDemodulator {
         return null;
     }
 
+    /**
+     * Returns the P sum of the 4 samples at the given index
+     * @param index the index of the first sample
+     */
     private int sommeP(int index){
         return (window.get(index)+window.get(10+index)+window.get(35+index)+window.get(45+index));
     }
 
+    /**
+     * Returns the bit at the given index in the window
+     * @param index the index of the bit
+     */
     private byte bitAt(int index){
         if(window.get(80+10*index) < window.get(85+10*index)){
             return 0;
         }
-
         return 1;
     }
 
+    /**
+     * Returns the byte at the given index in the window
+     * @param index the index of the first bit
+     */
     private byte octAt(int index) {
         byte oct = 0b00_00_00_00;
         for (int i=0 ; i<8 ; i++) {
