@@ -14,7 +14,10 @@ public final class AdsbDemodulator {
 
     private PowerWindow window;
     private long timeStampNs;
-    public static int i =0;
+    public static int i = 0; //decode
+
+    private int[] tab;
+    private int index;
 
     //* Constructor
 
@@ -45,9 +48,8 @@ public final class AdsbDemodulator {
             //int previousP = tab[index%3]; //sommeP(0); int P = tab[(index+1)%3]; //sommeP(1); int nextP = tab[(index+2)%3]; // sommeP(2);
             int V = (window.get(6) + window.get(16) + window.get(21) + window.get(26) + window.get(31) + window.get(41));
 
-            if((previousP < P) && (P > nextP) && (P >= 2*V)) {
-                window.advance();
-
+            window.advance();
+            if((tab[index%3] < tab[(index+1)%3]) && (tab[(index+1)%3] > tab[(index+2)%3]) && (tab[(index+1)%3] >= 2*V)) {
                 byte[] octs = new byte[RawMessage.LENGTH];
                 octs[0] = octAt(0);
 
@@ -65,9 +67,8 @@ public final class AdsbDemodulator {
                     }
                 }
             }
-            else{
-                window.advance();
-            }
+            index++;
+            tab[(index+2)%3] = sommeP(2);
         }
 
         return null;

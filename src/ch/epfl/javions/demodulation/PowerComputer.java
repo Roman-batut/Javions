@@ -52,7 +52,7 @@ public final class PowerComputer {
         for(int i=0 ; i<size ; i+=2){
             int Pn = 0;
             echanP[i%8] = batchD[i];
-            echanP[(i+1)%8] = batchD[i+1];
+            echanP[(i%8+1)%8] = batchD[i+1];
             if(k%2 == 0){
                 Pn = (echanP[6]-echanP[4]+echanP[2]-echanP[0])*(echanP[6]-echanP[4]+echanP[2]-echanP[0])
                         +(echanP[7]-echanP[5]+echanP[3]-echanP[1])*(echanP[7]-echanP[5]+echanP[3]-echanP[1]);
