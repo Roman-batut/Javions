@@ -67,8 +67,7 @@ public record RawMessage(long timeStampNs, ByteString bytes) {
      *  @param payload the payload of the message
      */
     public static int typeCode(long payload){
-        int typecode = (int)(payload >>> 51);
-        typecode = typecode & 0b11111;
+        int typecode = (int)payload >>> 51;
         return typecode;
     }
 
@@ -77,16 +76,14 @@ public record RawMessage(long timeStampNs, ByteString bytes) {
      *  its DF field (the five most significant bits of the first byte)
      */
     public int downLinkFormat(){
-        int byte0 = (int)bytes.bytesInRange(0,1);
-        byte0 = Bits.extractUInt(byte0,3,5);
-        return byte0;
+        return (int)bytes.bytesInRange(0,5);
     }
 
     /**
      *  Returns the ICAO address of the aircraft
      */
     public IcaoAddress icaoAddress(){
-        long icao = bytes.bytesInRange(1,4);
+        long icao = bytes.bytesInRange(8,24);
         String b = HexFormat.of().withUpperCase().toHexDigits(icao,6);
         return new IcaoAddress(b);
     }
@@ -96,7 +93,7 @@ public record RawMessage(long timeStampNs, ByteString bytes) {
      *  it's ME field
      */
     public long payload(){
-        long mE = bytes.bytesInRange(4,11);
+        long mE = bytes.bytesInRange(29,51);
         return mE;
     }
 
@@ -105,7 +102,8 @@ public record RawMessage(long timeStampNs, ByteString bytes) {
      *  the five most significant bits of its ME field
      */
     public int typeCode(){
-        return typeCode(payload());
+        int typeCode = (int)bytes.bytesInRange(24,5);
+        return typeCode;
     }
 
 }

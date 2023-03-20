@@ -36,6 +36,7 @@ public record GeoPos(int longitudeT32, int latitudeT32) {
      */
     public double longitude(){
         double longrad = Units.convertFrom(longitudeT32, Units.Angle.T32);
+
         return longrad;
     }
 
@@ -44,6 +45,7 @@ public record GeoPos(int longitudeT32, int latitudeT32) {
      */
     public double latitude(){
         double latrad = Units.convertFrom(latitudeT32, Units.Angle.T32);
+
         return latrad;
     }
 
@@ -58,6 +60,7 @@ public record GeoPos(int longitudeT32, int latitudeT32) {
     public String toString(){
         double latdeg = Units.convert(latitudeT32, Units.Angle.T32, Units.Angle.DEGREE);
         double longdeg = Units.convert(longitudeT32, Units.Angle.T32, Units.Angle.DEGREE);
+
         return ("("+latdeg+"°, "+ longdeg+"°)");
     }
 }

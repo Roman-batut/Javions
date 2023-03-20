@@ -3,6 +3,7 @@ package ch.epfl.javions.demodulation;
 import ch.epfl.javions.Preconditions;
 
 import java.io.*;
+import java.util.Arrays;
 
 
 /**
@@ -28,9 +29,7 @@ public final class SamplesDecoder {
      */
     public SamplesDecoder(InputStream stream, int batchSize){
         Preconditions.checkArgument(!(batchSize <= 0 ));
-        //if(batchSize <= 0 ){
-        //    throw new IllegalArgumentException();
-        //}
+
         if(stream.equals(InputStream.nullInputStream()) || stream == null){
             throw new NullPointerException();
         }
@@ -68,12 +67,6 @@ public final class SamplesDecoder {
 
             short fin = (short)((strong<<8)|weak);
             fin -= REGUL;
-            if(fin > REGUL-1 ){
-                fin += REGUL;
-            }
-            if( fin< -REGUL){
-                fin -= REGUL;
-            }
             batch[k] = fin;
             k++;
         }

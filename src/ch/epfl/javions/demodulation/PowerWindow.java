@@ -4,6 +4,7 @@ import ch.epfl.javions.Preconditions;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Arrays;
 
 /**
  *  Class representing a window of power
@@ -80,8 +81,8 @@ public final class PowerWindow {
             throw new IndexOutOfBoundsException();
         }
         int relativepos = (int) (position%BATCH_SIZE + i);
-        if(relativepos >= batchpowerOne.length){
-            return batchpowerTwo[relativepos - batchpowerOne.length];
+        if(relativepos >= BATCH_SIZE){
+            return batchpowerTwo[relativepos - BATCH_SIZE];
         } else{
             return batchpowerOne[relativepos];
         }
@@ -98,7 +99,9 @@ public final class PowerWindow {
             sizeB += computer.readBatch(batchpowerTwo);
         }
         if(position%BATCH_SIZE == 0){
-            batchpowerOne = batchpowerTwo;
+            int[] tempTab = batchpowerTwo;
+            batchpowerTwo = batchpowerOne;
+            batchpowerOne = tempTab;
         }
 
     }
@@ -112,9 +115,6 @@ public final class PowerWindow {
      */
     public void advanceBy(int offset) throws IOException{
         Preconditions.checkArgument(!(offset < 0));
-        //if(offset < 0){
-        //    throw new IllegalArgumentException();
-        //}
 
         for (int i=0 ; i<offset ; i++) {
             advance();

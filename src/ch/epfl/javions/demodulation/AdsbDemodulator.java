@@ -1,7 +1,5 @@
 package ch.epfl.javions.demodulation;
 
-import ch.epfl.javions.Bits;
-import ch.epfl.javions.ByteString;
 import ch.epfl.javions.adsb.RawMessage;
 
 import java.io.IOException;
@@ -14,7 +12,11 @@ import java.io.InputStream;
  */
 public final class AdsbDemodulator {
 
-    PowerWindow window;
+    private PowerWindow window;
+    private long timeStampNs;
+
+    private int[] tab;
+    private int index;
 
     //* Constructor
 
@@ -24,9 +26,11 @@ public final class AdsbDemodulator {
      * @throws IOException if an I/O error occurs
      * @throws NullPointerException if the stream is null
      */
-    AdsbDemodulator(InputStream samplesStream) throws IOException{
+    public AdsbDemodulator(InputStream samplesStream) throws IOException{
         window = new PowerWindow(samplesStream, 1200);
 
+        tab = new int[] {sommeP(0), sommeP(1), sommeP(2)};
+        index = 0;
     }
 
 
@@ -38,48 +42,69 @@ public final class AdsbDemodulator {
      * @throws IOException if an I/O error occurs
      */
     public RawMessage nextMessage() throws IOException{
-        //on vérifie sur index 0 (p-1) index 1 (p) et index 2 (p+1)
-        //on calcule v à l'index 1
-        //si conditions bonnes alors => décodage
-        //sinon on avance d'un (advance()) et on recommence
 
-        //boucle for du flot ?
+        while(window.isFull()){
+            int V = (window.get(6) + window.get(16) + window.get(21) + window.get(26) + window.get(31) + window.get(41));
 
-        while (window.isFull()){
-            int previousP = sommeP(0); int P = sommeP(1); int nextP = sommeP(2);
-            int V = window.get(5) + window.get(15) + window.get(20) + window.get(25) + window.get(30) + window.get(40);
+            window.advance();
+            if((tab[index%3] < tab[(index+1)%3]) && (tab[(index+1)%3] > tab[(index+2)%3]) && (tab[(index+1)%3] >= 2*V)) {
+                byte[] octs = new byte[RawMessage.LENGTH];
+                octs[0] = octAt(0);
 
-            if(previousP < P && P > nextP && P >= 2 * V) {
-                window.advance();
-                //décodage
-                byte[] oct = new byte[window.size()/8];
-                for (int i=0 ; i<window.size() ; i+=8) {
-                    for (int j=0 ; j<8 ; j++){
-                        oct[i] = (byte) (oct[i] | (bitAt(i + j) <<7-j));
+                if (RawMessage.size(octs[0]) == RawMessage.LENGTH) {
+                    for (int i=1 ; i<RawMessage.LENGTH ; i++) {
+                        octs[i] = octAt(i);
                     }
-                    //verification DF type 17
-                }
-                if(RawMessage.size(oct[0]) == RawMessage.LENGTH){
-                    window.advanceBy(window.size());
-                    return new RawMessage(window.position()-window.size(), new ByteString(oct));
+
+                    timeStampNs = (window.position() * 100);
+                    RawMessage v = RawMessage.of(timeStampNs, octs);
+                    if (v != null) {
+                        window.advanceBy(window.size());
+
+                        return v;
+                    }
                 }
             }
-            window.advance();
+            index++;
+            tab[(index+2)%3] = sommeP(2);
         }
+
         return null;
-        //hate de supprimer tout ce code quand on va se rendre compte de son inutilité
-
     }
 
+    //*Private Methods
+
+    /**
+     * Returns the P sum of the 4 samples at the given index
+     * @param index the index of the first sample
+     */
     private int sommeP(int index){
-        return window.get(0+index)+window.get(10+index)+window.get(35+index)+window.get(45+index);
+        return (window.get(index)+window.get(10+index)+window.get(35+index)+window.get(45+index));
     }
 
-    private int bitAt(int index){
-        if (window.get(80+10*index) < window.get(85+10*index)){
+    /**
+     * Returns the bit at the given index in the window
+     * @param index the index of the bit
+     */
+    private byte bitAt(int index){
+        if(window.get(80+10*index) < window.get(85+10*index)){
             return 0;
         }
+
         return 1;
+    }
+
+    /**
+     * Returns the byte at the given index in the window
+     * @param index the index of the first bit
+     */
+    private byte octAt(int index) {
+        byte oct = 0b00_00_00_00;
+        for (int i=0 ; i<8 ; i++) {
+            oct = (byte) ((oct << 1) | bitAt(index * 8 + i));
+        }
+
+        return oct;
     }
 
 }

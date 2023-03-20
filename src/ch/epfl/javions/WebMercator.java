@@ -27,6 +27,7 @@ public class WebMercator {
     public static double x(int zoomLevel, double longitude){
         int power = 8+zoomLevel;
         double x = Math.scalb((Units.convertTo(longitude, Units.Angle.TURN)+(0.5)),power);
+
         return x;
 
     }

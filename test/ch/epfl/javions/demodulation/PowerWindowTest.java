@@ -79,4 +79,25 @@ class PowerWindowTest {
     void advanceBy() {
 
     }
+
+    @Test
+    void testOnLargerSamples() throws IOException {
+        String directory = getClass().getResource("/samples_20230304_1442.bin").getFile();
+        InputStream stream = new FileInputStream(directory);
+        PowerWindow pw = new PowerWindow(stream, 1200);
+
+
+        while (pw.position() < 1205) {
+            int j = 0;
+            for (int i = 0; i < pw.size(); i++) {
+                System.out.print(pw.get(i) + ", ");
+                j++;
+            }
+            System.out.println(" ");
+            System.out.println(pw.position() + " -- " + j);
+            pw.advance();
+        }
+    }
+
+
 }
