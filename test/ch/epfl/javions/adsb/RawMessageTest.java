@@ -35,7 +35,7 @@ class RawMessageTest {
 
     @Test
     void downLinkFormat() {
-        assertEquals(141, test.downLinkFormat());
+        assertEquals(17, test.downLinkFormat());
     }
 
     @Test
