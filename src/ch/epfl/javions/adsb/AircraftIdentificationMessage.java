@@ -24,6 +24,9 @@ public record AircraftIdentificationMessage(long timeStampNs, IcaoAddress icaoAd
     }
 
     public static AircraftIdentificationMessage of(RawMessage rawMessage){
-        return null;
+        IcaoAddress icaoAddres = rawMessage.icaoAddress();
+        long timestampNs = rawMessage.timeStampNs();
+//        int category = rawMessage;
+        return null  ;
     }
 }

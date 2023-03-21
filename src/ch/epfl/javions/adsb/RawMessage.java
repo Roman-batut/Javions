@@ -96,8 +96,7 @@ public record RawMessage(long timeStampNs, ByteString bytes) {
      *  it's ME field
      */
     public long payload(){
-        long mE = bytes.bytesInRange(4,11);
-        return mE;
+        return bytes.bytesInRange(4,11);
     }
 
     /**
