@@ -161,12 +161,12 @@ class RawMessageTest {
     @Test
     void rawMessageStaticTypeCodeReturnsTypeCode() {
         for (var tc = 0; tc < 1 << 5; tc += 1) {
-            var payload = ~0L;
-            payload = (payload << 5) | (tc + 1);
+            var payload = (long) (tc + 1);
             payload = (payload << 51) - 1;
             assertEquals(tc, RawMessage.typeCode(payload));
         }
     }
+
 
     @Test
     void rawMessageOfReturnsRawMessageForValidMessages() {
