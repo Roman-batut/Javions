@@ -53,7 +53,7 @@ public class CprDecoder {
              Z_lambda[1] = Z_lambda[0]-1;
         }
 
-        double[] Delta_lambda = new double[] {(1d/Z_PHI[0]), (1d/Z_PHI[1])};
+        double[] Delta_lambda = new double[]{(1d/Z_PHI[0]), (1d/Z_PHI[1])};
 
         if(Z_lambda[0]>1){
             double z_lambda = Math.rint(Z_lambda[0]*x0 - Z_lambda[1]*x1);
