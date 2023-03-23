@@ -4,29 +4,59 @@ import ch.epfl.javions.Bits;
 import ch.epfl.javions.Preconditions;
 import ch.epfl.javions.aircraft.IcaoAddress;
 
-import javax.swing.text.AttributeSet;
-import java.util.HexFormat;
-
-
+/**
+ * Record representing an ADS-B aircraft identification message
+ * @author Roman Batut (356158)
+ * @author Guillaume Chevallier (360709)
+ */
 public record AircraftIdentificationMessage(long timeStampNs, IcaoAddress icaoAddress,int category,CallSign callSign)
         implements Message{
 
+    //* Constructor
+
+    /**
+     * Constructor of an aircraft identification message
+     * @param timeStampNs the time stamp of the message in nanoseconds
+     * @param icaoAddress the ICAO address of the aircraft
+     * @param category the category of the aircraft
+     * @param callSign the call sign of the aircraft
+     * @throws NullPointerException if the ICAO address or the call sign is null
+     * @throws IllegalArgumentException if the time stamp is negative
+     */
     public AircraftIdentificationMessage{
         Preconditions.checkArgument(timeStampNs>=0);
         if(icaoAddress == null || callSign ==null){
             throw new NullPointerException();
         }
     }
+
+    //* Getters
+
+    /**
+     * Returns the time stamp of the message in nanoseconds
+     */
     @Override
     public long timeStampNs() {
         return timeStampNs;
     }
 
+    /**
+     * Returns the ICAO address of the aircraft
+     */
     @Override
     public IcaoAddress icaoAddress() {
         return icaoAddress;
     }
 
+
+    //* Methods
+
+
+    /**
+     * Returns the aircracft identification message corresponding to the raw message,
+     * or null if one of the raw message's fields is invalid
+     * @param rawMessage the raw message
+     */
     public static AircraftIdentificationMessage of(RawMessage rawMessage){
         long payload = rawMessage.payload();
         if(validmessage(payload)) {
@@ -41,6 +71,8 @@ public record AircraftIdentificationMessage(long timeStampNs, IcaoAddress icaoAd
 
         return null;
     }
+
+    //* Private methods
 
     private static CallSign callSignextraction(long payload){
         char[] chartab = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'};

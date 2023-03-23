@@ -2,7 +2,7 @@
     "java.project.sourcePaths": [
         "src",
         "resources",
-        "test/ch/epfl/javions"
+        "test"
     ],
     "java.project.referencedLibraries": [
         "lib/**/*.jar"

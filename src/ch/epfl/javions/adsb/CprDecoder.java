@@ -4,14 +4,34 @@ import ch.epfl.javions.GeoPos;
 import ch.epfl.javions.Preconditions;
 import ch.epfl.javions.Units;
 
+/**
+ * Class representing a CPR decoder
+ * @author Roman Batut (356158)
+ * @author Guillaume Chevallier (360709)
+ */
 public class CprDecoder {
 
     private final static int[] Z_PHI = new int[]{60, 59};
     private final static double[] DELTA_PHI = new double[]{(1d/Z_PHI[0]), (1d/Z_PHI[1])};
 
+    //* Constructor
+
     private CprDecoder(){
     }
 
+
+    //* Methods
+
+
+    /**
+     * Returns the geographical position of an aircraft,
+     * @param x0 the longitude coordinate of the first message
+     * @param y0 the latitude coordinate of the first message
+     * @param x1 the longitude coordinate of the second message
+     * @param y1 the latitude coordinate of the second message
+     * @param mostRecent the most recent message (0 or 1)
+     * @throws IllegalArgumentException if the most recent message is not 0 or 1
+     */
     public static GeoPos decodePosition(double x0, double y0, double x1, double y1, int mostRecent){
         Preconditions.checkArgument(mostRecent == 1 || mostRecent == 0);
 
@@ -81,5 +101,4 @@ public class CprDecoder {
 //        #TODO LA CONVERTION EST PEUT ETRE PAS SUPER BONNE AU NIVEAU DES TOURS EST DU SIGNE
         return new GeoPos((int)lambda[mostRecent], (int)phi[mostRecent]);
     }
-
 }
