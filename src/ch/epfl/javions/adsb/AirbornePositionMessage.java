@@ -2,10 +2,13 @@ package ch.epfl.javions.adsb;
 
 import ch.epfl.javions.Bits;
 import ch.epfl.javions.Preconditions;
+import ch.epfl.javions.Units;
 import ch.epfl.javions.aircraft.IcaoAddress;
 
 public record AirbornePositionMessage(long timeStampNs,IcaoAddress icaoAddress,double altitude,int parity,double x,double y)
         implements Message{
+
+    private static final double NORMALISATION = Math.scalb(1d, 27);
 
     public AirbornePositionMessage {
         if(icaoAddress == null){
@@ -18,12 +21,12 @@ public record AirbornePositionMessage(long timeStampNs,IcaoAddress icaoAddress,d
     }
     @Override
     public long timeStampNs() {
-        return 0;
+        return timeStampNs;
     }
 
     @Override
     public IcaoAddress icaoAddress() {
-        return null;
+        return icaoAddress;
     }
 
     public static AirbornePositionMessage of(RawMessage rawMessage){
