@@ -52,8 +52,8 @@ public class CprDecoder {
 
         //longitude
         double[] Z_lambda = new double[2];
-        double[] A = new double[]{Math.acos(1-(1-Math.cos(2*Math.PI*DELTA_PHI[0]))/(Math.cos(phi[0]*Math.cos(phi[0])))),
-                Math.acos(1-(1-Math.cos(2*Math.PI*DELTA_PHI[0]))/(Math.cos(phi[1]*Math.cos(phi[1]))))};
+        double[] A = new double[]{Math.acos(1-(1-Math.cos(2*Math.PI*DELTA_PHI[0]))/(Math.cos(Units.convertFrom(phi[0], Units.Angle.TURN) *Math.cos(Units.convertFrom(phi[0], Units.Angle.TURN))))),
+                Math.acos(1-(1-Math.cos(2*Math.PI*DELTA_PHI[0]))/(Math.cos(Units.convertFrom(phi[1], Units.Angle.TURN))*Math.cos(Units.convertFrom(phi[1], Units.Angle.TURN))))};
         double[] lambda = new double[]{x0,x1};
 
         //exception handler
@@ -75,7 +75,7 @@ public class CprDecoder {
 
         double[] Delta_lambda = new double[]{(1d/Z_PHI[0]), (1d/Z_PHI[1])};
 
-        if(Z_lambda[0]>1){
+
             double z_lambda = Math.rint(Z_lambda[0]*x0 - Z_lambda[1]*x1);
             double[] z_lambda_i = new double[]{z_lambda, z_lambda};
 
@@ -86,19 +86,24 @@ public class CprDecoder {
 
                  lambda[i] = Delta_lambda[i]*(z_lambda_i[i]+lambda[i]);
             }
+
+
+        //final Coordinates
+        if(phi[mostRecent]>1 || phi[mostRecent]<=0 || lambda[mostRecent]>1 || lambda[mostRecent]<=0){
+            return null;
         }
 
-        //Coordonées finales
 
-        if(phi[mostRecent] > 0.5 ){
-            phi[mostRecent] = -phi[mostRecent];
+        if(phi[mostRecent] >= 0.5){
+            phi[mostRecent]--;
         }
-        phi[mostRecent] = Units.convert(phi[mostRecent], Units.Angle.TURN,Units.Angle.T32);
-        if(lambda[mostRecent] > 0.5 ){
-            lambda[mostRecent] = -lambda[mostRecent];
+        phi[mostRecent] = Math.rint(Units.convert(phi[mostRecent], Units.Angle.TURN,Units.Angle.T32)) ;
+        if(lambda[mostRecent] >= 0.5 ){
+            lambda[mostRecent]--;
         }
-        lambda[mostRecent] = Units.convert(lambda[mostRecent], Units.Angle.TURN,Units.Angle.T32);
-//        #TODO LA CONVERTION EST PEUT ETRE PAS SUPER BONNE AU NIVEAU DES TOURS EST DU SIGNE
+//        #ERREUR ICI
+        lambda[mostRecent] = Math.rint(Units.convert(lambda[mostRecent], Units.Angle.TURN,Units.Angle.T32));
+//        #TODO LA CONVERTION EST PEUT ETRE PAS SUPER BONNE AU NIVEAU DES TOURS et DU SIGNE
         return new GeoPos((int)lambda[mostRecent], (int)phi[mostRecent]);
     }
 }

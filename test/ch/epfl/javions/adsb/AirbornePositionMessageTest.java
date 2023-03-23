@@ -4,7 +4,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class AircraftIdentificationMessageTest {
+class AirbornePositionMessageTest {
 
     @Test
     void timeStampNs() {
@@ -19,14 +19,18 @@ class AircraftIdentificationMessageTest {
     }
 
     @Test
-    void category() {
+    void altitude() {
     }
 
     @Test
-    void callSign() {
+    void parity() {
     }
 
     @Test
-    void TESTDECHAR(){
+    void x() {
+    }
+
+    @Test
+    void y() {
     }
 }
