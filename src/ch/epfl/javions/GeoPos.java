@@ -60,6 +60,6 @@ public record GeoPos(int longitudeT32, int latitudeT32) {
         double latdeg = Units.convert(latitudeT32, Units.Angle.T32, Units.Angle.DEGREE);
         double longdeg = Units.convert(longitudeT32, Units.Angle.T32, Units.Angle.DEGREE);
 
-        return ("("+latdeg+"°, "+ longdeg+"°)");
+        return ("("+longdeg+"°, "+ latdeg+"°)");
     }
 }

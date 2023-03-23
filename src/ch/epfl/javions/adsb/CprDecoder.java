@@ -36,7 +36,7 @@ public class CprDecoder {
         Preconditions.checkArgument(mostRecent == 1 || mostRecent == 0);
 
         //latitude
-        double z_phi = Math.rint(Z_PHI[0]*y0 - Z_PHI[1]*y1);
+        double z_phi = Math.rint(Z_PHI[1]*y0 - Z_PHI[0]*y1);
         double[] z_phi_i = new double[]{z_phi, z_phi};
         double[] phi = new double[]{y0, y1};
 
@@ -47,9 +47,6 @@ public class CprDecoder {
             phi[i] = DELTA_PHI[i]*(z_phi_i[i]+phi[i]);
         }
 
-//        #TODO ATTENTION C'EST EN TOUR PAS EN RADIAN OU BAILLE COMME CA
-//        #TODO ASK FOR THE CASE WHERE THE LATITUDE CHANGE ZONE IF IT'S IMPIRTANTE OR NOT
-
         //longitude
         double[] Z_Lambda = new double[2];
         double A = Math.acos(1-(1-Math.cos(2*Math.PI*DELTA_PHI[0]))/((Math.cos(Units.convert(phi[0], Units.Angle.TURN, Units.Angle.RADIAN))*Math.cos(Units.convert(phi[0], Units.Angle.TURN,Units.Angle.RADIAN)))));
@@ -58,33 +55,28 @@ public class CprDecoder {
         double[] lambda = new double[]{x0,x1};
 
         //exception handler
-        double previous = 0;
-        for (int i=0 ; i<2 ; i++) {
-             if(Double.isNaN(A[i])){
-                 Z_lambda[0] = 1;
-             }else {
-                 Z_lambda[0] = Math.floor(2*Math.PI/A[i]);
-             }
-             if(i == 0){
-                 previous = Z_lambda[0];
-             }
-             if (previous != Z_lambda[0]){
-                 return null;
-             }
-             Z_lambda[1] = Z_lambda[0]-1;
+        if(Double.isNaN(A)){
+            Z_Lambda[0] = 1;
         }
 
-        double[] Delta_lambda = new double[]{(1d/Z_PHI[0]), (1d/Z_PHI[1])};
+        Z_Lambda[0] = Math.floor(2*Math.PI/A);
+        double Z_Lambda_test = Math.floor(2*Math.PI/A_test);
+        if (Z_Lambda_test != Z_Lambda[0]){
+            return null ;
+        }
+        Z_Lambda[1] = Z_Lambda[0]-1;
 
 
-            double z_lambda = Math.rint(Z_lambda[0]*x0 - Z_lambda[1]*x1);
+        double[] Delta_lambda = new double[]{(1d/Z_Lambda[0]), (1d/Z_Lambda[1])};
+
+
+            double z_lambda = Math.rint(Z_Lambda[1]*x0 - Z_Lambda[0]*x1);
             double[] z_lambda_i = new double[]{z_lambda, z_lambda};
 
             for (int i = 0; i < 2; i++) {
                  if(z_lambda <0){
                      z_lambda_i[i] += Z_Lambda[i];
                  }
-
                  lambda[i] = Delta_lambda[i]*(z_lambda_i[i]+lambda[i]);
             }
 
@@ -96,13 +88,13 @@ public class CprDecoder {
         if(phi[mostRecent] >= 0.5){
             phi[mostRecent]--;
         }
-        phi[mostRecent] = Math.rint(Units.convert(phi[mostRecent], Units.Angle.TURN,Units.Angle.T32)) ;
+        phi[mostRecent] = Math.rint(Units.convert(phi[mostRecent], Units.Angle.TURN,Units.Angle.T32));
+
         if(lambda[mostRecent] >= 0.5 ){
             lambda[mostRecent]--;
         }
-//        #ERREUR ICI
         lambda[mostRecent] = Math.rint(Units.convert(lambda[mostRecent], Units.Angle.TURN,Units.Angle.T32));
-//        #TODO LA CONVERTION EST PEUT ETRE PAS SUPER BONNE AU NIVEAU DES TOURS et DU SIGNE
+
         return new GeoPos((int)lambda[mostRecent], (int)phi[mostRecent]);
     }
 }
