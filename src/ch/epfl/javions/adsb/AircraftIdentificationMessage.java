@@ -4,6 +4,8 @@ import ch.epfl.javions.Bits;
 import ch.epfl.javions.Preconditions;
 import ch.epfl.javions.aircraft.IcaoAddress;
 
+import java.util.Arrays;
+
 /**
  * Record representing an ADS-B aircraft identification message
  * @author Roman Batut (356158)
@@ -59,17 +61,14 @@ public record AircraftIdentificationMessage(long timeStampNs, IcaoAddress icaoAd
      */
     public static AircraftIdentificationMessage of(RawMessage rawMessage){
         long payload = rawMessage.payload();
-        if(validmessage(payload)) {
-            IcaoAddress icaoAddres = rawMessage.icaoAddress();
-            long timestampNs = rawMessage.timeStampNs();
-            byte strcategory = (byte) ((14 - rawMessage.typeCode()) << 4);
-            byte weakcategory = (byte) (Bits.extractUInt(payload, 53, 3));
-            int category = strcategory | weakcategory;
-            CallSign callSign1 = callSignextraction(payload);
-            return new AircraftIdentificationMessage(timestampNs, icaoAddres, category, callSign1);
-        }
 
-        return null;
+        IcaoAddress icaoAddres = rawMessage.icaoAddress();
+        long timestampNs = rawMessage.timeStampNs();
+        int strcategory = ((14 - rawMessage.typeCode()) << 4);
+        int weakcategory = (Bits.extractUInt(payload, 48, 3));
+        int category = strcategory | weakcategory;
+        CallSign callSign1 = callSignextraction(payload);
+        return new AircraftIdentificationMessage(timestampNs, icaoAddres, category, callSign1);
     }
 
     //* Private methods
@@ -79,35 +78,27 @@ public record AircraftIdentificationMessage(long timeStampNs, IcaoAddress icaoAd
 
         int[] charactervalue = new int[8];
         int k = 0;
-        for (int i=47 ; i>=0 ; i-=6) {
+        for (int i=42 ; i>=0 ; i-=6) {
             charactervalue[k] = Bits.extractUInt(payload,i,6);
             k++;
         }
 
-        String callsignstring = "";
-        int missing = 0;
+        StringBuilder callsignstring = new StringBuilder();
         for (int i=0 ; i<8 ; i++) {
-            if((charactervalue[i]>=1 && charactervalue[i]<=26)||(charactervalue[i]>=48 && charactervalue[i]<=57)|| charactervalue[i] == 32){
-                if(charactervalue[i]<27){
-                    callsignstring += chartab[charactervalue[i]];
-                }
-                else{
-                    callsignstring += Character.toChars(charactervalue[i]);
+            if ((charactervalue[i] >= 1 && charactervalue[i] <= 26) || (charactervalue[i] >= 48 && charactervalue[i] <= 57) || charactervalue[i] == 32) {
+                if (charactervalue[i] <= 26) {
+                    callsignstring.append(chartab[charactervalue[i] - 1]);
+                } else {
+                    callsignstring.append(Character.toChars(charactervalue[i]));
                 }
             }
-            else {
-                missing++;
-            }
         }
-        for (int i=callsignstring.length()-missing ; i<8 ; i++){
-            callsignstring += " ";
-        }
-
-        return new CallSign(callsignstring);
+        return new CallSign(callsignstring.toString().stripTrailing());
     }
 
     private static boolean validmessage(long payload) {
         return (RawMessage.typeCode(payload) == 1 ||RawMessage.typeCode(payload) == 2
                 ||RawMessage.typeCode(payload) == 3 ||RawMessage.typeCode(payload) == 4);
     }
+    //hypothese que le type code est bon jsp si on supprime
 }

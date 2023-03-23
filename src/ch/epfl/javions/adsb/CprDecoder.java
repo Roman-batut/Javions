@@ -84,6 +84,7 @@ public class CprDecoder {
         if(phi[mostRecent]>1 || phi[mostRecent]<=0 || lambda[mostRecent]>1 || lambda[mostRecent]<=0){
             return null;
         }
+// #TODO METTRE AVEC LE CONVERT
 
         if(phi[mostRecent] >= 0.5){
             phi[mostRecent]--;
