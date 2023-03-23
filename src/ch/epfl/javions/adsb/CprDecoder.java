@@ -51,9 +51,10 @@ public class CprDecoder {
 //        #TODO ASK FOR THE CASE WHERE THE LATITUDE CHANGE ZONE IF IT'S IMPIRTANTE OR NOT
 
         //longitude
-        double[] Z_lambda = new double[2];
-        double[] A = new double[]{Math.acos(1-(1-Math.cos(2*Math.PI*DELTA_PHI[0]))/(Math.cos(Units.convertFrom(phi[0], Units.Angle.TURN) *Math.cos(Units.convertFrom(phi[0], Units.Angle.TURN))))),
-                Math.acos(1-(1-Math.cos(2*Math.PI*DELTA_PHI[0]))/(Math.cos(Units.convertFrom(phi[1], Units.Angle.TURN))*Math.cos(Units.convertFrom(phi[1], Units.Angle.TURN))))};
+        double[] Z_Lambda = new double[2];
+        double A = Math.acos(1-(1-Math.cos(2*Math.PI*DELTA_PHI[0]))/((Math.cos(Units.convert(phi[0], Units.Angle.TURN, Units.Angle.RADIAN))*Math.cos(Units.convert(phi[0], Units.Angle.TURN,Units.Angle.RADIAN)))));
+        double A_test = Math.acos(1-((1-Math.cos(2*Math.PI*DELTA_PHI[0]))/((Math.cos(Units.convert(phi[1], Units.Angle.TURN, Units.Angle.RADIAN))*Math.cos(Units.convert(phi[1], Units.Angle.TURN,Units.Angle.RADIAN))))));
+
         double[] lambda = new double[]{x0,x1};
 
         //exception handler
@@ -81,18 +82,16 @@ public class CprDecoder {
 
             for (int i = 0; i < 2; i++) {
                  if(z_lambda <0){
-                     z_lambda_i[i] += Z_lambda[i];
+                     z_lambda_i[i] += Z_Lambda[i];
                  }
 
                  lambda[i] = Delta_lambda[i]*(z_lambda_i[i]+lambda[i]);
             }
 
-
-        //final Coordinates
+        //final coordinates
         if(phi[mostRecent]>1 || phi[mostRecent]<=0 || lambda[mostRecent]>1 || lambda[mostRecent]<=0){
             return null;
         }
-
 
         if(phi[mostRecent] >= 0.5){
             phi[mostRecent]--;
