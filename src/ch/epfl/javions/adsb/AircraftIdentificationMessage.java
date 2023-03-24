@@ -4,8 +4,6 @@ import ch.epfl.javions.Bits;
 import ch.epfl.javions.Preconditions;
 import ch.epfl.javions.aircraft.IcaoAddress;
 
-import java.util.Arrays;
-
 /**
  * Record representing an ADS-B aircraft identification message
  * @author Roman Batut (356158)
@@ -27,7 +25,8 @@ public record AircraftIdentificationMessage(long timeStampNs, IcaoAddress icaoAd
      */
     public AircraftIdentificationMessage{
         Preconditions.checkArgument(timeStampNs>=0);
-        if(icaoAddress == null || callSign ==null){
+        
+        if(icaoAddress == null || callSign == null){
             throw new NullPointerException();
         }
     }
@@ -68,6 +67,7 @@ public record AircraftIdentificationMessage(long timeStampNs, IcaoAddress icaoAd
         int weakcategory = (Bits.extractUInt(payload, 48, 3));
         int category = strcategory | weakcategory;
         CallSign callSign1 = callSignextraction(payload);
+
         return new AircraftIdentificationMessage(timestampNs, icaoAddres, category, callSign1);
     }
 
@@ -93,12 +93,7 @@ public record AircraftIdentificationMessage(long timeStampNs, IcaoAddress icaoAd
                 }
             }
         }
+
         return new CallSign(callsignstring.toString().stripTrailing());
     }
-
-    private static boolean validmessage(long payload) {
-        return (RawMessage.typeCode(payload) == 1 ||RawMessage.typeCode(payload) == 2
-                ||RawMessage.typeCode(payload) == 3 ||RawMessage.typeCode(payload) == 4);
-    }
-    //hypothese que le type code est bon jsp si on supprime
 }

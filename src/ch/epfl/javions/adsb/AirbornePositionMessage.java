@@ -68,12 +68,6 @@ public record AirbornePositionMessage(long timeStampNs,IcaoAddress icaoAddress,d
     public static AirbornePositionMessage of(RawMessage rawMessage){
         long payload = rawMessage.payload();
 
-//        int typecode = rawMessage.typeCode();
-//        if(!(typecode>=9 && typecode<=18 || typecode>=20 && typecode<=22)){
-//            return null;
-//        }
-//      #TODO ca apparemment pas necessaire;
-
         int format = Bits.extractUInt(payload, 34,1);
         double latitude = ((Bits.extractUInt(payload, 17,17))/NORMALISATION);
         double longitude = ((Bits.extractUInt(payload, 0,17))/NORMALISATION);
@@ -83,6 +77,7 @@ public record AirbornePositionMessage(long timeStampNs,IcaoAddress icaoAddress,d
         if (Bits.extractUInt(alt, 4, 1) == 1){
            double height = -1000 + (((alt & 0b1111_1110_0000)>>>1 | (alt & 0b0000_0000_1111))*25);
            height = Units.convertFrom(height, Units.Length.FOOT);
+
            return new AirbornePositionMessage(rawMessage.timeStampNs(), rawMessage.icaoAddress(), height, format, longitude, latitude);
         }
         //Q = 0
@@ -91,23 +86,24 @@ public record AirbornePositionMessage(long timeStampNs,IcaoAddress icaoAddress,d
             int[] val = new int[]{4, 2, 0, 10, 8, 6, 5, 3, 1, 11, 9, 7};
             int untangled = 0b0000_0000_0000;
             for (int i=0 ; i<val.length ; i++) {
-                int j = (Bits.extractUInt(alt, val[i], 1));
                 untangled = untangled | ((Bits.extractUInt(alt, val[i], 1)) << (val.length-i-1));
             }
 
             //decoding
             int strongbyte = greydecode(Bits.extractUInt(untangled,3,9), 9);
             int weakbyte = greydecode(Bits.extractUInt(untangled,0,3),3);
-            if(weakbyte == 0|| weakbyte==5||weakbyte==6){
+            if(weakbyte==0 || weakbyte==5 || weakbyte==6){
                 return null;
             }
             if (weakbyte == 7){
                 weakbyte = 5;
             }
             if(strongbyte%2 != 0){
-                weakbyte = 6-weakbyte;
+                weakbyte = 6 - weakbyte;
             }
-            double height = -1300+(weakbyte*100)+(strongbyte*500);
+
+            //height calculation
+            double height = -1300 + (weakbyte*100) + (strongbyte*500);
             height = Units.convertFrom(height, Units.Length.FOOT);
 
             return new AirbornePositionMessage(rawMessage.timeStampNs(), rawMessage.icaoAddress(), height, format, longitude, latitude);
@@ -125,5 +121,3 @@ public record AirbornePositionMessage(long timeStampNs,IcaoAddress icaoAddress,d
         return decoded;
     }
 }
-
-//  #TODO FAIRE DE PARTOUT DES RETOUVHES POUR PAS AVOIR DE VARIABLES REDONDANTES ETC CA FAIT PERDRE DES POINTS APPAREMENT

@@ -45,6 +45,14 @@ class AircraftIdentificationMessageTest {
         }
     }
 
+    /* #TODO Rajouter ca dans rendu intermediaire ?
+    private static boolean validmessage(long payload) {
+        return (RawMessage.typeCode(payload) == 1 || RawMessage.typeCode(payload) == 2
+                || RawMessage.typeCode(payload) == 3 || RawMessage.typeCode(payload) == 4);
+    }
+    hypothese que le type code est bon jsp si on supprime
+    */
+
     @Test
     void category() {
     }

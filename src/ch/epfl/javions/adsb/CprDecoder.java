@@ -35,7 +35,7 @@ public class CprDecoder {
     public static GeoPos decodePosition(double x0, double y0, double x1, double y1, int mostRecent){
         Preconditions.checkArgument(mostRecent == 1 || mostRecent == 0);
 
-        //latitude
+        //latitude calculation (phi)
         double z_phi = Math.rint(Z_PHI[1]*y0 - Z_PHI[0]*y1);
         double[] z_phi_i = new double[]{z_phi, z_phi};
         double[] phi = new double[]{y0, y1};
@@ -47,7 +47,7 @@ public class CprDecoder {
             phi[i] = DELTA_PHI[i]*(z_phi_i[i]+phi[i]);
         }
 
-        //longitude
+        //longitude calculation (lambda)
         double[] Z_Lambda = new double[2];
         double A = Math.acos(1-(1-Math.cos(2*Math.PI*DELTA_PHI[0]))/((Math.cos(Units.convert(phi[0], Units.Angle.TURN, Units.Angle.RADIAN))*Math.cos(Units.convert(phi[0], Units.Angle.TURN,Units.Angle.RADIAN)))));
         double A_test = Math.acos(1-((1-Math.cos(2*Math.PI*DELTA_PHI[0]))/((Math.cos(Units.convert(phi[1], Units.Angle.TURN, Units.Angle.RADIAN))*Math.cos(Units.convert(phi[1], Units.Angle.TURN,Units.Angle.RADIAN))))));
@@ -73,19 +73,19 @@ public class CprDecoder {
             double z_lambda = Math.rint(Z_Lambda[1]*x0 - Z_Lambda[0]*x1);
             double[] z_lambda_i = new double[]{z_lambda, z_lambda};
 
-            for (int i = 0; i < 2; i++) {
+            for (int i=0 ; i<2 ; i++) {
                  if(z_lambda <0){
                      z_lambda_i[i] += Z_Lambda[i];
                  }
                  lambda[i] = Delta_lambda[i]*(z_lambda_i[i]+lambda[i]);
             }
 
-        //final coordinates
+        //exception handler
         if(phi[mostRecent]>1 || phi[mostRecent]<=0 || lambda[mostRecent]>1 || lambda[mostRecent]<=0){
             return null;
         }
-// #TODO METTRE AVEC LE CONVERT
 
+        //conversion and final coordinates
         if(phi[mostRecent] >= 0.5){
             phi[mostRecent]--;
         }

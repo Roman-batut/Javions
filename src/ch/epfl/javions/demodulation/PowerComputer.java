@@ -4,7 +4,6 @@ import ch.epfl.javions.Preconditions;
 
 import java.io.InputStream;
 import java.io.IOException;
-import java.util.Arrays;
 
 /**
  *  Class representing a power computer

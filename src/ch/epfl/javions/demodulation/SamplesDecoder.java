@@ -3,8 +3,6 @@ package ch.epfl.javions.demodulation;
 import ch.epfl.javions.Preconditions;
 
 import java.io.*;
-import java.util.Arrays;
-
 
 /**
  *  Class representing a decoder of samples

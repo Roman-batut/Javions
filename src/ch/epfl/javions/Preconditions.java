@@ -28,4 +28,17 @@ public final class Preconditions {
             throw new IllegalArgumentException();
         }
     }
+
+    /**
+     * Checks that one of the given value is not null
+     * @param shouldBeNotNull the value to be checked 
+     * @throws NullPointerException if the given value is null
+     */
+    public static void checkNotNull(Object ... shouldBeNotNull){
+        for (Object o : shouldBeNotNull){
+            if (o == null){
+                throw new NullPointerException();
+            }
+        }
+    }
 }

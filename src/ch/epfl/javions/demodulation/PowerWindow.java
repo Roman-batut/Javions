@@ -4,7 +4,6 @@ import ch.epfl.javions.Preconditions;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Arrays;
 
 /**
  *  Class representing a window of power
@@ -103,7 +102,6 @@ public final class PowerWindow {
             batchpowerTwo = batchpowerOne;
             batchpowerOne = tempTab;
         }
-
     }
 
     /**
