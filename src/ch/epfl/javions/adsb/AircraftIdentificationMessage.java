@@ -26,9 +26,10 @@ public record AircraftIdentificationMessage(long timeStampNs, IcaoAddress icaoAd
     public AircraftIdentificationMessage{
         Preconditions.checkArgument(timeStampNs>=0);
         
-        if(icaoAddress == null || callSign == null){
-            throw new NullPointerException();
-        }
+        Preconditions.checkNotNull(icaoAddress, callSign);
+        //if(icaoAddress == null || callSign == null){
+        //    throw new NullPointerException();
+        //}
     }
 
     //* Getters

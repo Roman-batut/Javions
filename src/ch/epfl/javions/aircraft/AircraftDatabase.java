@@ -3,6 +3,8 @@ package ch.epfl.javions.aircraft;
 import java.io.*;
 import java.util.zip.ZipFile;
 
+import ch.epfl.javions.Preconditions;
+
 import static java.nio.charset.StandardCharsets.UTF_8;
 
 /**
@@ -22,9 +24,10 @@ public class AircraftDatabase {
      *  @throws NullPointerException if the file name is null
      */
     public AircraftDatabase(String fileName){
-        if (fileName == null) {
-            throw new NullPointerException();
-        }
+        //if (fileName == null) {
+        //    throw new NullPointerException();
+        //}
+        Preconditions.checkNotNull(fileName);
 
         this.filename = fileName;
     }

@@ -8,9 +8,11 @@ public record AirborneVelocityMessage(long timeStampNs,IcaoAddress icaoAddress,d
 
 
     public AirborneVelocityMessage{
-        if(icaoAddress ==null){
-            throw new  NullPointerException();
-        }
+        //if(icaoAddress == null){
+        //    throw new  NullPointerException();
+        //}
+        Preconditions.checkNotNull(icaoAddress);
+
         Preconditions.checkArgument(speed>=0 || trackOrHeading>=0 || timeStampNs>=0);
     }
 
