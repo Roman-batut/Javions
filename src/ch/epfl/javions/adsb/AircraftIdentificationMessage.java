@@ -68,6 +68,9 @@ public record AircraftIdentificationMessage(long timeStampNs, IcaoAddress icaoAd
         int weakcategory = (Bits.extractUInt(payload, 48, 3));
         int category = strcategory | weakcategory;
         CallSign callSign1 = callSignextraction(payload);
+        if(callSign1 == null){
+            return null;
+        }
 
         return new AircraftIdentificationMessage(timestampNs, icaoAddres, category, callSign1);
     }
@@ -87,11 +90,15 @@ public record AircraftIdentificationMessage(long timeStampNs, IcaoAddress icaoAd
         StringBuilder callsignstring = new StringBuilder();
         for (int i=0 ; i<8 ; i++) {
             if ((charactervalue[i] >= 1 && charactervalue[i] <= 26) || (charactervalue[i] >= 48 && charactervalue[i] <= 57) || charactervalue[i] == 32) {
+
                 if (charactervalue[i] <= 26) {
                     callsignstring.append(chartab[charactervalue[i] - 1]);
                 } else {
                     callsignstring.append(Character.toChars(charactervalue[i]));
                 }
+            }
+            else {
+                return null;
             }
         }
 
