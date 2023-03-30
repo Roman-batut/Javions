@@ -29,9 +29,6 @@ public record AirbornePositionMessage(long timeStampNs,IcaoAddress icaoAddress,d
      * @throws IllegalArgumentException if the time stamp is negative or the parity is not 0 or 1 or the x or y coordinates are not normalised
      */
     public AirbornePositionMessage {
-        //if(icaoAddress == null){
-        //    throw new NullPointerException();
-        //}
         Preconditions.checkNotNull(icaoAddress);
 
         Preconditions.checkArgument(timeStampNs>=0);

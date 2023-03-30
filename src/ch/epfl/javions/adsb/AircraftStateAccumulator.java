@@ -22,9 +22,4 @@ public class AircraftStateAccumulator<T extends AircraftStateSetter> {
         aircraftstatesetter.setLastMessageTimeStampNs(message.timeStampNs());
 //        #TODO tout le reste hehe
     }
-
 }
-/*
- *	Author:      Br4v0r
- *	Date:
- */
