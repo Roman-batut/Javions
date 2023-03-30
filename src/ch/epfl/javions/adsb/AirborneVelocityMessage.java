@@ -40,11 +40,17 @@ public record AirborneVelocityMessage(long timeStampNs,IcaoAddress icaoAddress,d
                 return null;
             }
 
-            double speed = Units.convertFrom(speedcalculator(st, Math.hypot(Vns, Vew)), Units.Speed.KNOT);
-            if(Dns == 1) {Vns = -Vns;}
-            if(Dew == 1) {Vew = -Vew;}
-            double angle = Units.convert(Math.atan2(Vns, Vew), Units.Angle.RADIAN,Units.Angle.DEGREE);
-            angle = angle%360;
+            int Vy = speedcalculator(st, Vns);
+            int Vx = speedcalculator(st, Vew);
+            double speed = Units.convertFrom(Math.hypot(Vy, Vx), Units.Speed.KNOT);
+
+            if(Dns == 1) {Vy = -Vy;}
+            if(Dew == 1) {Vx = -Vx;}
+
+            double angle = Math.atan2(Vx, Vy);
+            if(angle < 0){
+                angle += Units.Angle.TURN;
+            }
 
             return new AirborneVelocityMessage(rawMessage.timeStampNs(), rawMessage.icaoAddress(), speed, angle);
         } else if(st == 3 || st == 4){
@@ -56,7 +62,7 @@ public record AirborneVelocityMessage(long timeStampNs,IcaoAddress icaoAddress,d
             }
 
             double speed = Units.convertFrom(speedcalculator(st-2, as), Units.Speed.KNOT);
-            double angle = Units.convert(Hdg/Math.scalb(1d, 10), Units.Angle.TURN, Units.Angle.DEGREE);
+            double angle = Units.convert(Hdg/Math.scalb(1d, 10), Units.Angle.TURN, Units.Angle.RADIAN);
 
             return new AirborneVelocityMessage(rawMessage.timeStampNs(), rawMessage.icaoAddress(), speed, angle);
         } else {
