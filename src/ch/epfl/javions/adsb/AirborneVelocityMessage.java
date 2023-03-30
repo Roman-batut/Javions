@@ -53,6 +53,7 @@ public record AirborneVelocityMessage(long timeStampNs,IcaoAddress icaoAddress,d
             }
 
             return new AirborneVelocityMessage(rawMessage.timeStampNs(), rawMessage.icaoAddress(), speed, angle);
+
         } else if(st == 3 || st == 4){
             int as = Bits.extractUInt(infos, 0,10)-1;
             int Hdg = Bits.extractUInt(infos, 11,10);
@@ -71,7 +72,7 @@ public record AirborneVelocityMessage(long timeStampNs,IcaoAddress icaoAddress,d
     }
 
 
-    private static double speedcalculator (int subtype, double speed){
-        return speed * Math.pow(subtype, 2d);
+    private static int speedcalculator (int subtype, int speed){
+        return (int) (speed * Math.pow(subtype, 2));
     }
 }

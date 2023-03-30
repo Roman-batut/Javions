@@ -12,6 +12,7 @@ public class AircraftStateAccumulator<T extends AircraftStateSetter> {
         Preconditions.checkNotNull(stateSetter);
 
         aircraftstatesetter = stateSetter;
+        oldmessages = new AirbornePositionMessage[]{null, null};
     }
     public T stateSetter(){
         return aircraftstatesetter;
@@ -32,9 +33,14 @@ public class AircraftStateAccumulator<T extends AircraftStateSetter> {
             case AirbornePositionMessage posm -> {
                 aircraftstatesetter.setAltitude(posm.altitude());
 
-                AirbornePositionMessage oldmessage = oldmessages[(posm.parity()+1)%2];
-                if(oldmessage != null && posm.timeStampNs()-oldmessage.timeStampNs() < Math.pow(10, 10)){
-                    GeoPos position = CprDecoder.decodePosition(posm.x(), posm.y(), oldmessage.x(), oldmessage.y(), 0);
+                AirbornePositionMessage oldmessage = oldmessages[((posm.parity()+1)%2)];
+                if(oldmessage != null && posm.timeStampNs()-oldmessage.timeStampNs() < Math.pow(10, 10)) {
+                    GeoPos position;
+                    if(posm.parity() == 0){
+                        position = CprDecoder.decodePosition(posm.x(), posm.y(), oldmessage.x(), oldmessage.y(), 0);
+                    }else {
+                        position = CprDecoder.decodePosition(oldmessage.x(), oldmessage.y(), posm.x(), posm.y(), 1);
+                    }
                     aircraftstatesetter.setPosition(position);
                 }
                 oldmessages[posm.parity()] = posm;
