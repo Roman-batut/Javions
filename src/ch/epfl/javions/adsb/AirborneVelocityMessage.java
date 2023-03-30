@@ -34,7 +34,7 @@ public record AirborneVelocityMessage(long timeStampNs,IcaoAddress icaoAddress,d
         if(st == 1 || st == 2){
             int Vns = Bits.extractUInt(infos, 0,10)-1;
             int Dns = Bits.extractUInt(infos, 10,1);
-            int Vew = Bits.extractUInt(infos, 11,10);
+            int Vew = Bits.extractUInt(infos, 11,10)-1;
             int Dew = Bits.extractUInt(infos, 21,1);
             if(Vns < 0 || Vew < 0){
                 return null;
