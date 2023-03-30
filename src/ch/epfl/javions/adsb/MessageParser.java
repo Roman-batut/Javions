@@ -28,7 +28,7 @@ public class MessageParser {
 
         if(typeCode == 19){
             return AirborneVelocityMessage.of(rawMessage);
-        } else if((typeCode>=9 && typeCode<=18) || (typeCode>=20 && typeCode<=22)){
+        } else if((typeCode >=9 && typeCode <= 18) || (typeCode >= 20 && typeCode <= 22)){
             return AirbornePositionMessage.of(rawMessage);
         }else if (typeCode == 1 || typeCode == 2 || typeCode == 3 ||typeCode == 4) {
             return AircraftIdentificationMessage.of(rawMessage);
