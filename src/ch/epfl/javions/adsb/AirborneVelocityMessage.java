@@ -5,16 +5,31 @@ import ch.epfl.javions.Preconditions;
 import ch.epfl.javions.Units;
 import ch.epfl.javions.aircraft.IcaoAddress;
 
-import java.util.Vector;
-
+/**
+ * Record representing an ADS-B airborne velocity message
+ * @author Roman Batut (356158)
+ * @author Guillaume Chevallier (360709)
+ */
 public record AirborneVelocityMessage(long timeStampNs,IcaoAddress icaoAddress,double speed,double trackOrHeading) implements Message{
 
+    //* Constructor
 
+    /**
+     * Constructor of an airborne velocity message
+     * @param timeStampNs the time stamp of the message in nanoseconds
+     * @param icaoAddress the ICAO address of the aircraft
+     * @param speed the speed of the aircraft
+     * @param trackOrHeading the track or heading of the aircraft
+     * @throws NullPointerException if the ICAO address is null
+     * @throws IllegalArgumentException if the time stamp is negative or the speed or track or heading is negative
+     */
     public AirborneVelocityMessage{
         Preconditions.checkNotNull(icaoAddress);
 
         Preconditions.checkArgument(speed>=0 || trackOrHeading>=0 || timeStampNs>=0);
     }
+
+    //* Getters
 
     @Override
     public long timeStampNs() {
@@ -26,6 +41,15 @@ public record AirborneVelocityMessage(long timeStampNs,IcaoAddress icaoAddress,d
         return icaoAddress;
     }
 
+
+    //* Methods
+
+
+    /**
+     * Returns the airborne velocity message corresponding to the raw message, 
+     * or null if one of the raw message's fields is invalid
+     * @param rawMessage the raw message
+     */
     public static AirborneVelocityMessage of(RawMessage rawMessage){
         long payload = rawMessage.payload();
         int st = Bits.extractUInt(payload,48,3);
@@ -64,7 +88,14 @@ public record AirborneVelocityMessage(long timeStampNs,IcaoAddress icaoAddress,d
         }
     }
 
+    //* Private methods
 
+    /**
+     * Calculates the speed of the aircraft
+     * @param subtype the subtype of the message
+     * @param speed the speed of the aircraft
+     * @return the speed of the aircraft
+     */
     private static double speedcalculator (int subtype, double speed){
         return speed * Math.pow(subtype, 2d);
     }

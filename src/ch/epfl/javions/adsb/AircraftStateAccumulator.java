@@ -3,20 +3,47 @@ package ch.epfl.javions.adsb;
 import ch.epfl.javions.GeoPos;
 import ch.epfl.javions.Preconditions;
 
+/**
+ * Class representing an accumulator of aircraft states
+ * @author Roman Batut (356158) 
+ * @author Guillaume Chevallier (360709)
+ */
 public class AircraftStateAccumulator<T extends AircraftStateSetter> {
 
     private T aircraftstatesetter;
     private AirbornePositionMessage[] oldmessages;
 
+    //* Constructor
+
+    /**
+     * Constructor of an aircraft state accumulator
+     * @param stateSetter the aircraft state setter
+     * @throws NullPointerException if the aircraft state setter is null
+     */
     public AircraftStateAccumulator(T stateSetter){
         Preconditions.checkNotNull(stateSetter);
 
         aircraftstatesetter = stateSetter;
     }
+
+    //* Getters
+
+    /**
+     * Returns the aircraft state setter
+     */
     public T stateSetter(){
         return aircraftstatesetter;
     }
 
+
+    //* Methods
+    
+    
+    /**
+     * Updates the aircraft state setter with the given message
+     * @param message the message
+     * @throws NullPointerException if the message is null
+     */
     public void update(Message message){
         aircraftstatesetter.setLastMessageTimeStampNs(message.timeStampNs());
 

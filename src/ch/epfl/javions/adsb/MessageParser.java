@@ -1,11 +1,27 @@
 package ch.epfl.javions.adsb;
 
+/**
+ * Class representing a parser of ADS-B messages
+ * @author Roman Batut (356158)
+ * @author Guillaume Chevallier (360709)
+ */
 public class MessageParser {
 
-    private MessageParser(){
+    //* Constructor
 
+    private MessageParser(){
     }
 
+
+    //* Methods
+    
+    
+    /**
+     * Returns the ADS-B message corresponding to the raw message,
+     * or null if one of the raw message's fields is invalid
+     * @param rawMessage the raw message
+     * @throws NullPointerException if the raw message is null
+     */
     public static Message parse(RawMessage rawMessage){
 
         int typeCode = rawMessage.typeCode();
@@ -20,9 +36,4 @@ public class MessageParser {
             return null;
         }
     }
-
 }
-/*
- *	Author:      Br4v0r
- *	Date:
- */
