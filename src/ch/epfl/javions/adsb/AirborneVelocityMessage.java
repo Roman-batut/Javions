@@ -26,7 +26,7 @@ public record AirborneVelocityMessage(long timeStampNs,IcaoAddress icaoAddress,d
     public AirborneVelocityMessage{
         Preconditions.checkNotNull(icaoAddress);
 
-        Preconditions.checkArgument(speed>=0 || trackOrHeading>=0 || timeStampNs>=0);
+        Preconditions.checkArgument(speed>=0 && trackOrHeading>=0 && timeStampNs>=0);
     }
 
     //* Getters

@@ -72,7 +72,7 @@ public class AircraftStateAccumulator<T extends AircraftStateSetter> {
                 }
                 oldmessages[posm.parity()] = posm;
             }
-            default -> System.out.println("Autre type de message");
+            default -> System.out.println();
         }
     }
 }
