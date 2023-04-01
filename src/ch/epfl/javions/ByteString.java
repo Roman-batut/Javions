@@ -32,11 +32,11 @@ public final class ByteString {
      * @return a ByteString corresponding to the given string
      */
     public static ByteString ofHexadecimalString(String hexString){
-        HexFormat hf = HexFormat.of().withUpperCase();
-        byte[] bytes = hf.parseHex(hexString);
-        ByteString bytes2 = new ByteString(bytes);
+        byte[] bytes = HexFormat.of()
+                       .withUpperCase()
+                       .parseHex(hexString);
 
-        return bytes2;
+        return new ByteString(bytes);
     }
 
     /**
@@ -73,8 +73,7 @@ public final class ByteString {
         Preconditions.checkArgument((toIndex-fromIndex) <= (Long.SIZE/8));
         long l = 0;
         for (int i=fromIndex ; i<toIndex ; i++){
-            l = l<<8;
-            l = l | byteAt(i);
+            l = (l<<8 ) | byteAt(i);
         }
 
         return l;
@@ -91,9 +90,7 @@ public final class ByteString {
     @Override
     public boolean equals(Object obj){
         if(obj instanceof ByteString byteS){
-            if(Arrays.equals(this.tab, byteS.tab)){
-                return true;
-            }
+            return Arrays.equals(this.tab, byteS.tab);
         }
 
         return false;
@@ -112,9 +109,11 @@ public final class ByteString {
      */
     @Override
     public String toString(){
-        HexFormat hf = HexFormat.of().withUpperCase();
-        String string = hf.formatHex(tab);
 
-        return string;
+        return HexFormat.of()
+                .withUpperCase()
+                .formatHex(tab);
     }
 }
+
+//  #TODO REname variable ? and dernier return jsp si à la ligne

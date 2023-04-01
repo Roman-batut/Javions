@@ -31,12 +31,7 @@ public final class Math2 {
         if (v > max){
             return max;
         }
-        else if (v < min){
-            return min;
-        }
-        else {
-            return v;
-        }
+        else return Math.max(v, min);
     }
 
     /**
@@ -47,3 +42,4 @@ public final class Math2 {
         return Math.log(x + Math.sqrt(1+(x*x)));
     }
 }
+//#TODO ICI A VOIR POUR ASINH

@@ -27,25 +27,21 @@ public record GeoPos(int longitudeT32, int latitudeT32) {
      * @return true if the given value is a valid latitude in T32 format
      */
     public static boolean isValidLatitudeT32(int latitudeT32){
-        return Math.scalb(-1d,30)<=latitudeT32 &&  Math.scalb(1d,30)>=latitudeT32;
+        return ((Math.scalb(-1d,30) <= latitudeT32) && (Math.scalb(1d,30) >= latitudeT32));
     }
 
     /**
      * @return a converted longitude in radians
      */
     public double longitude(){
-        double longrad = Units.convertFrom(longitudeT32, Units.Angle.T32);
-
-        return longrad;
+        return Units.convertFrom(longitudeT32, Units.Angle.T32);
     }
 
     /**
      * @return a converted latitude in radians
      */
     public double latitude(){
-        double latrad = Units.convertFrom(latitudeT32, Units.Angle.T32);
-
-        return latrad;
+        return Units.convertFrom(latitudeT32, Units.Angle.T32);
     }
 
 
@@ -62,4 +58,5 @@ public record GeoPos(int longitudeT32, int latitudeT32) {
 
         return ("("+longdeg+"°, "+ latdeg+"°)");
     }
+//    #TODO convertto degree? avec latitude() et longitude()?
 }

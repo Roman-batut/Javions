@@ -7,6 +7,8 @@ package ch.epfl.javions;
  */
 public class WebMercator {
 
+    private final static double ADD_CST = 0.5;
+
     //* Constructor
 
     /**
@@ -25,8 +27,8 @@ public class WebMercator {
      * @return the x coordinate
      */
     public static double x(int zoomLevel, double longitude){
-        int power = 8+zoomLevel;
-        double x = Math.scalb((Units.convertTo(longitude, Units.Angle.TURN)+(0.5)),power);
+        int power = 8 + zoomLevel;
+        double x = Math.scalb((Units.convertTo(longitude, Units.Angle.TURN) + (ADD_CST)), power);
 
         return x;
 
@@ -38,8 +40,9 @@ public class WebMercator {
      * @return the y coordinate
      */
     public static double y(int zoomLevel, double latitude){
-        int power = 8+zoomLevel;
-        double y = Math.scalb(Units.convertTo(-Math2.asinh(Math.tan(latitude)),Units.Angle.TURN)+(0.5),power);
+        int power = 8 + zoomLevel;
+        double angle = -Math2.asinh(Math.tan(latitude));
+        double y = Math.scalb((Units.convertTo( angle, Units.Angle.TURN) + (ADD_CST)), power);
 
         return y;
     }

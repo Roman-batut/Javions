@@ -42,3 +42,4 @@ public final class Preconditions {
         }
     }
 }
+//#TODO ICI liste d'objet ?

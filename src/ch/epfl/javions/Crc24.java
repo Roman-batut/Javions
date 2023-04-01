@@ -9,7 +9,7 @@ public final class Crc24 {
 
     public static final int GENERATOR = 0xFFF409;
     private static final int INDEX = 24;
-
+    private static final int BYTE_RANGE = 256;
     private int[] table;
 
     //* Constructor
@@ -35,11 +35,11 @@ public final class Crc24 {
         int crc = 0;
 
         for (byte oct : message) {
-            crc = ((crc << 8) | Byte.toUnsignedInt(oct)) ^ table[Bits.extractUInt(crc, INDEX-8, 8)];
+            crc = ((crc << Byte.SIZE) | Byte.toUnsignedInt(oct)) ^ table[Bits.extractUInt(crc, INDEX-Byte.SIZE, Byte.SIZE)];
         }
 
         for (int i=0 ; i<3 ; i++) {
-            crc = (crc << 8) ^ table[Bits.extractUInt(crc, INDEX-8, 8)];
+            crc = (crc << Byte.SIZE) ^ table[Bits.extractUInt(crc, INDEX-Byte.SIZE, Byte.SIZE)];
         }
 
         return Bits.extractUInt(crc, 0, INDEX);
@@ -62,7 +62,7 @@ public final class Crc24 {
                 crc = ((crc << 1) | bit) ^ table[Bits.extractUInt(crc, INDEX-1, 1)];
             }
         }
-        for (int i=0 ; i<24 ; i++) {
+        for (int i=0 ; i<INDEX ; i++) {
             crc = (crc << 1) ^ table[Bits.extractUInt(crc, INDEX-1, 1)];
         }
 
@@ -75,8 +75,8 @@ public final class Crc24 {
      *  @param generator the generator of the CRC24
      */
     private static int[] Buildtable(int generator){
-        int[] table = new int[256];
-        for(int i=0 ; i<256 ; i++){
+        int[] table = new int[BYTE_RANGE];
+        for(int i=0 ; i < BYTE_RANGE ; i++){
             byte[] num = new byte[] {(byte) i};
             table[i] = crcBitwise(generator, num);
         }
@@ -84,3 +84,4 @@ public final class Crc24 {
         return table;
     }
 }
+//#TODO check si la modulation est bonne ici
