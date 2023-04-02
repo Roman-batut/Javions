@@ -11,10 +11,10 @@ import java.io.*;
  */
 public final class SamplesDecoder {
 
+    private final int REGUL = (int)Math.scalb(1d,11);
     private InputStream stream;
     private int batchSize;
     private byte[] batchtab;
-    private final int REGUL = (int)Math.scalb(1d,11);
 
     //* Constructor
 
@@ -63,7 +63,7 @@ public final class SamplesDecoder {
             int weak =  Byte.toUnsignedInt(batchtab[i]);
             int strong = Byte.toUnsignedInt(batchtab[i+1]);
 
-            short fin = (short)((strong<<8)|weak);
+            short fin = (short)((strong<< Byte.SIZE)|weak);
             fin -= REGUL;
             batch[k] = fin;
             k++;
@@ -72,3 +72,5 @@ public final class SamplesDecoder {
         return (int) (length*0.5);
     }
 }
+
+// #TODO s'occuper du || strem == null

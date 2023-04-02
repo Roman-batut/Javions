@@ -13,10 +13,9 @@ import java.io.InputStream;
 public final class PowerWindow {
 
     private final static int BATCH_SIZE = (int) Math.scalb(1d, 16);
-
+    private PowerComputer computer;
     private int windowSize;
     private int position;
-    private PowerComputer computer;
     private long sizeB;
     private int[] batchpowerOne;
     private int[] batchpowerTwo;
@@ -79,7 +78,7 @@ public final class PowerWindow {
         if(i<0 || i>=windowSize){
             throw new IndexOutOfBoundsException();
         }
-        int relativepos = (int) (position%BATCH_SIZE + i);
+        int relativepos = (position%BATCH_SIZE + i);
         if(relativepos >= BATCH_SIZE){
             return batchpowerTwo[relativepos - BATCH_SIZE];
         } else{
