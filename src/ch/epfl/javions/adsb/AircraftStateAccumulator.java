@@ -68,7 +68,9 @@ public class AircraftStateAccumulator<T extends AircraftStateSetter> {
                     }else {
                         position = CprDecoder.decodePosition(oldmessage.x(), oldmessage.y(), posm.x(), posm.y(), 1);
                     }
-                    aircraftstatesetter.setPosition(position);
+                    if(position != null){
+                        aircraftstatesetter.setPosition(position);
+                    }
                 }
                 oldmessages[posm.parity()] = posm;
             }
