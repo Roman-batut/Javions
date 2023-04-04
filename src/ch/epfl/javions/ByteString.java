@@ -73,7 +73,7 @@ public final class ByteString {
         Preconditions.checkArgument((toIndex-fromIndex) <= (Long.SIZE/8));
         long l = 0;
         for (int i=fromIndex ; i<toIndex ; i++){
-            l = (l<<8 ) | byteAt(i);
+            l = (l<<8) | byteAt(i);
         }
 
         return l;

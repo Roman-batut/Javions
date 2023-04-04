@@ -4,6 +4,8 @@ import ch.epfl.javions.Bits;
 import ch.epfl.javions.Preconditions;
 import ch.epfl.javions.aircraft.IcaoAddress;
 
+import java.util.Objects;
+
 /**
  * Record representing an ADS-B aircraft identification message
  * @author Roman Batut (356158)
@@ -26,10 +28,8 @@ public record AircraftIdentificationMessage(long timeStampNs, IcaoAddress icaoAd
     public AircraftIdentificationMessage{
         Preconditions.checkArgument(timeStampNs>=0);
         
-        Preconditions.checkNotNull(icaoAddress, callSign);
-        //if(icaoAddress == null || callSign == null){
-        //    throw new NullPointerException();
-        //}
+        Objects.requireNonNull(icaoAddress);
+        Objects.requireNonNull(callSign);
     }
 
     //* Getters

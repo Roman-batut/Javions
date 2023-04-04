@@ -1,6 +1,7 @@
 package ch.epfl.javions.aircraft;
 
 import java.io.*;
+import java.util.Objects;
 import java.util.zip.ZipFile;
 
 import ch.epfl.javions.Preconditions;
@@ -24,10 +25,7 @@ public class AircraftDatabase {
      *  @throws NullPointerException if the file name is null
      */
     public AircraftDatabase(String fileName){
-        //if (fileName == null) {
-        //    throw new NullPointerException();
-        //}
-        Preconditions.checkNotNull(fileName);
+        Objects.requireNonNull(fileName);
 
         this.filename = fileName;
     }
@@ -51,7 +49,7 @@ public class AircraftDatabase {
                 ZipFile zipFile = new ZipFile(filename);
                 InputStream stream = zipFile.getInputStream(zipFile.getEntry(file));
                 Reader reader = new InputStreamReader(stream, UTF_8);
-                BufferedReader buffer = new BufferedReader(reader);)
+                BufferedReader buffer = new BufferedReader(reader))
         {
             String[] infos;
             String line;
@@ -59,16 +57,15 @@ public class AircraftDatabase {
             while ((line = buffer.readLine()) != null && compare) {
                 if (line.startsWith(sAddress)) {
                     infos = line.split(",", -1);
-                    AircraftData data = new AircraftData(
+
+                    return new AircraftData(
                             new AircraftRegistration(infos[1]),
                             new AircraftTypeDesignator(infos[2]), infos[3],
                             new AircraftDescription(infos[4]),
                             WakeTurbulenceCategory.of(infos[5]));
-
-                    return data;
                 }
 
-                compare = line.compareTo(sAddress) <= 0;
+                compare = (line.compareTo(sAddress) <= 0);
             }
 
             return null;

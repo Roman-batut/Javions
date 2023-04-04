@@ -5,6 +5,8 @@ import ch.epfl.javions.Preconditions;
 import ch.epfl.javions.Units;
 import ch.epfl.javions.aircraft.IcaoAddress;
 
+import java.util.Objects;
+
 /**
  * Record representing an ADS-B airborne velocity message
  * @author Roman Batut (356158)
@@ -24,7 +26,7 @@ public record AirborneVelocityMessage(long timeStampNs,IcaoAddress icaoAddress,d
      * @throws IllegalArgumentException if the time stamp is negative or the speed or track or heading is negative
      */
     public AirborneVelocityMessage{
-        Preconditions.checkNotNull(icaoAddress);
+        Objects.requireNonNull(icaoAddress);
 
         Preconditions.checkArgument(speed>=0 && trackOrHeading>=0 && timeStampNs>=0);
     }

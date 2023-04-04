@@ -14,7 +14,6 @@ public final class SamplesDecoder {
     private final int REGUL = (int)Math.scalb(1d,11);
     private InputStream stream;
     private int batchSize;
-    private byte[] batchtab;
 
     //* Constructor
 
@@ -28,7 +27,7 @@ public final class SamplesDecoder {
     public SamplesDecoder(InputStream stream, int batchSize){
         Preconditions.checkArgument(!(batchSize <= 0 ));
 
-        if(stream.equals(InputStream.nullInputStream()) || stream == null){
+        if(stream.equals(InputStream.nullInputStream())){
             throw new NullPointerException();
         }
 
@@ -50,6 +49,7 @@ public final class SamplesDecoder {
     public int readBatch(short[] batch) throws IOException{
         Preconditions.checkArgument(batch.length == batchSize);
 
+        byte[] batchtab;
         batchtab = stream.readNBytes((batchSize*2));
 
         int length = batchSize*2;
@@ -63,7 +63,7 @@ public final class SamplesDecoder {
             int weak =  Byte.toUnsignedInt(batchtab[i]);
             int strong = Byte.toUnsignedInt(batchtab[i+1]);
 
-            short fin = (short)((strong<< Byte.SIZE)|weak);
+            short fin = (short)((strong << Byte.SIZE)|weak);
             fin -= REGUL;
             batch[k] = fin;
             k++;

@@ -100,3 +100,5 @@ public class CprDecoder {
         return new GeoPos((int)lambda[mostRecent], (int)phi[mostRecent]);
     }
 }
+
+// #TODO Mettre au propre peut etre

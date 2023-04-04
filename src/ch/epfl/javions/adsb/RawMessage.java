@@ -18,6 +18,20 @@ public record RawMessage(long timeStampNs, ByteString bytes) {
     public static final int LENGTH = 14;
     private static final byte DF = 0b00_01_00_01;
 
+    private static final int DF_START = 3;
+    private static final int DF_SIZE = 5;
+    private static final int DF_BYTE = 0;
+
+    private static final int ICAO_BYTE_START = 1;
+    private static final int ICAO_BYTE_SIZE = 4;
+    private static final int ICAO_STRING_SIZE= 6;
+
+    private static final int ME_BYTE_START = 4;
+    private static final int ME_BYTE_SIZE = 11;
+    private static final int ME_LENGTH = 56;
+    private static final int TYPECODE_LENGHT = 5;
+
+
     //* Constructor
 
     /**
@@ -55,7 +69,7 @@ public record RawMessage(long timeStampNs, ByteString bytes) {
      *  @param byte0 the first byte of the message
      */
     public static int size(byte byte0){
-        int b = Bits.extractUInt(byte0,3,5);
+        int b = Bits.extractUInt(byte0,DF_START,DF_SIZE);
         if(b == DF){
             return LENGTH;
         }
@@ -69,8 +83,7 @@ public record RawMessage(long timeStampNs, ByteString bytes) {
      *  @param payload the payload of the message
      */
     public static int typeCode(long payload){
-        int typecode = (int)(payload >>> 51);
-        typecode = typecode & 0b11111;
+        int typecode = (int)(payload >>> (ME_LENGTH-TYPECODE_LENGHT));
 
         return typecode;
     }
@@ -80,8 +93,8 @@ public record RawMessage(long timeStampNs, ByteString bytes) {
      *  its DF field (the five most significant bits of the first byte)
      */
     public int downLinkFormat(){
-        int byte0 = (int)bytes.bytesInRange(0,1);
-        byte0 = Bits.extractUInt(byte0,3,5);
+        int byte0 = (int)bytes.bytesInRange(DF_BYTE,1);
+        byte0 = Bits.extractUInt(byte0,DF_START,DF_SIZE);
 
         return byte0;
     }
@@ -90,8 +103,8 @@ public record RawMessage(long timeStampNs, ByteString bytes) {
      *  Returns the ICAO address of the aircraft
      */
     public IcaoAddress icaoAddress(){
-        long icao = bytes.bytesInRange(1,4);
-        String b = HexFormat.of().withUpperCase().toHexDigits(icao,6);
+        long icao = bytes.bytesInRange(ICAO_BYTE_START,ICAO_BYTE_SIZE);
+        String b = HexFormat.of().withUpperCase().toHexDigits(icao,ICAO_STRING_SIZE);
         
         return new IcaoAddress(b);
     }
@@ -101,7 +114,7 @@ public record RawMessage(long timeStampNs, ByteString bytes) {
      *  it's ME field
      */
     public long payload(){
-        return bytes.bytesInRange(4,11);
+        return bytes.bytesInRange(ME_BYTE_START,ME_BYTE_SIZE);
     }
 
     /**

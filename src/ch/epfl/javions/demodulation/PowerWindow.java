@@ -111,7 +111,7 @@ public final class PowerWindow {
      *  @throws IOException if an I/O error occurs
      */
     public void advanceBy(int offset) throws IOException{
-        Preconditions.checkArgument(!(offset < 0));
+        Preconditions.checkArgument(offset >= 0);
 
         for (int i=0 ; i<offset ; i++) {
             advance();

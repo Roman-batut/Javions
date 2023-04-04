@@ -5,6 +5,8 @@ import ch.epfl.javions.Preconditions;
 import ch.epfl.javions.Units;
 import ch.epfl.javions.aircraft.IcaoAddress;
 
+import java.util.Objects;
+
 /**
  * Record representing an ADS-B airborne position message
  * @author Roman Batut (356158)
@@ -29,7 +31,7 @@ public record AirbornePositionMessage(long timeStampNs,IcaoAddress icaoAddress,d
      * @throws IllegalArgumentException if the time stamp is negative or the parity is not 0 or 1 or the x or y coordinates are not normalised
      */
     public AirbornePositionMessage {
-        Preconditions.checkNotNull(icaoAddress);
+        Objects.requireNonNull(icaoAddress);
 
         Preconditions.checkArgument(timeStampNs>=0);
         Preconditions.checkArgument(parity==1 || parity==0);

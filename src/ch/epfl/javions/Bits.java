@@ -31,7 +31,7 @@ public class Bits {
      * @throws IllegalArgumentException if the size is not valid
      */
     public static int extractUInt(long value, int start, int size){
-        Preconditions.checkArgument(!(size<=0 || size >=32));
+        Preconditions.checkArgument(!(size<=0 || size >= Integer.SIZE));
 
         Objects.checkFromIndexSize(start, size, Long.SIZE);
         long sl = (long)(Math.scalb(1d,size) - 1);

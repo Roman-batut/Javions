@@ -3,6 +3,8 @@ package ch.epfl.javions.adsb;
 import ch.epfl.javions.GeoPos;
 import ch.epfl.javions.Preconditions;
 
+import java.util.Objects;
+
 /**
  * Class representing an accumulator of aircraft states
  * @author Roman Batut (356158) 
@@ -21,7 +23,7 @@ public class AircraftStateAccumulator<T extends AircraftStateSetter> {
      * @throws NullPointerException if the aircraft state setter is null
      */
     public AircraftStateAccumulator(T stateSetter){
-        Preconditions.checkNotNull(stateSetter);
+        Objects.requireNonNull(stateSetter);
 
         aircraftstatesetter = stateSetter;
         oldmessages = new AirbornePositionMessage[]{null, null};
