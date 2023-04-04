@@ -6,6 +6,7 @@ package ch.epfl.javions;
  * @author Guillaume Chevallier (360709)
  */
 public record GeoPos(int longitudeT32, int latitudeT32) {
+    private static final int LATITUDE_RANGE = 1 << 30;
 
     //* Constructor
 
@@ -27,7 +28,7 @@ public record GeoPos(int longitudeT32, int latitudeT32) {
      * @return true if the given value is a valid latitude in T32 format
      */
     public static boolean isValidLatitudeT32(int latitudeT32){
-        return ((Math.scalb(-1d,30) <= latitudeT32) && (Math.scalb(1d,30) >= latitudeT32));
+        return (-LATITUDE_RANGE <= latitudeT32) && (LATITUDE_RANGE >= latitudeT32);
     }
 
     /**
