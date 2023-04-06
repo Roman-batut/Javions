@@ -13,6 +13,7 @@ public class CprDecoder {
 
     private final static int[] Z_PHI = new int[]{60, 59};
     private final static double[] DELTA_PHI = new double[]{(1d/Z_PHI[0]), (1d/Z_PHI[1])};
+    private static final double TW0_PI = 2 * Math.PI;
 
     //* Constructor
 
@@ -36,32 +37,36 @@ public class CprDecoder {
         Preconditions.checkArgument(mostRecent == 1 || mostRecent == 0);
 
         //latitude calculation (phi)
-        double z_phi = Math.rint(Z_PHI[1]*y0 - Z_PHI[0]*y1);
-        double[] z_phi_i = new double[]{z_phi, z_phi};
+        double zPhi = Math.rint(Z_PHI[1]*y0 - Z_PHI[0]*y1);
+        double[] zPhiTab = new double[]{zPhi, zPhi};
         double[] phi = new double[]{y0, y1};
 
         for (int i=0 ; i<2 ; i++) {
-            if(z_phi<0){
-                z_phi_i[i] += Z_PHI[i];
+            if(zPhi<0){
+                zPhiTab[i] += Z_PHI[i];
             }
-            phi[i] = DELTA_PHI[i]*(z_phi_i[i]+phi[i]);
+            phi[i] = DELTA_PHI[i] * (zPhiTab[i] + phi[i]);
         }
 
         //longitude calculation (lambda)
-        double[] Z_Lambda = new double[2];
-        double A = Math.acos(1-(1-Math.cos(2*Math.PI*DELTA_PHI[0]))/((Math.cos(Units.convert(phi[0], Units.Angle.TURN, Units.Angle.RADIAN))*Math.cos(Units.convert(phi[0], Units.Angle.TURN,Units.Angle.RADIAN)))));
-        double A_test = Math.acos(1-((1-Math.cos(2*Math.PI*DELTA_PHI[0]))/((Math.cos(Units.convert(phi[1], Units.Angle.TURN, Units.Angle.RADIAN))*Math.cos(Units.convert(phi[1], Units.Angle.TURN,Units.Angle.RADIAN))))));
+        double[] ZLambda = new double[2];
+        double ANum = (1 - Math.cos(TW0_PI * DELTA_PHI[0]));
 
-        double[] lambda = new double[]{x0,x1};
+        double ADen = (Math.cos(Units.convert(phi[0], Units.Angle.TURN, Units.Angle.RADIAN)) * Math.cos(Units.convert(phi[0], Units.Angle.TURN, Units.Angle.RADIAN)));
+        double A = Math.acos(1 - (ANum / ADen));
+
+        double ATestDen = (Math.cos(Units.convert(phi[1], Units.Angle.TURN, Units.Angle.RADIAN)) * Math.cos(Units.convert(phi[1], Units.Angle.TURN, Units.Angle.RADIAN)));
+        double ATest = Math.acos(1 - (ANum / ATestDen));
+
+        double[] lambda = new double[]{x0, x1};
 
         //exception handler
         if(Double.isNaN(A)){
             ZLambda[0] = 1;
         }else {
-
-            Z_Lambda[0] = Math.floor(2*Math.PI/A);
-            double Z_Lambda_test = Math.floor(2*Math.PI/A_test);
-            if (Z_Lambda_test != Z_Lambda[0]){
+            ZLambda[0] = Math.floor(TW0_PI / A);
+            double ZLambdaTest = Math.floor(TW0_PI/ATest);
+            if (ZLambdaTest != ZLambda[0]){
                 return null ;
             }
             ZLambda[1] = ZLambda[0]-1;
@@ -82,7 +87,7 @@ public class CprDecoder {
         }
 
         //exception handler
-        if(phi[mostRecent]>1 || phi[mostRecent]<=0 || lambda[mostRecent]>1 || lambda[mostRecent]<=0){
+        if((phi[mostRecent] > 1) || (phi[mostRecent] <= 0) || (lambda[mostRecent] > 1) || (lambda[mostRecent] <= 0)){
             return null;
         }
 
@@ -95,10 +100,8 @@ public class CprDecoder {
         if(lambda[mostRecent] >= 0.5 ){
             lambda[mostRecent]--;
         }
-        lambda[mostRecent] = Math.rint(Units.convert(lambda[mostRecent], Units.Angle.TURN,Units.Angle.T32));
+        lambda[mostRecent] = Math.rint(Units.convert(lambda[mostRecent], Units.Angle.TURN, Units.Angle.T32));
 
         return new GeoPos((int)lambda[mostRecent], (int)phi[mostRecent]);
     }
 }
-
-// #TODO Mettre au propre peut etre

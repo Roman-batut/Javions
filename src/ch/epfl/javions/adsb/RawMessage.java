@@ -42,7 +42,7 @@ public record RawMessage(long timeStampNs, ByteString bytes) {
      */
     public RawMessage{
         Preconditions.checkArgument(!(timeStampNs<0));
-        Preconditions.checkArgument(bytes.size()==LENGTH);
+        Preconditions.checkArgument(bytes.size() == LENGTH);
     }
 
 
@@ -69,12 +69,9 @@ public record RawMessage(long timeStampNs, ByteString bytes) {
      *  @param byte0 the first byte of the message
      */
     public static int size(byte byte0){
-        int b = Bits.extractUInt(byte0,DF_START,DF_SIZE);
-        if(b == DF){
-            return LENGTH;
-        }
+        int bit = Bits.extractUInt(byte0, DF_START, DF_SIZE);
 
-        return 0;
+        return ((bit == DF) ? LENGTH : 0);
     }
 
     /**
@@ -83,9 +80,7 @@ public record RawMessage(long timeStampNs, ByteString bytes) {
      *  @param payload the payload of the message
      */
     public static int typeCode(long payload){
-        int typecode = (int)(payload >>> (ME_LENGTH-TYPECODE_LENGHT));
-
-        return typecode;
+        return (int)(payload >>> (ME_LENGTH - TYPECODE_LENGHT));
     }
 
     /**
@@ -93,20 +88,21 @@ public record RawMessage(long timeStampNs, ByteString bytes) {
      *  its DF field (the five most significant bits of the first byte)
      */
     public int downLinkFormat(){
-        int byte0 = (int)bytes.bytesInRange(DF_BYTE,1);
-        byte0 = Bits.extractUInt(byte0,DF_START,DF_SIZE);
+        int byte0 = (int)bytes.bytesInRange(DF_BYTE, 1);
 
-        return byte0;
+        return Bits.extractUInt(byte0, DF_START, DF_SIZE);
     }
 
     /**
      *  Returns the ICAO address of the aircraft
      */
     public IcaoAddress icaoAddress(){
-        long icao = bytes.bytesInRange(ICAO_BYTE_START,ICAO_BYTE_SIZE);
-        String b = HexFormat.of().withUpperCase().toHexDigits(icao,ICAO_STRING_SIZE);
+        long icao = bytes.bytesInRange(ICAO_BYTE_START, ICAO_BYTE_SIZE);
+        String icaoString = HexFormat.of()
+                            .withUpperCase()
+                            .toHexDigits(icao, ICAO_STRING_SIZE);
         
-        return new IcaoAddress(b);
+        return new IcaoAddress(icaoString);
     }
     
     /**

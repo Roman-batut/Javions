@@ -12,9 +12,10 @@ import java.io.InputStream;
  */
 public final class AdsbDemodulator {
 
+    private static final int WINDOW_SIZE = 1200;
     private PowerWindow window;
     private long timeStampNs;
-    private int[] tab;
+    private int[] sommePtab;
     private int index;
 
     //* Constructor
@@ -27,9 +28,9 @@ public final class AdsbDemodulator {
      * @throws NullPointerException if the stream is null
      */
     public AdsbDemodulator(InputStream samplesStream) throws IOException {
-        window = new PowerWindow(samplesStream, 1200);
+        window = new PowerWindow(samplesStream, WINDOW_SIZE);
 
-        tab = new int[]{sommeP(0), sommeP(1), sommeP(2)};
+        sommePtab = new int[]{sommeP(0), sommeP(1), sommeP(2)};
         index = 0;
     }
 
@@ -48,12 +49,15 @@ public final class AdsbDemodulator {
             int V = (window.get(6) + window.get(16) + window.get(21) + window.get(26) + window.get(31) + window.get(41));
 
             window.advance();
-            if ((tab[index % 3] < tab[(index + 1) % 3]) && (tab[(index + 1) % 3] > tab[(index + 2) % 3]) && (tab[(index + 1) % 3] >= 2 * V)) {
+            if ((sommePtab[index % 3] < sommePtab[(index + 1) % 3])
+                    && (sommePtab[(index + 1) % 3] > sommePtab[(index + 2) % 3])
+                    && (sommePtab[(index + 1) % 3] >= 2 * V)) {
+
                 byte[] octs = new byte[RawMessage.LENGTH];
                 octs[0] = octAt(0);
 
                 if (RawMessage.size(octs[0]) == RawMessage.LENGTH) {
-                    for (int i = 1; i < RawMessage.LENGTH; i++) {
+                    for (int i=1 ; i<RawMessage.LENGTH ; i++) {
                         octs[i] = octAt(i);
                     }
 
@@ -67,7 +71,7 @@ public final class AdsbDemodulator {
                 }
             }
             index++;
-            tab[(index + 2) % 3] = sommeP(2);
+            sommePtab[(index + 2) % 3] = sommeP(2);
         }
 
         return null;
@@ -97,13 +101,12 @@ public final class AdsbDemodulator {
      */
     private byte octAt(int index) {
         byte oct = 0b00_00_00_00;
-        for (int i = 0; i < Byte.SIZE; i++) {
-            oct = (byte) ((oct << 1) | bitAt(index * 8 + i));
+
+        for (int i=0 ; i<Byte.SIZE ; i++) {
+            oct = (byte)((oct << 1) | bitAt(index * 8 + i));
         }
 
         return oct;
     }
 
 }
-// #TODO mettre peut etre un plus au clair avec des cst ou pas à voir
-// #TODO tableau circulaire on est sur de ca ?

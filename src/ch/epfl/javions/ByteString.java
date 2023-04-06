@@ -11,7 +11,7 @@ import java.util.Objects;
  */
 public final class ByteString {
     
-    private byte[] tab;
+    private byte[] byteTab;
 
     //* Constructor
 
@@ -19,7 +19,7 @@ public final class ByteString {
      * Public constructor that clones the given array
      */
     public ByteString(byte[] bytes){
-        tab = bytes.clone();
+        byteTab = bytes.clone();
     }
 
 
@@ -33,8 +33,8 @@ public final class ByteString {
      */
     public static ByteString ofHexadecimalString(String hexString){
         byte[] bytes = HexFormat.of()
-                       .withUpperCase()
-                       .parseHex(hexString);
+                        .withUpperCase()
+                        .parseHex(hexString);
 
         return new ByteString(bytes);
     }
@@ -44,7 +44,7 @@ public final class ByteString {
      * @return the size of the ByteString
      */
     public int size(){
-        return tab.length;
+        return byteTab.length;
     }
 
     /**
@@ -54,11 +54,11 @@ public final class ByteString {
      * @throws IndexOutOfBoundsException if the index is not valid
      */
     public int byteAt(int index){
-        if(index<0 || index>tab.length){
+        if(index<0 || index>byteTab.length){
             throw new IndexOutOfBoundsException();
         }
 
-        return (tab[index] & 0xFF);
+        return (byteTab[index] & 0xFF);
     }
 
     /**
@@ -71,12 +71,13 @@ public final class ByteString {
     public long bytesInRange(int fromIndex, int toIndex){
         Objects.checkFromToIndex(fromIndex, toIndex, size());
         Preconditions.checkArgument((toIndex-fromIndex) <= (Long.SIZE/8));
-        long l = 0;
+
+        long bytesInRange = 0;
         for (int i=fromIndex ; i<toIndex ; i++){
-            l = (l<<8) | byteAt(i);
+            bytesInRange = (bytesInRange<<8) | byteAt(i);
         }
 
-        return l;
+        return bytesInRange;
     }
 
 
@@ -90,7 +91,7 @@ public final class ByteString {
     @Override
     public boolean equals(Object obj){
         if(obj instanceof ByteString byteS){
-            return Arrays.equals(this.tab, byteS.tab);
+            return Arrays.equals(this.byteTab, byteS.byteTab);
         }
 
         return false;
@@ -101,7 +102,7 @@ public final class ByteString {
      */
     @Override
     public int hashCode(){
-        return Arrays.hashCode(tab);
+        return Arrays.hashCode(byteTab);
     }
 
     /**
@@ -115,4 +116,3 @@ public final class ByteString {
     }
 }
 
-//  #TODO REname variable ? and dernier return jsp si à la ligne

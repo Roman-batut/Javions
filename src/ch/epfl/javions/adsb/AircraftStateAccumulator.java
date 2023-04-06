@@ -10,7 +10,7 @@ import java.util.Objects;
  * @author Roman Batut (356158) 
  * @author Guillaume Chevallier (360709)
  */
-public class AircraftStateAccumulator<T extends AircraftStateSetter> {
+public class AircraftStateAccumulator <T extends AircraftStateSetter> {
 
     private T aircraftstatesetter;
     private AirbornePositionMessage[] oldmessages;
@@ -51,6 +51,7 @@ public class AircraftStateAccumulator<T extends AircraftStateSetter> {
         aircraftstatesetter.setLastMessageTimeStampNs(message.timeStampNs());
 
         switch (message) {
+
             case AircraftIdentificationMessage idm -> {
                 aircraftstatesetter.setCallSign(idm.callSign());
                 aircraftstatesetter.setCategory(idm.category());
@@ -64,9 +65,10 @@ public class AircraftStateAccumulator<T extends AircraftStateSetter> {
             case AirbornePositionMessage posm -> {
                 aircraftstatesetter.setAltitude(posm.altitude());
 
-                AirbornePositionMessage oldmessage = oldmessages[((posm.parity()+1)%2)];
-                if(oldmessage != null && posm.timeStampNs()-oldmessage.timeStampNs() < Math.pow(10, 10)) {
+                AirbornePositionMessage oldmessage = oldmessages[((posm.parity() + 1) % 2)];
+                if((oldmessage != null) && (posm.timeStampNs()-oldmessage.timeStampNs() < Math.pow(10, 10))) {
                     GeoPos position;
+
                     if(posm.parity() == 0){
                         position = CprDecoder.decodePosition(posm.x(), posm.y(), oldmessage.x(), oldmessage.y(), 0);
                     }else {

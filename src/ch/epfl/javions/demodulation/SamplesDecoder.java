@@ -11,7 +11,7 @@ import java.io.*;
  */
 public final class SamplesDecoder {
 
-    private final int REGUL = (int)Math.scalb(1d,11);
+    private final int REGUL = (1 << 11);
     private InputStream stream;
     private int batchSize;
 
@@ -25,7 +25,7 @@ public final class SamplesDecoder {
      *  @throws NullPointerException if the stream is null
      */
     public SamplesDecoder(InputStream stream, int batchSize){
-        Preconditions.checkArgument(!(batchSize <= 0 ));
+        Preconditions.checkArgument(!(batchSize <= 0));
 
         if(stream.equals(InputStream.nullInputStream())){
             throw new NullPointerException();
@@ -63,14 +63,12 @@ public final class SamplesDecoder {
             int weak =  Byte.toUnsignedInt(batchtab[i]);
             int strong = Byte.toUnsignedInt(batchtab[i+1]);
 
-            short fin = (short)((strong << Byte.SIZE)|weak);
+            short fin = (short)((strong << Byte.SIZE) | weak);
             fin -= REGUL;
             batch[k] = fin;
             k++;
         }
 
-        return (int) (length*0.5);
+        return (int)(length*0.5);
     }
 }
-
-// #TODO s'occuper du || strem == null

@@ -51,6 +51,7 @@ public class Bits {
         Objects.checkIndex(index, Long.SIZE);
 
         value = value >> index;
+
         return (value % 2 != 0);
     }
 }

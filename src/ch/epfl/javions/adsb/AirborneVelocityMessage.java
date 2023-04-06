@@ -12,7 +12,33 @@ import java.util.Objects;
  * @author Roman Batut (356158)
  * @author Guillaume Chevallier (360709)
  */
-public record AirborneVelocityMessage(long timeStampNs,IcaoAddress icaoAddress,double speed,double trackOrHeading) implements Message{
+public record AirborneVelocityMessage(long timeStampNs,IcaoAddress icaoAddress,double speed,double trackOrHeading)
+        implements Message{
+
+    private static final double HDG_REGUL = (1 << 10);
+    private static final int VELOCITY_REGUL = 1;
+
+    private static final int SUBTYPE_START = 48;
+    private static final int SUBTYPE_SIZE = 3;
+
+    private static final int INFOS_START = 21;
+    private static final int INFOS_SIZE = 22;
+
+    private static final int DNS_START = 10;
+    private static final int DNS_SIZE = 1;
+    private static final int VNS_START = 0;
+    private static final int VNS_SIZE = 10;
+    private static final int DEW_START = 21;
+    private static final int DEW_SIZE = 1;
+    private static final int VEW_START = 11;
+    private static final int VEW_SIZE = 10;
+
+    private static final int HDG_START = 11;
+    private static final int HDG_SIZE = 10;
+    private static final int SH_START = 21;
+    private static final int SH_SIZE = 1;
+    private static final int AS_SIZE = 10;
+    private static final int AS_START = 0;
 
     //* Constructor
 

@@ -12,10 +12,10 @@ public interface Message {
    /**
     *  Returns the time stamp of the message in nanoseconds
     */
-   public long timeStampNs();
+   long timeStampNs();
 
    /**
     *  Returns the ICAO address of the aircraft
     */
-   public IcaoAddress icaoAddress();
+   IcaoAddress icaoAddress();
 }

@@ -77,7 +77,7 @@ class AirbornePositionMessageTest{
 //        if(!(typecode>=9 && typecode<=18 || typecode>=20 && typecode<=22)){
 //            return null;
 //        }
-//      #TODO ca apparemment pas necessaire
+//
 
     }
 
@@ -231,6 +231,6 @@ class AirbornePositionMessageTest{
         }
     }
 
-    //  #TODO FAIRE DE PARTOUT DES RETOUVHES POUR PAS AVOIR DE VARIABLES REDONDANTES ETC CA FAIT PERDRE DES POINTS APPAREMENT
+
 
 }

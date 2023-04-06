@@ -41,9 +41,9 @@ public class WebMercator {
     public static double y(int zoomLevel, double latitude){
         int power = 8 + zoomLevel;
         double angle = -Math2.asinh(Math.tan(latitude));
-        double y = Math.scalb((Units.convertTo( angle, Units.Angle.TURN) + (ADD_CST)), power);
+        double y = Units.convertTo(angle, Units.Angle.TURN) + (ADD_CST);
 
-        return y;
+        return Math.scalb(y, power);
     }
 }
 

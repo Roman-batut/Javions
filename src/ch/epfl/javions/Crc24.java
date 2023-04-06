@@ -38,7 +38,7 @@ public final class Crc24 {
             crc = ((crc << Byte.SIZE) | Byte.toUnsignedInt(oct)) ^ table[Bits.extractUInt(crc, INDEX-Byte.SIZE, Byte.SIZE)];
         }
 
-        for (int i=0 ; i<3 ; i++) {
+        for (int i=0 ; i<(INDEX/8) ; i++) {
             crc = (crc << Byte.SIZE) ^ table[Bits.extractUInt(crc, INDEX-Byte.SIZE, Byte.SIZE)];
         }
 
@@ -87,4 +87,3 @@ public final class Crc24 {
         return table;
     }
 }
-//#TODO check si la modulation est bonne ici

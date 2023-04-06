@@ -6,6 +6,7 @@ package ch.epfl.javions;
  * @author Guillaume Chevallier (360709)
  */
 public record GeoPos(int longitudeT32, int latitudeT32) {
+
     private static final int LATITUDE_RANGE = 1 << 30;
 
     //* Constructor
@@ -54,10 +55,9 @@ public record GeoPos(int longitudeT32, int latitudeT32) {
      */ 
     @Override
     public String toString(){
-        double latdeg = Units.convert(latitudeT32, Units.Angle.T32, Units.Angle.DEGREE);
-        double longdeg = Units.convert(longitudeT32, Units.Angle.T32, Units.Angle.DEGREE);
+        double latDeg = Units.convert(latitudeT32, Units.Angle.T32, Units.Angle.DEGREE);
+        double longDeg = Units.convert(longitudeT32, Units.Angle.T32, Units.Angle.DEGREE);
 
-        return ("("+longdeg+"°, "+ latdeg+"°)");
+        return ("("+longDeg+"°, "+ latDeg+"°)");
     }
-//    #TODO convertto degree? avec latitude() et longitude()?
 }

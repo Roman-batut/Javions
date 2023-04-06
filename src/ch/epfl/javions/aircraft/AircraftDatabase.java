@@ -15,7 +15,7 @@ import static java.nio.charset.StandardCharsets.UTF_8;
  */
 public class AircraftDatabase {
 
-    private String filename;
+    private String fileName;
 
     //* Constructor
 
@@ -27,7 +27,7 @@ public class AircraftDatabase {
     public AircraftDatabase(String fileName){
         Objects.requireNonNull(fileName);
 
-        this.filename = fileName;
+        this.fileName = fileName;
     }
 
 
@@ -41,12 +41,11 @@ public class AircraftDatabase {
      *  @throws NullPointerException if the ICAO address is null
      */
     public AircraftData get(IcaoAddress address) throws IOException{
-
         String sAddress = address.string();
         String file = sAddress.substring(sAddress.length() - 2) + ".csv";
 
         try (
-                ZipFile zipFile = new ZipFile(filename);
+                ZipFile zipFile = new ZipFile(fileName);
                 InputStream stream = zipFile.getInputStream(zipFile.getEntry(file));
                 Reader reader = new InputStreamReader(stream, UTF_8);
                 BufferedReader buffer = new BufferedReader(reader))

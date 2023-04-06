@@ -11,8 +11,23 @@ import java.util.Objects;
  * @author Roman Batut (356158)
  * @author Guillaume Chevallier (360709)
  */
-public record AircraftIdentificationMessage(long timeStampNs, IcaoAddress icaoAddress,int category,CallSign callSign)
+public record AircraftIdentificationMessage(long timeStampNs, IcaoAddress icaoAddress, int category, CallSign callSign)
         implements Message{
+
+    private static final int WEAK_START = 48;
+    private static final int WEAK_SIZE = 3;
+    private static final int STRONG_BIT_REGUL = 14;
+
+    private static final int CALLSIGN_MAX_SIZE = 8;
+
+    private static final int CHAR1_BIT_POS = 42;
+    private static final int CHAR_SIZE = 6;
+
+    private static final int ALPHABETICAL_VALUE_START = 1;
+    private static final int ALPHABETICAL_VALUE_END = 26;
+    private static final int NUMERICAL_VALUE_START = 48;
+    private static final int NUMERICAL_VALUE_END = 57;
+    private static final int SPACE_VALUE = 32;
 
     //* Constructor
 
@@ -66,9 +81,8 @@ public record AircraftIdentificationMessage(long timeStampNs, IcaoAddress icaoAd
         int weakCategory = (Bits.extractUInt(payload, WEAK_START, WEAK_SIZE));
 
         long timestampNs = rawMessage.timeStampNs();
-        int strcategory = ((14 - rawMessage.typeCode()) << 4);
-        int weakcategory = (Bits.extractUInt(payload, 48, 3));
-        int category = strcategory | weakcategory;
+        IcaoAddress icaoAddres = rawMessage.icaoAddress();
+        int category = strCategory | weakCategory;
         CallSign callSign1 = callSignextraction(payload);
         if(callSign1 == null){
             return null;
@@ -82,10 +96,10 @@ public record AircraftIdentificationMessage(long timeStampNs, IcaoAddress icaoAd
     private static CallSign callSignextraction(long payload){
         char[] chartab = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'};
 
-        int[] charactervalue = new int[8];
+        int[] charactervalue = new int[CALLSIGN_MAX_SIZE];
         int k = 0;
-        for (int i=42 ; i>=0 ; i-=6) {
-            charactervalue[k] = Bits.extractUInt(payload,i,6);
+        for (int i=CHAR1_BIT_POS ; i>=0 ; i-=CHAR_SIZE) {
+            charactervalue[k] = Bits.extractUInt(payload,i,CHAR_SIZE);
             k++;
         }
 
@@ -100,10 +114,9 @@ public record AircraftIdentificationMessage(long timeStampNs, IcaoAddress icaoAd
                 } else {
                     callsignstring.append(Character.toChars(charactervalue[i]));
                 }
+
             }
-            else {
-                return null;
-            }
+            else { return null; }
         }
 
         return new CallSign(callsignstring.toString().stripTrailing());

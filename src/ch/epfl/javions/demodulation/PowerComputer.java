@@ -12,9 +12,9 @@ import java.io.IOException;
  */
 public final class PowerComputer {
 
-    private final static int POWER_BATCH = 8;
+    private final static int POWER_BATCH_SIZE = 8;
     private SamplesDecoder decoder;
-    private short[] echanP;
+    private short[] batchP;
     private short[] batchD;
 
     //* Constructor
@@ -27,9 +27,9 @@ public final class PowerComputer {
      *  @throws NullPointerException if the stream is null
      */
     public PowerComputer(InputStream stream, int batchSize){
-        Preconditions.checkArgument(!(batchSize%POWER_BATCH != 0 || batchSize <= 0));
+        Preconditions.checkArgument(!(batchSize % POWER_BATCH_SIZE != 0 || batchSize <= 0));
 
-        echanP = new short[POWER_BATCH];
+        batchP = new short[POWER_BATCH_SIZE];
         batchD = new short[batchSize*2];
         this.decoder = new SamplesDecoder(stream, batchSize*2);
     }
@@ -51,15 +51,15 @@ public final class PowerComputer {
         int k = 0;
         for(int i=0 ; i<size ; i+=2){
             int Pn;
-            int position = i%POWER_BATCH;
-            echanP[position] = batchD[i];
-            echanP[(position+1)%POWER_BATCH] = batchD[i+1];
-            if(k%2 == 0){
-                Pn = (echanP[6]-echanP[4]+echanP[2]-echanP[0])*(echanP[6]-echanP[4]+echanP[2]-echanP[0])
-                        +(echanP[7]-echanP[5]+echanP[3]-echanP[1])*(echanP[7]-echanP[5]+echanP[3]-echanP[1]);
+            int position = i % POWER_BATCH_SIZE;
+            batchP[position] = batchD[i];
+            batchP[(position+1) % POWER_BATCH_SIZE] = batchD[i+1];
+            if(k % 2 == 0){
+                Pn = (batchP[6] - batchP[4] + batchP[2] - batchP[0]) * (batchP[6] - batchP[4] + batchP[2] - batchP[0])
+                        + (batchP[7] - batchP[5] + batchP[3] - batchP[1]) * (batchP[7] - batchP[5] + batchP[3] - batchP[1]);
             }else{
-                Pn = (-echanP[6]+echanP[4]-echanP[2]+echanP[0])*(-echanP[6]+echanP[4]-echanP[2]+echanP[0])
-                        +(-echanP[7]+echanP[5]-echanP[3]+echanP[1])*(-echanP[7]+echanP[5]-echanP[3]+echanP[1]);
+                Pn = (-batchP[6] + batchP[4] - batchP[2] + batchP[0]) * (-batchP[6] + batchP[4] - batchP[2] + batchP[0])
+                        + (-batchP[7] + batchP[5] - batchP[3] + batchP[1]) * (-batchP[7] + batchP[5] - batchP[3] + batchP[1]);
             }
             batch[k] = Pn;
 
@@ -69,4 +69,3 @@ public final class PowerComputer {
         return k;
     }
 }
-// #TODO check ici pour la consatnte et on fait quoi avec le tableau echamP ? changer le nom aussi peut etre
