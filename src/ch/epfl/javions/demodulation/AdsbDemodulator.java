@@ -77,7 +77,6 @@ public final class AdsbDemodulator {
 
     /**
      * Returns the P sum of the 4 samples at the given index
-     *
      * @param index the index of the first sample
      */
     private int sommeP(int index) {
@@ -86,16 +85,14 @@ public final class AdsbDemodulator {
 
     /**
      * Returns the bit at the given index in the window
-     *
      * @param index the index of the bit
      */
     private byte bitAt(int index) {
-        return (byte) ((window.get(80 + 10 * index) < window.get(85 + 10 * index)) ? 0 : 1);
+        return (byte)((window.get(80 + (10 * index)) < window.get(85 + (10 * index))) ? 0 : 1);
     }
 
     /**
      * Returns the byte at the given index in the window
-     *
      * @param index the index of the first bit
      */
     private byte octAt(int index) {

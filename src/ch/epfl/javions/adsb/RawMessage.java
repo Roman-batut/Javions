@@ -114,7 +114,7 @@ public record RawMessage(long timeStampNs, ByteString bytes) {
      *  it's ME field
      */
     public long payload(){
-        return bytes.bytesInRange(ME_BYTE_START,ME_BYTE_SIZE);
+        return bytes.bytesInRange(ME_BYTE_START, ME_BYTE_SIZE);
     }
 
     /**
@@ -124,5 +124,4 @@ public record RawMessage(long timeStampNs, ByteString bytes) {
     public int typeCode(){
         return typeCode(payload());
     }
-
 }

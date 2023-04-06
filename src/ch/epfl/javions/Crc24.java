@@ -43,8 +43,9 @@ public final class Crc24 {
         }
 
         return Bits.extractUInt(crc, 0, INDEX);
-
     }
+
+    //* Private Methods
 
     /**
      *  Returns the CRC24 of a message, function used to build the table,
@@ -62,6 +63,7 @@ public final class Crc24 {
                 crc = ((crc << 1) | bit) ^ table[Bits.extractUInt(crc, INDEX-1, 1)];
             }
         }
+
         for (int i=0 ; i<INDEX ; i++) {
             crc = (crc << 1) ^ table[Bits.extractUInt(crc, INDEX-1, 1)];
         }
@@ -76,6 +78,7 @@ public final class Crc24 {
      */
     private static int[] Buildtable(int generator){
         int[] table = new int[BYTE_RANGE];
+
         for(int i=0 ; i < BYTE_RANGE ; i++){
             byte[] num = new byte[] {(byte) i};
             table[i] = crcBitwise(generator, num);

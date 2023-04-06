@@ -21,6 +21,7 @@ public record AircraftDescription(String string) {
     public AircraftDescription {
         if(!string.isEmpty()) {
             Pattern pattern = Pattern.compile("[ABDGHLPRSTV-][0123468][EJPT-]");
+
             Preconditions.checkArgument(pattern.matcher(string).matches());
         }
     }

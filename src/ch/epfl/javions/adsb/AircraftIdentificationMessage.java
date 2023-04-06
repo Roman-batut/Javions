@@ -62,7 +62,9 @@ public record AircraftIdentificationMessage(long timeStampNs, IcaoAddress icaoAd
     public static AircraftIdentificationMessage of(RawMessage rawMessage){
         long payload = rawMessage.payload();
 
-        IcaoAddress icaoAddres = rawMessage.icaoAddress();
+        int strCategory = ((STRONG_BIT_REGUL - rawMessage.typeCode()) << (Byte.SIZE/2));
+        int weakCategory = (Bits.extractUInt(payload, WEAK_START, WEAK_SIZE));
+
         long timestampNs = rawMessage.timeStampNs();
         int strcategory = ((14 - rawMessage.typeCode()) << 4);
         int weakcategory = (Bits.extractUInt(payload, 48, 3));
@@ -88,10 +90,12 @@ public record AircraftIdentificationMessage(long timeStampNs, IcaoAddress icaoAd
         }
 
         StringBuilder callsignstring = new StringBuilder();
-        for (int i=0 ; i<8 ; i++) {
-            if ((charactervalue[i] >= 1 && charactervalue[i] <= 26) || (charactervalue[i] >= 48 && charactervalue[i] <= 57) || charactervalue[i] == 32) {
+        for (int i=0 ; i<CALLSIGN_MAX_SIZE ; i++) {
+            if ((charactervalue[i] >= ALPHABETICAL_VALUE_START && charactervalue[i] <= ALPHABETICAL_VALUE_END) ||
+                    (charactervalue[i] >= NUMERICAL_VALUE_START && charactervalue[i] <= NUMERICAL_VALUE_END) ||
+                    charactervalue[i] == SPACE_VALUE) {
 
-                if (charactervalue[i] <= 26) {
+                if (charactervalue[i] <= ALPHABETICAL_VALUE_END) {
                     callsignstring.append(chartab[charactervalue[i] - 1]);
                 } else {
                     callsignstring.append(Character.toChars(charactervalue[i]));

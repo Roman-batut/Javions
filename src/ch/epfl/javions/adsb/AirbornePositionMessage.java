@@ -32,11 +32,10 @@ public record AirbornePositionMessage(long timeStampNs,IcaoAddress icaoAddress,d
      */
     public AirbornePositionMessage {
         Objects.requireNonNull(icaoAddress);
-
-        Preconditions.checkArgument(timeStampNs>=0);
-        Preconditions.checkArgument(parity==1 || parity==0);
-        Preconditions.checkArgument(0<=x & x<1);
-        Preconditions.checkArgument(0<=y & y<1);
+        Preconditions.checkArgument(timeStampNs >= 0);
+        Preconditions.checkArgument(parity == 1 || parity == 0);
+        Preconditions.checkArgument(0 <= x & x < 1);
+        Preconditions.checkArgument(0 <= y & y < 1);
     }
 
     //* Getters
@@ -87,13 +86,13 @@ public record AirbornePositionMessage(long timeStampNs,IcaoAddress icaoAddress,d
             int[] val = new int[]{4, 2, 0, 10, 8, 6, 5, 3, 1, 11, 9, 7};
             int untangled = 0b0000_0000_0000;
             for (int i=0 ; i<val.length ; i++) {
-                untangled = untangled | ((Bits.extractUInt(alt, val[i], 1)) << (val.length-i-1));
+                untangled = untangled | ((Bits.extractUInt(alt, val[i], 1)) << (val.length - i - 1));
             }
 
             //decoding
-            int strongbyte = greydecode(Bits.extractUInt(untangled,3,9), 9);
-            int weakbyte = greydecode(Bits.extractUInt(untangled,0,3),3);
-            if(weakbyte==0 || weakbyte==5 || weakbyte==6){
+            int strongbyte = greydecode(Bits.extractUInt(untangled, STRONGBYTE_START, STRONGBYTE_SIZE), STRONGBYTE_SIZE);
+            int weakbyte = greydecode(Bits.extractUInt(untangled, WEAKBYTE_START, WEAKBYTE_SIZE),WEAKBYTE_SIZE);
+            if(weakbyte == 0 || weakbyte == 5 || weakbyte == 6){
                 return null;
             }
             if (weakbyte == 7){

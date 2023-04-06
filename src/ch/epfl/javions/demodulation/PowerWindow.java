@@ -17,8 +17,9 @@ public final class PowerWindow {
     private int windowSize;
     private int position;
     private long sizeB;
-    private int[] batchpowerOne;
-    private int[] batchpowerTwo;
+    private int[] batchPowerOne;
+    private int[] batchPowerTwo;
+
 
     //* Constructor
 
@@ -37,16 +38,14 @@ public final class PowerWindow {
         position = 0;
         sizeB = 0;
 
-        batchpowerOne = new int[BATCH_SIZE];
-        batchpowerTwo = new int[BATCH_SIZE];
+        batchPowerOne = new int[BATCH_SIZE];
+        batchPowerTwo = new int[BATCH_SIZE];
 
         computer = new PowerComputer(stream, BATCH_SIZE);
-        sizeB += computer.readBatch(batchpowerOne);
+        sizeB += computer.readBatch(batchPowerOne);
     }
 
-
-    //* Methods
-
+    //* Getters
 
     /**
      *  Returns the size of the window
@@ -62,6 +61,10 @@ public final class PowerWindow {
         return position;
     }
 
+
+    //* Methods
+
+
     /**
      *  Returns true if the window is full
      */
@@ -75,14 +78,14 @@ public final class PowerWindow {
      *  @throws IndexOutOfBoundsException if the position is not in the window
      */
     public int get(int i){
-        if(i<0 || i>=windowSize){
+        if(i < 0 || i >= windowSize){
             throw new IndexOutOfBoundsException();
         }
         int relativepos = (position%BATCH_SIZE + i);
         if(relativepos >= BATCH_SIZE){
-            return batchpowerTwo[relativepos - BATCH_SIZE];
+            return batchPowerTwo[relativepos - BATCH_SIZE];
         } else{
-            return batchpowerOne[relativepos];
+            return batchPowerOne[relativepos];
         }
     }
 
@@ -92,14 +95,15 @@ public final class PowerWindow {
      *  @throws IOException if an I/O error occurs
      */
     public void advance() throws IOException{
-        position ++;
-        if(position+windowSize == sizeB){
-            sizeB += computer.readBatch(batchpowerTwo);
+        position++;
+        if(position + windowSize == sizeB){
+            sizeB += computer.readBatch(batchPowerTwo);
         }
-        if(position%BATCH_SIZE == 0){
-            int[] tempTab = batchpowerTwo;
-            batchpowerTwo = batchpowerOne;
-            batchpowerOne = tempTab;
+
+        if(position % BATCH_SIZE == 0){
+            int[] tempTab = batchPowerTwo;
+            batchPowerTwo = batchPowerOne;
+            batchPowerOne = tempTab;
         }
     }
 

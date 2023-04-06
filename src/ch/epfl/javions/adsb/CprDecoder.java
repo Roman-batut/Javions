@@ -56,7 +56,7 @@ public class CprDecoder {
 
         //exception handler
         if(Double.isNaN(A)){
-            Z_Lambda[0] = 1;
+            ZLambda[0] = 1;
         }else {
 
             Z_Lambda[0] = Math.floor(2*Math.PI/A);
@@ -64,20 +64,20 @@ public class CprDecoder {
             if (Z_Lambda_test != Z_Lambda[0]){
                 return null ;
             }
-            Z_Lambda[1] = Z_Lambda[0]-1;
+            ZLambda[1] = ZLambda[0]-1;
 
 
-            double[] Delta_lambda = new double[]{(1d/Z_Lambda[0]), (1d/Z_Lambda[1])};
+            double[] DeltaLambda = new double[]{(1d/ZLambda[0]), (1d/ZLambda[1])};
 
 
-            double z_lambda = Math.rint(Z_Lambda[1]*x0 - Z_Lambda[0]*x1);
-            double[] z_lambda_i = new double[]{z_lambda, z_lambda};
+            double zLambda = Math.rint(ZLambda[1]*x0 - ZLambda[0]*x1);
+            double[] zLambdaTab = new double[]{zLambda, zLambda};
 
             for (int i=0 ; i<2 ; i++) {
-                if(z_lambda <0){
-                    z_lambda_i[i] += Z_Lambda[i];
+                if(zLambda <0){
+                    zLambdaTab[i] += ZLambda[i];
                 }
-                lambda[i] = Delta_lambda[i]*(z_lambda_i[i]+lambda[i]);
+                lambda[i] = DeltaLambda[i]*(zLambdaTab[i]+lambda[i]);
             }
         }
 

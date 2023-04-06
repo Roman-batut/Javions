@@ -109,10 +109,9 @@ public final class ByteString {
      */
     @Override
     public String toString(){
-
         return HexFormat.of()
                 .withUpperCase()
-                .formatHex(tab);
+                .formatHex(byteTab);
     }
 }
 

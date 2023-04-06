@@ -55,10 +55,12 @@ public class AircraftStateAccumulator<T extends AircraftStateSetter> {
                 aircraftstatesetter.setCallSign(idm.callSign());
                 aircraftstatesetter.setCategory(idm.category());
             }
+
             case AirborneVelocityMessage velm -> {
                 aircraftstatesetter.setVelocity(velm.speed());
                 aircraftstatesetter.setTrackOrHeading(velm.trackOrHeading());
             }
+
             case AirbornePositionMessage posm -> {
                 aircraftstatesetter.setAltitude(posm.altitude());
 
@@ -70,12 +72,14 @@ public class AircraftStateAccumulator<T extends AircraftStateSetter> {
                     }else {
                         position = CprDecoder.decodePosition(oldmessage.x(), oldmessage.y(), posm.x(), posm.y(), 1);
                     }
+
                     if(position != null){
                         aircraftstatesetter.setPosition(position);
                     }
                 }
                 oldmessages[posm.parity()] = posm;
             }
+
             default -> System.out.println();
         }
     }

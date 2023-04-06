@@ -32,12 +32,12 @@ public class Bits {
      */
     public static int extractUInt(long value, int start, int size){
         Preconditions.checkArgument(!(size<=0 || size >= Integer.SIZE));
-
         Objects.checkFromIndexSize(start, size, Long.SIZE);
-        long sl = (long)(Math.scalb(1d,size) - 1);
-        value = (value>>start) & (sl);
 
-        return (int)value;
+        long unsigner = (long)(Math.scalb(1d,size) - 1);
+        value = (value>>start) & (unsigner);
+
+        return (int)(value);
     }
 
     /**
@@ -49,6 +49,7 @@ public class Bits {
      */
     public static boolean testBit(long value, int index){
         Objects.checkIndex(index, Long.SIZE);
+
         value = value >> index;
         return (value % 2 != 0);
     }

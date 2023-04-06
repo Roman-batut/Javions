@@ -27,8 +27,7 @@ public record AirborneVelocityMessage(long timeStampNs,IcaoAddress icaoAddress,d
      */
     public AirborneVelocityMessage{
         Objects.requireNonNull(icaoAddress);
-
-        Preconditions.checkArgument(speed>=0 && trackOrHeading>=0 && timeStampNs>=0);
+        Preconditions.checkArgument(speed >= 0 && trackOrHeading >= 0 && timeStampNs >= 0);
     }
 
     //* Getters
@@ -54,20 +53,20 @@ public record AirborneVelocityMessage(long timeStampNs,IcaoAddress icaoAddress,d
      */
     public static AirborneVelocityMessage of(RawMessage rawMessage){
         long payload = rawMessage.payload();
-        int st = Bits.extractUInt(payload,48,3);
-        long infos = Bits.extractUInt(payload, 21,22);
+        int subType = Bits.extractUInt(payload, SUBTYPE_START, SUBTYPE_SIZE);
+        long infos = Bits.extractUInt(payload, INFOS_START, INFOS_SIZE);
 
-        if(st == 1 || st == 2){
-            int Vns = Bits.extractUInt(infos, 0,10)-1;
-            int Dns = Bits.extractUInt(infos, 10,1);
-            int Vew = Bits.extractUInt(infos, 11,10)-1;
-            int Dew = Bits.extractUInt(infos, 21,1);
+        if(subType == 1 || subType == 2){
+            int Vns = Bits.extractUInt(infos, VNS_START,VNS_SIZE) - VELOCITY_REGUL;
+            int Dns = Bits.extractUInt(infos, DNS_START, DNS_SIZE);
+            int Vew = Bits.extractUInt(infos, VEW_START, VEW_SIZE) - VELOCITY_REGUL;
+            int Dew = Bits.extractUInt(infos, DEW_START, DEW_SIZE);
             if(Vns < 0 || Vew < 0){
                 return null;
             }
 
-            int Vy = speedcalculator(st, Vns);
-            int Vx = speedcalculator(st, Vew);
+            int Vy = speedcalculator(subType, Vns);
+            int Vx = speedcalculator(subType, Vew);
             double speed = Units.convertFrom(Math.hypot(Vy, Vx), Units.Speed.KNOT);
 
             if(Dns == 1) {Vy = -Vy;}
@@ -80,16 +79,16 @@ public record AirborneVelocityMessage(long timeStampNs,IcaoAddress icaoAddress,d
 
             return new AirborneVelocityMessage(rawMessage.timeStampNs(), rawMessage.icaoAddress(), speed, angle);
 
-        } else if(st == 3 || st == 4){
-            int as = Bits.extractUInt(infos, 0,10)-1;
-            int Hdg = Bits.extractUInt(infos, 11,10);
-            int sh = Bits.extractUInt(infos, 21,1);
+        } else if(subType == 3 || subType == 4){
+            int as = Bits.extractUInt(infos, AS_START,AS_SIZE) - VELOCITY_REGUL;
+            int Hdg = Bits.extractUInt(infos, HDG_START, HDG_SIZE);
+            int sh = Bits.extractUInt(infos, SH_START, SH_SIZE);
             if(as < 0 || sh == 0){
                 return null;
             }
 
-            double speed = Units.convertFrom(speedcalculator(st-2, as), Units.Speed.KNOT);
-            double angle = Units.convert(Hdg/Math.scalb(1d, 10), Units.Angle.TURN, Units.Angle.RADIAN);
+            double speed = Units.convertFrom(speedcalculator(subType - 2, as), Units.Speed.KNOT);
+            double angle = Units.convert(Hdg / HDG_REGUL, Units.Angle.TURN, Units.Angle.RADIAN);
 
             return new AirborneVelocityMessage(rawMessage.timeStampNs(), rawMessage.icaoAddress(), speed, angle);
         } else {
@@ -106,6 +105,6 @@ public record AirborneVelocityMessage(long timeStampNs,IcaoAddress icaoAddress,d
      * @return the speed of the aircraft
      */
     private static int speedcalculator (int subtype, int speed){
-        return (int) (speed * Math.pow(subtype, 2));
+        return (int)(speed * Math.pow(subtype, 2));
     }
 }
