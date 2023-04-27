@@ -11,7 +11,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
 import java.io.IOException;
-import java.util.Collections;
+import java.util.Objects;
 
 public final class ObservableAircraftState implements AircraftStateSetter {
 
@@ -36,6 +36,14 @@ public final class ObservableAircraftState implements AircraftStateSetter {
         accumulator = new AircraftStateAccumulator<>(this);
         trajectory = FXCollections.observableArrayList();
         trajectoryunmodifiable = FXCollections.unmodifiableObservableList(trajectory);
+
+        timeStampNs = new SimpleLongProperty();
+        category = new SimpleIntegerProperty();
+        callSign = new SimpleObjectProperty<>();
+        position = new SimpleObjectProperty<>();
+        altitude = new SimpleDoubleProperty();
+        velocity = new SimpleDoubleProperty();
+        trackOrHeading = new SimpleDoubleProperty();
     }
 
     //* Setters
@@ -87,15 +95,14 @@ public final class ObservableAircraftState implements AircraftStateSetter {
     }
 
     //* View Getters
-    public ReadOnlyLongProperty timeStampNs(){ return  timeStampNs; }
+    public ReadOnlyLongProperty timeStampNs(){ return timeStampNs; }
     public ReadOnlyIntegerProperty categoryProperty(){ return category; }
     public ReadOnlyDoubleProperty altitudeProperty(){ return altitude; }
     public ReadOnlyDoubleProperty velocityProperty(){ return velocity; }
     public ReadOnlyDoubleProperty trackOrHeading(){ return trackOrHeading; }
     public ReadOnlyObjectProperty callSignProperty(){ return callSign;}
     public ReadOnlyObjectProperty positionProperty(){ return position;}
-    public ObservableList<AirbornPos> trajectoryProperty(){return trajectoryunmodifiable;}
-
+    public ObservableList<AirbornPos> trajectoryProperty(){ return trajectoryunmodifiable; }
 
     //* Getters
 
@@ -139,7 +146,6 @@ public final class ObservableAircraftState implements AircraftStateSetter {
         return aircraftData.wakeTurbulenceCategory();
     }
 
-
     public record AirbornPos(double altitude, GeoPos position){
         public AirbornPos(double altitude, GeoPos position){
             this.altitude = altitude;
@@ -147,5 +153,3 @@ public final class ObservableAircraftState implements AircraftStateSetter {
         }
     }
 }
-
-
