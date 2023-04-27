@@ -4,6 +4,7 @@ import ch.epfl.javions.GeoPos;
 import ch.epfl.javions.adsb.AircraftStateAccumulator;
 import ch.epfl.javions.adsb.AircraftStateSetter;
 import ch.epfl.javions.adsb.CallSign;
+import ch.epfl.javions.adsb.Message;
 import ch.epfl.javions.aircraft.*;
 import javafx.beans.Observable;
 import javafx.beans.property.*;
@@ -20,6 +21,7 @@ public final class ObservableAircraftState implements AircraftStateSetter {
     private AircraftStateAccumulator accumulator;
 
     private LongProperty timeStampNs;
+    private long oldMessageTimestampNs;
     private IntegerProperty category;
     private SimpleObjectProperty<CallSign> callSign;
     private SimpleObjectProperty<GeoPos> position;
@@ -28,10 +30,11 @@ public final class ObservableAircraftState implements AircraftStateSetter {
     private DoubleProperty trackOrHeading;
     private ObservableList<AirbornPos> trajectory;
     private ObservableList<AirbornPos> trajectoryunmodifiable;
+    private IcaoAddress icaoAddress;
 
-    private long oldMessageTimestampNs;
 
     public ObservableAircraftState(IcaoAddress icaoAddress, AircraftDatabase aircraftDatabase) throws IOException {
+        this.icaoAddress = icaoAddress;
         aircraftData = aircraftDatabase.get(icaoAddress);
         accumulator = new AircraftStateAccumulator<>(this);
         trajectory = FXCollections.observableArrayList();
@@ -65,7 +68,7 @@ public final class ObservableAircraftState implements AircraftStateSetter {
         int index = trajectory.size()-1;
         if(trajectory.isEmpty() || !(position.equals(trajectory.get(index).position))){
             trajectory.add(new AirbornPos(getAltitude(), position));
-            oldMessageTimestampNs = getTimeStampNs();
+            oldMessageTimestampNs = (getTimeStampNs());
         }else if(oldMessageTimestampNs == getTimeStampNs()){
             trajectory.set(index, new AirbornPos(getAltitude(), position));
         }
@@ -124,6 +127,7 @@ public final class ObservableAircraftState implements AircraftStateSetter {
     public CallSign getCallSign(){
         return callSign.get();
     }
+    public IcaoAddress getIcaoAddress(){return icaoAddress;}
     public GeoPos getPosition(){
         return position.get();
     }
@@ -131,19 +135,21 @@ public final class ObservableAircraftState implements AircraftStateSetter {
     //* Getters fixed infos
 
     public AircraftRegistration getRegistration(){
-        return aircraftData.registration();
+
+        return !Objects.isNull(aircraftData) ? aircraftData.registration()  : null;
     }
     public AircraftTypeDesignator getTypeDesignator(){
-        return aircraftData.typeDesignator();
+
+        return !Objects.isNull(aircraftData) ? aircraftData.typeDesignator() : null;
     }
     public String getModel(){
-        return aircraftData.model();
+        return !Objects.isNull(aircraftData) ? aircraftData.model() : null;
     }
     public AircraftDescription getDescription(){
-        return aircraftData.description();
+        return !Objects.isNull(aircraftData) ? aircraftData.description() : null;
     }
     public WakeTurbulenceCategory getWakeTurbulenceCategory(){
-        return aircraftData.wakeTurbulenceCategory();
+        return !Objects.isNull(aircraftData) ? aircraftData.wakeTurbulenceCategory() : null;
     }
 
     public record AirbornPos(double altitude, GeoPos position){
@@ -152,4 +158,6 @@ public final class ObservableAircraftState implements AircraftStateSetter {
             this.position = position;
         }
     }
+
+
 }

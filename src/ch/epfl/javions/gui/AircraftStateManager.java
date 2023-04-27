@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+
 public final class AircraftStateManager {
 
     private Map<IcaoAddress,AircraftStateAccumulator<ObservableAircraftState>> stateManager;
