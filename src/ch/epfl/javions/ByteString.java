@@ -10,8 +10,9 @@ import java.util.Objects;
  * @author Guillaume Chevallier (360709)
  */
 public final class ByteString {
-    
-    private byte[] byteTab;
+
+    private final static HexFormat UPPERCASE_FORMAT = HexFormat.of().withUpperCase();
+    private final byte[] byteTab;
 
     //* Constructor
 
@@ -32,10 +33,7 @@ public final class ByteString {
      * @return a ByteString corresponding to the given string
      */
     public static ByteString ofHexadecimalString(String hexString){
-        byte[] bytes = HexFormat.of()
-                        .withUpperCase()
-                        .parseHex(hexString);
-
+        byte[] bytes = UPPERCASE_FORMAT.parseHex(hexString);
         return new ByteString(bytes);
     }
 
@@ -54,11 +52,9 @@ public final class ByteString {
      * @throws IndexOutOfBoundsException if the index is not valid
      */
     public int byteAt(int index){
-        if(index<0 || index>byteTab.length){
-            throw new IndexOutOfBoundsException();
-        }
+        Objects.checkIndex(index, byteTab.length);
 
-        return (byteTab[index] & 0xFF);
+        return Byte.toUnsignedInt(byteTab[index]);
     }
 
     /**
@@ -74,7 +70,7 @@ public final class ByteString {
 
         long bytesInRange = 0;
         for (int i=fromIndex ; i<toIndex ; i++){
-            bytesInRange = (bytesInRange<<8) | byteAt(i);
+            bytesInRange = (bytesInRange<< Byte.SIZE) | byteAt(i);
         }
 
         return bytesInRange;
@@ -90,11 +86,8 @@ public final class ByteString {
      */
     @Override
     public boolean equals(Object obj){
-        if(obj instanceof ByteString byteS){
-            return Arrays.equals(this.byteTab, byteS.byteTab);
-        }
-
-        return false;
+        return (obj instanceof ByteString byteS) &&
+                (Arrays.equals(this.byteTab, byteS.byteTab));
     }
 
     /**
@@ -110,9 +103,7 @@ public final class ByteString {
      */
     @Override
     public String toString(){
-        return HexFormat.of()
-                .withUpperCase()
-                .formatHex(byteTab);
+        return UPPERCASE_FORMAT.formatHex(byteTab);
     }
 }
 

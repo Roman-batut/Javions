@@ -19,10 +19,8 @@ public record AircraftDescription(String string) {
      *  @throws IllegalArgumentException if the string is not a valid aircraft description
      */
     public AircraftDescription {
-        if(!string.isEmpty()) {
-            Pattern pattern = Pattern.compile("[ABDGHLPRSTV-][0123468][EJPT-]");
+        Pattern pattern = Pattern.compile("[ABDGHLPRSTV-][0123468][EJPT-]");
 
-            Preconditions.checkArgument(pattern.matcher(string).matches());
-        }
+        Preconditions.checkArgument(pattern.matcher(string).matches());
     }
 }

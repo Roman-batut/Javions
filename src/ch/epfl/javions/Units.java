@@ -24,14 +24,20 @@ public final class Units {
     /**
      * Important constants of angles, lengths, times and speeds in different units expressed in SI units
      */
-    public final class Angle{
+    public final static class Angle{
+        /**
+         * Angles units
+         */
+        private Angle(){}
         public static final double RADIAN = 1;
         public static final double TURN = 2*Math.PI*RADIAN;
         public static final double DEGREE = TURN/360;
         public static final double T32 = Math.scalb(TURN, -32);
-        private Angle(){}
     }
-    public final class Length{
+    public final static class Length{
+        /**
+         * Length units
+         */
         private Length(){}
         public static final double METER = 1;
         public static final double CENTIMETER = CENTI*METER;
@@ -40,13 +46,19 @@ public final class Units {
         public static final double FOOT = 12*INCH;
         public static final double NAUTICAL_MILE = 1852*METER;
     }
-    public final class Time{
+    public final static class Time{
+        /**
+         * Time units
+         */
         private Time(){}
         public static final double SECOND = 1;
         public static final double MINUTE = 60*SECOND;
         public static final double HOUR = 60*MINUTE;
     }
-    public final class Speed{
+    public final static class Speed{
+        /**
+         * Speed units
+         */
         private Speed(){}
         public static final double KNOT = Length.NAUTICAL_MILE/Time.HOUR;
         public static final double KILOMETER_PER_HOUR = Length.KILOMETER/Time.HOUR ;
@@ -60,8 +72,7 @@ public final class Units {
      * @return the converted value
      */
     public static double convert(double value, double fromUnit, double toUnit){
-        value *= (fromUnit/toUnit);
-        return value;
+        return value*(fromUnit/toUnit);
     }
 
     /**
@@ -78,3 +89,5 @@ public final class Units {
         return convert(value, 1, toUnit);
     }
 }
+
+// #TODO regarder pour plus de docu ici

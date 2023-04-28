@@ -27,11 +27,7 @@ public final class Math2 {
      */
     public static int clamp(int min, int v, int max){
         Preconditions.checkArgument(!(min > max));
-
-        if (v > max){
-            return max;
-        }
-        else return Math.max(v, min);
+        return Math.max(Math.min(v,max), min);
     }
 
     /**
@@ -39,6 +35,6 @@ public final class Math2 {
      * @return arcsinh(x)
      */
     public static double asinh(double x){
-        return Math.log(x + Math.sqrt(1 + (x * x)));
+        return Math.log(x + Math.hypot(1,x));
     }
 }

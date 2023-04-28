@@ -7,7 +7,7 @@ import java.util.Objects;
  *  @author Roman Batut (356158)
  *  @author Guillaume Chevallier (360709)
  */
-public class Bits {
+public final class Bits {
 
     //* Constructor
 

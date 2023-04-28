@@ -5,7 +5,7 @@ package ch.epfl.javions;
  * @author Roman Batut (356158)
  * @author Guillaume Chevallier (360709)
  */
-public class WebMercator {
+public final class WebMercator {
 
     private final static double ADD_CST = 0.5;
 
@@ -47,3 +47,4 @@ public class WebMercator {
     }
 }
 
+// #TODO peut etre factorisé

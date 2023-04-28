@@ -19,10 +19,9 @@ public record AircraftTypeDesignator(String string) {
      *  @throws IllegalArgumentException if the string is not a valid aircraft type designator
      */
     public AircraftTypeDesignator {
-        if(!string.isEmpty()) {
-            Pattern pattern = Pattern.compile("[A-Z0-9]{2,4}");
+        Pattern pattern = Pattern.compile("[A-Z0-9]{2,4}");
 
-            Preconditions.checkArgument(pattern.matcher(string).matches());
-        }
+        Preconditions.checkArgument(pattern.matcher(string).matches());
     }
 }
+// #TODO en vrai voir (Icaoaddress...) si tout fonctionne bien genre plus de is empty parceque pattern et enlever les negations
