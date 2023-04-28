@@ -89,5 +89,6 @@ public final class TileManager {
 
 }
 // #TODO enlever les try and catch et laissé le throw IOexeption pour la gerer plus tard dans basemapcontroller
+// #TODO revoir si ca marche bien ca
 
 

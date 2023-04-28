@@ -26,7 +26,6 @@ public final class BaseMapController {
 
         canvas = new Canvas();
         pane = new Pane(canvas);
-        is = false;
         canvas.widthProperty().bind(pane.widthProperty());
         canvas.heightProperty().bind(pane.heightProperty());
 
