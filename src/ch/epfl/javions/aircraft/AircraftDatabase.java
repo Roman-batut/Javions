@@ -15,7 +15,8 @@ import static java.nio.charset.StandardCharsets.UTF_8;
  */
 public class AircraftDatabase {
 
-    private String fileName;
+    private static final String COMA = ",";
+    private final String fileName;
 
     //* Constructor
 
@@ -25,9 +26,7 @@ public class AircraftDatabase {
      *  @throws NullPointerException if the file name is null
      */
     public AircraftDatabase(String fileName){
-        Objects.requireNonNull(fileName);
-
-        this.fileName = fileName;
+        this.fileName = Objects.requireNonNull(fileName);
     }
 
 
@@ -52,10 +51,10 @@ public class AircraftDatabase {
         {
             String[] infos;
             String line;
-            boolean compare = true;
-            while ((line = buffer.readLine()) != null && compare) {
+//            boolean compare = true;
+            while ((line = buffer.readLine()) != null) {
                 if (line.startsWith(sAddress)) {
-                    infos = line.split(",", -1);
+                    infos = line.split(COMA, -1);
 
                     return new AircraftData(
                             new AircraftRegistration(infos[1]),
@@ -64,10 +63,13 @@ public class AircraftDatabase {
                             WakeTurbulenceCategory.of(infos[5]));
                 }
 
-                compare = (line.compareTo(sAddress) <= 0);
+                if(line.compareTo(sAddress) <= 0){
+                    return null;
+                }
             }
 
             return null;
         }
     }
 }
+// #TODO prendre les responsabilités

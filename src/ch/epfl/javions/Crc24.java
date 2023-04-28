@@ -7,10 +7,13 @@ package ch.epfl.javions;
  */
 public final class Crc24 {
 
+    /**
+     * GENERATOR is a generic generator use by all plane to be able to communicate encoded infos
+     */
     public static final int GENERATOR = 0xFFF409;
     private static final int INDEX = 24;
     private static final int BYTE_RANGE = 256;
-    private int[] table;
+    private final int[] table;
 
     //* Constructor
 

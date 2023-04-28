@@ -34,13 +34,12 @@ public enum WakeTurbulenceCategory {
      *  @param s the string representing the wake turbulence category
      */
     public static WakeTurbulenceCategory of(String s){
-        for(WakeTurbulenceCategory category : WakeTurbulenceCategory.values()) {
-            if (category.letter.equals(s)) {
-                return category;
-            }
-        }
-
-        return UNKNOWN;
+        return switch (s) {
+            case "L" -> LIGHT;
+            case "M" -> MEDIUM;
+            case "H" -> HEAVY;
+            default -> UNKNOWN;
+        };
     }
 }
 

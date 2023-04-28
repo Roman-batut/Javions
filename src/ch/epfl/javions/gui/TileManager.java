@@ -11,50 +11,49 @@ import java.util.LinkedHashMap;
 
 public final class TileManager {
 
+    public static final String HTTPS = "https://";
+
     record TileId(int zoom, int coordX, int coordY) {
         public static boolean isValid(int z, int x, int y){
             return (0<=x && x<=(1<<z) && 0<=y && y<=(1<<z));
         }
     }
 
-    private LinkedHashMap<TileId, Image> cacheMemory;
-    private Path cachePath;
-    private String serverName;
+    private final LinkedHashMap<TileId, Image> cacheMemory;
+    private final Path cachePath;
+    private final String serverName;
 
     public TileManager(Path cachePath, String serverName){
         cacheMemory = new LinkedHashMap<>(100,0.75f,true);
         this.cachePath = cachePath;
+        this.serverName = serverName;
     }
 
     public Image imageForTileAt(TileId tileId)throws IOException{
         String pathAnnex = "/"+tileId.zoom()+"/"+tileId.coordX()+"/";
-        Path imageDiskPath = Path.of(cachePath.toString(), pathAnnex, String.valueOf(tileId.coordY()), ".png" );
+        Path imageDiskPath = Path.of(cachePath.toString(), pathAnnex + tileId.coordY() + ".png" );
         Image image = null;
         if(cacheMemory.get(tileId) != null){
             return cacheMemory.get(tileId);
         } else if (Files.exists(imageDiskPath)) {
             try {
-                URL u = null;
-                u = new URL(imageDiskPath.toString());
-                URLConnection c = null;
-                c = u.openConnection();
-                c.setRequestProperty("User-Agent", "Javions");
-                InputStream i = c.getInputStream();
+
+                InputStream i = new FileInputStream(imageDiskPath.toString());
                 image = new Image(i);
                 i.close();
             }catch (IOException e) {
                 System.out.println("Urlconnection fail or inputstream fail");
                 throw e;
             }
-            if(cacheMemory.size() == 100 ){
+            if (cacheMemory.size() >= 100 ){
                 cacheMemory.remove(cacheMemory.keySet().iterator().next());
             }
             cacheMemory.put(tileId, image);
 
             return image;
         }else{
-            Path imageServerPath = Path.of(serverName, pathAnnex, String.valueOf(tileId.coordY()), ".png");
-            Path docPath = Path.of(cachePath.toString(), pathAnnex);
+            Path imageServerPath = Path.of(serverName + pathAnnex + String.valueOf(tileId.coordY())+ ".png");
+            Path docPath = Path.of(cachePath.toString() + pathAnnex);
             byte[] tab = null;
             try {
                 URL url = new URL(HTTPS + imageServerPath);
@@ -64,7 +63,7 @@ public final class TileManager {
                 InputStream i1 = c.getInputStream();
                 tab = i1.readAllBytes();
                 i1.close();
-                Files.createDirectory(docPath);
+                Files.createDirectories(docPath);
                 Files.createFile(imageDiskPath);
             } catch (IOException e) {
                 System.out.println("Urlconnection fail or inputstream fail or filecreation fail");
@@ -80,7 +79,7 @@ public final class TileManager {
                 System.out.println("OutputStream write or creation fail or input streamfrombytefail");
                 throw e;
             }
-            if(cacheMemory.size() == 100 ){
+            if(cacheMemory.size() >= 100 ){
                 cacheMemory.remove(cacheMemory.keySet().iterator().next());
             }
             cacheMemory.put(tileId, image);

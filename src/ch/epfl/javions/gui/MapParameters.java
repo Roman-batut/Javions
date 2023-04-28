@@ -37,7 +37,9 @@ public final class MapParameters {
         int zoom = Math2.clamp(6, this.zoom.get() + zoomChange, 19);
         int offset = zoom - this.zoom.get();
 
-        scroll(Math.pow(2, offset) * minX.get(), Math.pow(2, offset) * minY.get());
+        minX.set(getMinX()*Math.pow(2,offset));
+        minY.set(getMinY()*Math.pow(2,offset));
+
         this.zoom.set(zoom);
     }
 

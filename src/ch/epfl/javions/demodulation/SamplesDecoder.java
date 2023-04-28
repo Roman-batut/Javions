@@ -3,6 +3,7 @@ package ch.epfl.javions.demodulation;
 import ch.epfl.javions.Preconditions;
 
 import java.io.*;
+import java.util.Objects;
 
 /**
  *  Class representing a decoder of samples
@@ -11,9 +12,10 @@ import java.io.*;
  */
 public final class SamplesDecoder {
 
-    private final int REGUL = (1 << 11);
-    private InputStream stream;
-    private int batchSize;
+    private final static int REGUL = (1 << 11);
+    private final InputStream stream;
+    private final int batchSize;
+    private byte[] batchtab;
 
     //* Constructor
 
@@ -25,14 +27,12 @@ public final class SamplesDecoder {
      *  @throws NullPointerException if the stream is null
      */
     public SamplesDecoder(InputStream stream, int batchSize){
-        Preconditions.checkArgument(!(batchSize <= 0));
-
-        if(stream.equals(InputStream.nullInputStream())){
-            throw new NullPointerException();
-        }
+        Preconditions.checkArgument(batchSize > 0);
+        Objects.requireNonNull(stream);
 
         this.stream = stream;
         this.batchSize = batchSize;
+        batchtab = new byte[batchSize*2];
     }
 
 
@@ -45,12 +45,14 @@ public final class SamplesDecoder {
      *  @param batch the batch of samples
      *  @throws IOException if an I/O error occurs
      *  @throws IllegalArgumentException if the batch size is not equal to the batch size of the decoder
+     *  @return return the number of batch read
      */
     public int readBatch(short[] batch) throws IOException{
         Preconditions.checkArgument(batch.length == batchSize);
 
-        byte[] batchtab;
-        batchtab = stream.readNBytes((batchSize*2));
+//        byte[] batchtab;
+//        batchtab = readNBatch((batchSize*2));
+        stream.readNBytes(batchtab, 0, (batchSize*2));
 
         int length = batchSize*2;
 
@@ -59,7 +61,7 @@ public final class SamplesDecoder {
         }
 
         int k = 0;
-        for (int i=0 ; i<length ; i+=2) {
+        for (int i=0 ; i<length ; i+=Short.BYTES) {
             int weak =  Byte.toUnsignedInt(batchtab[i]);
             int strong = Byte.toUnsignedInt(batchtab[i+1]);
 
@@ -69,6 +71,9 @@ public final class SamplesDecoder {
             k++;
         }
 
-        return (int)(length*0.5);
+        return length/Short.BYTES;
     }
 }
+
+// #TODO prendre responsabilités
+

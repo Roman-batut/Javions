@@ -26,7 +26,7 @@ public final class BaseMapController {
 
         canvas = new Canvas();
         pane = new Pane(canvas);
-
+        is = false;
         canvas.widthProperty().bind(pane.widthProperty());
         canvas.heightProperty().bind(pane.heightProperty());
 
@@ -34,6 +34,29 @@ public final class BaseMapController {
             assert oldS == null;
             newS.addPreLayoutPulseListener(this::redrawIfNeeded);
         });
+        canvas.widthProperty().addListener(listener -> redrawOnNextPulse());
+        canvas.heightProperty().addListener(listener -> redrawOnNextPulse());
+
+        LongProperty minScrollTime = new SimpleLongProperty();
+        pane.setOnScroll(e -> {
+            int zoomDelta = (int) Math.signum(e.getDeltaY());
+            if (zoomDelta == 0) return;
+
+            long currentTime = System.currentTimeMillis();
+            if (currentTime < minScrollTime.get()) return;
+
+            minScrollTime.set(currentTime + 100);
+
+            double x = e.getX();
+            double y = e.getY();
+            mapParameters.scroll(x, y);
+            mapParameters.changeZoomLevel(zoomDelta);
+            mapParameters.scroll(-x, -y);
+            System.out.println("leur mere les putes");
+            redrawOnNextPulse();
+        });
+
+
     }
 
     public Pane pane(){

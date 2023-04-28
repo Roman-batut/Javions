@@ -13,9 +13,9 @@ import java.io.IOException;
 public final class PowerComputer {
 
     private final static int POWER_BATCH_SIZE = 8;
-    private SamplesDecoder decoder;
-    private short[] batchP;
-    private short[] batchD;
+    private final SamplesDecoder decoder;
+    private final short[] batchP;
+    private final short[] batchD;
 
     //* Constructor
 
@@ -44,6 +44,7 @@ public final class PowerComputer {
      *  @param batch the batch of powers
      *  @throws IOException if an I/O error occurs
      *  @throws IllegalArgumentException if the batch size is not equal to the batch size of the decoder
+     *  @return return the number of power batch read
      */
     public int readBatch(int[] batch) throws IOException{
         int size = decoder.readBatch(batchD);
@@ -55,11 +56,13 @@ public final class PowerComputer {
             batchP[position] = batchD[i];
             batchP[(position+1) % POWER_BATCH_SIZE] = batchD[i+1];
             if(k % 2 == 0){
-                Pn = (batchP[6] - batchP[4] + batchP[2] - batchP[0]) * (batchP[6] - batchP[4] + batchP[2] - batchP[0])
-                        + (batchP[7] - batchP[5] + batchP[3] - batchP[1]) * (batchP[7] - batchP[5] + batchP[3] - batchP[1]);
+                int pEven = (batchP[6] - batchP[4] + batchP[2] - batchP[0]);
+                int pOdd = (batchP[7] - batchP[5] + batchP[3] - batchP[1]);
+                Pn = (pEven * pEven) + (pOdd * pOdd);
             }else{
-                Pn = (-batchP[6] + batchP[4] - batchP[2] + batchP[0]) * (-batchP[6] + batchP[4] - batchP[2] + batchP[0])
-                        + (-batchP[7] + batchP[5] - batchP[3] + batchP[1]) * (-batchP[7] + batchP[5] - batchP[3] + batchP[1]);
+                int pEven = (-batchP[6] + batchP[4] - batchP[2] + batchP[0]);
+                int pOdd = (-batchP[7] + batchP[5] - batchP[3] + batchP[1]);
+                Pn = (pEven * pEven) +(pOdd * pOdd);
             }
             batch[k] = Pn;
 
