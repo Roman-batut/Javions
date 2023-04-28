@@ -57,10 +57,8 @@ public final class TileManager {
             Path docPath = Path.of(cachePath.toString(), pathAnnex);
             byte[] tab = null;
             try {
-                URL url = null;
-                url = new URL(imageServerPath.toString());
-                URLConnection c = null;
-                c = url.openConnection();
+                URL url = new URL(HTTPS + imageServerPath);
+                URLConnection c = url.openConnection();
                 c.setRequestProperty("User-Agent", "Javions");
 
                 InputStream i1 = c.getInputStream();

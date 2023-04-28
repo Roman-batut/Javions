@@ -3,8 +3,13 @@ package ch.epfl.javions.gui;
 import ch.epfl.javions.GeoPos;
 import ch.epfl.javions.WebMercator;
 import javafx.application.Platform;
+import javafx.beans.property.LongProperty;
+import javafx.beans.property.SimpleLongProperty;
+import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.layout.Pane;
 import javafx.scene.canvas.Canvas;
+
+import java.io.IOException;
 
 public final class BaseMapController {
 
@@ -18,6 +23,7 @@ public final class BaseMapController {
         this.tileManager = tileManager;
         this.mapParameters = mapParameters;
         redrawNeeded = false;
+
         canvas = new Canvas();
         pane = new Pane(canvas);
 
@@ -38,9 +44,10 @@ public final class BaseMapController {
        double coordX = WebMercator.x(mapParameters.getZoom(), geoPos.longitude());
        double coordY = WebMercator.y(mapParameters.getZoom(), geoPos.latitude());
 
-//       Peut etre inver height width pas sur ....
+       //Peut etre inver height width pas sur ....
        double vectorX = coordX - pane.getWidth() - mapParameters.getMinX() ;
        double vectorY = coordY - pane.getHeight() - mapParameters.getMinY() ;
+
        mapParameters.scroll(vectorX, vectorY);
     }
 
@@ -48,7 +55,27 @@ public final class BaseMapController {
         if (!redrawNeeded) return;
         redrawNeeded = false;
 
-        // … à faire : dessin de la carte
+        GraphicsContext graphicsContext = canvas.getGraphicsContext2D();
+        int xSize = (int) Math.ceil(canvas.getWidth()/256)+1;
+        int ySize = (int) Math.ceil(canvas.getHeight()/256)+1;
+
+        int tileX = (int) Math.floor(mapParameters.getMinX()/256);
+        double offsetX = tileX*256 - mapParameters.getMinX();
+        int tileY = (int) Math.floor(mapParameters.getMinY()/256);
+        double offsetY = tileY*256 - mapParameters.getMinY();
+
+        for (int x=0 ; x<xSize ; x++) {
+            for (int y=0 ; y<ySize ; y++) {
+                try {
+                    System.out.println("ta mere la pute");
+                    graphicsContext.drawImage(tileManager.imageForTileAt(new TileManager.TileId(mapParameters.getZoom(), tileX+x, tileY+y)), x*256+offsetX, y*256+offsetY);
+                } catch (IOException e){
+                    System.out.println("ma mere la pute");
+                }
+
+            }
+        }
+
     }
 
     private void redrawOnNextPulse() {
