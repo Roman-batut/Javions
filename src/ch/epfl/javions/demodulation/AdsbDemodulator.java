@@ -13,9 +13,9 @@ import java.io.InputStream;
 public final class AdsbDemodulator {
 
     private static final int WINDOW_SIZE = 1200;
-    private PowerWindow window;
+    private final PowerWindow window;
     private long timeStampNs;
-    private int[] sommePtab;
+    private final int[] sommePtab;
     private int index;
 
     //* Constructor
@@ -45,6 +45,7 @@ public final class AdsbDemodulator {
      */
     public RawMessage nextMessage() throws IOException {
 
+        byte[] octs = new byte[RawMessage.LENGTH];
         while (window.isFull()) {
             int V = (window.get(6) + window.get(16) + window.get(21) + window.get(26) + window.get(31) + window.get(41));
 
@@ -53,7 +54,6 @@ public final class AdsbDemodulator {
                     && (sommePtab[(index + 1) % 3] > sommePtab[(index + 2) % 3])
                     && (sommePtab[(index + 1) % 3] >= 2 * V)) {
 
-                byte[] octs = new byte[RawMessage.LENGTH];
                 octs[0] = octAt(0);
 
                 if (RawMessage.size(octs[0]) == RawMessage.LENGTH) {
@@ -110,3 +110,5 @@ public final class AdsbDemodulator {
     }
 
 }
+
+// #TODO peut etre mettre les cst pour 80 et tout ca et voir si pour octs c'est tjrs okay

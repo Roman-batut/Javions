@@ -12,8 +12,9 @@ import java.util.Objects;
  */
 public class AircraftStateAccumulator <T extends AircraftStateSetter> {
 
-    private T aircraftstatesetter;
-    private AirbornePositionMessage[] oldmessages;
+    private static final double GAP_MAX_TIMESTAMPNS = Math.pow(10, 10);
+    private final T aircraftstatesetter;
+    private final AirbornePositionMessage[] oldmessages;
 
     //* Constructor
 
@@ -66,7 +67,7 @@ public class AircraftStateAccumulator <T extends AircraftStateSetter> {
                 aircraftstatesetter.setAltitude(posm.altitude());
 
                 AirbornePositionMessage oldmessage = oldmessages[((posm.parity() + 1) % 2)];
-                if((oldmessage != null) && (posm.timeStampNs()-oldmessage.timeStampNs() < Math.pow(10, 10))) {
+                if((oldmessage != null) && (posm.timeStampNs()-oldmessage.timeStampNs() < GAP_MAX_TIMESTAMPNS)) {
                     GeoPos position;
 
                     if(posm.parity() == 0){

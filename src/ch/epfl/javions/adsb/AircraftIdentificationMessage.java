@@ -14,6 +14,8 @@ import java.util.Objects;
 public record AircraftIdentificationMessage(long timeStampNs, IcaoAddress icaoAddress, int category, CallSign callSign)
         implements Message{
 
+    private static final char[] CHARTAB = new char[]{'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',
+            'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'};
     private static final int WEAK_START = 48;
     private static final int WEAK_SIZE = 3;
     private static final int STRONG_BIT_REGUL = 14;
@@ -47,25 +49,6 @@ public record AircraftIdentificationMessage(long timeStampNs, IcaoAddress icaoAd
         Objects.requireNonNull(callSign);
     }
 
-    //* Getters
-
-    /**
-     * Returns the time stamp of the message in nanoseconds
-     */
-    @Override
-    public long timeStampNs() {
-        return timeStampNs;
-    }
-
-    /**
-     * Returns the ICAO address of the aircraft
-     */
-    @Override
-    public IcaoAddress icaoAddress() {
-        return icaoAddress;
-    }
-
-
     //* Methods
 
 
@@ -94,7 +77,6 @@ public record AircraftIdentificationMessage(long timeStampNs, IcaoAddress icaoAd
     //* Private methods
 
     private static CallSign callSignextraction(long payload){
-        char[] chartab = {'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'};
 
         int[] charactervalue = new int[CALLSIGN_MAX_SIZE];
         int k = 0;
@@ -110,7 +92,7 @@ public record AircraftIdentificationMessage(long timeStampNs, IcaoAddress icaoAd
                     charactervalue[i] == SPACE_VALUE) {
 
                 if (charactervalue[i] <= ALPHABETICAL_VALUE_END) {
-                    callsignstring.append(chartab[charactervalue[i] - 1]);
+                    callsignstring.append(CHARTAB[charactervalue[i] - 1]);
                 } else {
                     callsignstring.append(Character.toChars(charactervalue[i]));
                 }

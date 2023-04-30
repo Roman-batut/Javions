@@ -56,32 +56,14 @@ public record AirbornePositionMessage(long timeStampNs,IcaoAddress icaoAddress,d
         Preconditions.checkArgument(0 <= y & y < 1);
     }
 
-    //* Getters
-    
-    /**
-     * Returns the time stamp of the message in nanoseconds
-     */
-    @Override
-    public long timeStampNs() {
-        return timeStampNs;
-    }
-
-    /**
-     * Returns the ICAO address of the aircraft
-     */
-    @Override
-    public IcaoAddress icaoAddress() {
-        return icaoAddress;
-    }
-
 
     //* Methods
 
-
     /**
-     * Returns the airborne position message corresponding to the raw message,
-     * or null if the raw message is not an airborne position message
+     * Decode an airbone position message
      * @param rawMessage the raw message
+     * @returns the airborne position message corresponding to the raw message,
+     * or null if the raw message is not an airborne position message
      */
     public static AirbornePositionMessage of(RawMessage rawMessage){
         long payload = rawMessage.payload();
@@ -139,3 +121,5 @@ public record AirbornePositionMessage(long timeStampNs,IcaoAddress icaoAddress,d
         return decoded;
     }
 }
+
+// #TODO TOUT J4AI RIEN COMPRIS

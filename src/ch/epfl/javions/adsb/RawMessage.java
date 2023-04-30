@@ -30,6 +30,7 @@ public record RawMessage(long timeStampNs, ByteString bytes) {
     private static final int ME_BYTE_SIZE = 11;
     private static final int ME_LENGTH = 56;
     private static final int TYPECODE_LENGHT = 5;
+    private static final HexFormat HEX_FORMAT = HexFormat.of().withUpperCase();
 
 
     //* Constructor
@@ -56,11 +57,8 @@ public record RawMessage(long timeStampNs, ByteString bytes) {
      */
     public static RawMessage of(long timeStampNs, byte[] bytes){
         Crc24 crc24 = new Crc24(Crc24.GENERATOR);
-        if(crc24.crc(bytes) != 0) {
-            return null;
-        }
 
-        return new RawMessage(timeStampNs, new ByteString(bytes));
+        return crc24.crc(bytes) != 0 ? null : new RawMessage(timeStampNs, new ByteString(bytes));
     }
 
     /**
@@ -80,7 +78,8 @@ public record RawMessage(long timeStampNs, ByteString bytes) {
      *  @param payload the payload of the message
      */
     public static int typeCode(long payload){
-        return (int)(payload >>> (ME_LENGTH - TYPECODE_LENGHT));
+        return Bits.extractUInt(payload, (ME_LENGTH - TYPECODE_LENGHT) ,TYPECODE_LENGHT);
+
     }
 
     /**
@@ -98,9 +97,7 @@ public record RawMessage(long timeStampNs, ByteString bytes) {
      */
     public IcaoAddress icaoAddress(){
         long icao = bytes.bytesInRange(ICAO_BYTE_START, ICAO_BYTE_SIZE);
-        String icaoString = HexFormat.of()
-                            .withUpperCase()
-                            .toHexDigits(icao, ICAO_STRING_SIZE);
+        String icaoString = HEX_FORMAT.toHexDigits(icao, ICAO_STRING_SIZE);
         
         return new IcaoAddress(icaoString);
     }

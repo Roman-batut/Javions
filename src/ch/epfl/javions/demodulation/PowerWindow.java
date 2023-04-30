@@ -4,6 +4,7 @@ import ch.epfl.javions.Preconditions;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Objects;
 
 /**
  *  Class representing a window of power
@@ -13,8 +14,8 @@ import java.io.InputStream;
 public final class PowerWindow {
 
     private final static int BATCH_SIZE = (1 << 16);
-    private PowerComputer computer;
-    private int windowSize;
+    private final PowerComputer computer;
+    private final int windowSize;
     private int position;
     private long sizeB;
     private int[] batchPowerOne;
@@ -48,14 +49,14 @@ public final class PowerWindow {
     //* Getters
 
     /**
-     *  Returns the size of the window
+     *  @return  the size of the window
      */
     public int size(){
         return windowSize;
     }
 
     /**
-     *  Returns the position of the window
+     *  @return the position of the window
      */
     public long position(){
         return position;
@@ -66,21 +67,20 @@ public final class PowerWindow {
 
 
     /**
-     *  Returns true if the window is full
+     *  @return true if the window is full
      */
     public boolean isFull(){
         return (sizeB >= windowSize + position);
     }
 
     /**
-     *  Returns the power at the given position in the window
+     *  getter of the number at a given value
      *  @param i the position in the window
      *  @throws IndexOutOfBoundsException if the position is not in the window
+     *  @return the power at the given position in the window
      */
     public int get(int i){
-        if(i < 0 || i >= windowSize){
-            throw new IndexOutOfBoundsException();
-        }
+        Objects.checkIndex(i, windowSize);
 
         int relativepos = (position % BATCH_SIZE + i);
         if(relativepos >= BATCH_SIZE){
