@@ -13,7 +13,8 @@ public final class TileManager {
 
     public static final String HTTPS = "https://";
 
-    record TileId(int zoom, int coordX, int coordY) {
+    public record TileId(int zoom, int coordX, int coordY) {
+
         public static boolean isValid(int z, int x, int y){
             return (0<=x && x<=(1<<z) && 0<=y && y<=(1<<z));
         }

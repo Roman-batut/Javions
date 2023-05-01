@@ -21,7 +21,7 @@ public record AircraftTypeDesignator(String string) {
     public AircraftTypeDesignator {
         Pattern pattern = Pattern.compile("[A-Z0-9]{2,4}");
 
-        Preconditions.checkArgument(pattern.matcher(string).matches());
+        Preconditions.checkArgument(pattern.matcher(string).matches() || string.isEmpty());
     }
 }
 // #TODO en vrai voir (Icaoaddress...) si tout fonctionne bien genre plus de is empty parceque pattern et enlever les negations

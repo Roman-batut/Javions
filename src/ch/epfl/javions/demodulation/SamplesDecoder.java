@@ -15,7 +15,7 @@ public final class SamplesDecoder {
     private final static int REGUL = (1 << 11);
     private final InputStream stream;
     private final int batchSize;
-    private byte[] batchtab;
+
 
     //* Constructor
 
@@ -32,7 +32,6 @@ public final class SamplesDecoder {
 
         this.stream = stream;
         this.batchSize = batchSize;
-        batchtab = new byte[batchSize*2];
     }
 
 
@@ -50,9 +49,9 @@ public final class SamplesDecoder {
     public int readBatch(short[] batch) throws IOException{
         Preconditions.checkArgument(batch.length == batchSize);
 
-//        byte[] batchtab;
-//        batchtab = readNBatch((batchSize*2));
-        stream.readNBytes(batchtab, 0, (batchSize*2));
+        byte[] batchtab;
+        batchtab = stream.readNBytes((batchSize*2));
+;
 
         int length = batchSize*2;
 
@@ -75,5 +74,6 @@ public final class SamplesDecoder {
     }
 }
 
-// #TODO prendre responsabilités
+// #TODO revoir le readNbytes
+
 
