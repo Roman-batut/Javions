@@ -1,14 +1,13 @@
 package ch.epfl.javions.gui;
 
 import ch.epfl.javions.GeoPos;
+import ch.epfl.javions.Math2;
 import ch.epfl.javions.WebMercator;
 import javafx.application.Platform;
-import javafx.beans.property.LongProperty;
-import javafx.beans.property.SimpleLongProperty;
+import javafx.beans.property.*;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.layout.Pane;
 import javafx.scene.canvas.Canvas;
-
 import java.io.IOException;
 
 public final class BaseMapController {
@@ -19,7 +18,7 @@ public final class BaseMapController {
     private Canvas canvas;
     private boolean redrawNeeded;
 
-    public BaseMapController(TileManager tileManager, MapParameters mapParameters){
+    public BaseMapController(TileManager tileManager, MapParameters mapParameters) {
         this.tileManager = tileManager;
         this.mapParameters = mapParameters;
         redrawNeeded = false;
@@ -36,6 +35,7 @@ public final class BaseMapController {
         canvas.widthProperty().addListener(listener -> redrawOnNextPulse());
         canvas.heightProperty().addListener(listener -> redrawOnNextPulse());
 
+        //Mouse Scroll
         LongProperty minScrollTime = new SimpleLongProperty();
         pane.setOnScroll(e -> {
             int zoomDelta = (int) Math.signum(e.getDeltaY());
@@ -51,14 +51,34 @@ public final class BaseMapController {
             mapParameters.scroll(x, y);
             mapParameters.changeZoomLevel(zoomDelta);
             mapParameters.scroll(-x, -y);
-            System.out.println("leur mere les putes");
             redrawOnNextPulse();
         });
 
 
+        //Mouse Pressed
+        DoubleProperty lastX = new SimpleDoubleProperty();
+        DoubleProperty lastY = new SimpleDoubleProperty();
+        pane.setOnMousePressed(e -> {
+            lastX.set(e.getX());
+            lastY.set(e.getY());
+        });
+
+        //Mouse Dragged
+        pane.setOnMouseDragged(e -> {
+            mapParameters.scroll(-(e.getX() - lastX.get()), -(e.getY() - lastY.get()));
+            lastX.set(e.getX());
+            lastY.set(e.getY());
+
+            redrawOnNextPulse();
+        });
+
+        //Mouse Released
+        pane.setOnMouseReleased(e -> {
+        });
+
     }
 
-    public Pane pane(){
+    public Pane pane() {
         return pane;
     }
 
@@ -66,7 +86,6 @@ public final class BaseMapController {
        double coordX = WebMercator.x(mapParameters.getZoom(), geoPos.longitude());
        double coordY = WebMercator.y(mapParameters.getZoom(), geoPos.latitude());
 
-       //Peut etre inver height width pas sur ....
        double vectorX = coordX - pane.getWidth() - mapParameters.getMinX() ;
        double vectorY = coordY - pane.getHeight() - mapParameters.getMinY() ;
 
@@ -89,15 +108,13 @@ public final class BaseMapController {
         for (int x=0 ; x<xSize ; x++) {
             for (int y=0 ; y<ySize ; y++) {
                 try {
-                    System.out.println("ta mere la pute");
-                    graphicsContext.drawImage(tileManager.imageForTileAt(new TileManager.TileId(mapParameters.getZoom(), tileX+x, tileY+y)), x*256+offsetX, y*256+offsetY);
+                    if(TileManager.TileId.isValid(mapParameters.getZoom(), tileX+x, tileY+y)){
+                        graphicsContext.drawImage(tileManager.imageForTileAt(new TileManager.TileId(mapParameters.getZoom(), tileX+x, tileY+y)), x*256+offsetX, y*256+offsetY);
+                    }
                 } catch (IOException e){
-                    System.out.println("ma mere la pute");
                 }
-
             }
         }
-
     }
 
     private void redrawOnNextPulse() {
