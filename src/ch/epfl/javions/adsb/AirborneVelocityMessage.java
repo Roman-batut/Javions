@@ -56,18 +56,6 @@ public record AirborneVelocityMessage(long timeStampNs,IcaoAddress icaoAddress,d
         Preconditions.checkArgument(speed >= 0 && trackOrHeading >= 0 && timeStampNs >= 0);
     }
 
-    //* Getters
-
-    @Override
-    public long timeStampNs() {
-        return timeStampNs;
-    }
-
-    @Override
-    public IcaoAddress icaoAddress() {
-        return icaoAddress;
-    }
-
 
     //* Methods
 
