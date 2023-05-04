@@ -6,8 +6,12 @@ package ch.epfl.javions;
  * @author Guillaume Chevallier (360709)
  */
 public final class Units {
-    
+
+    //* Constants
+
+    // One hundredth of a unit
     public static final double CENTI = 1e-2;
+    // One thousand of a unit
     public static final double KILO = 1e3;
 
     //* Constructor
@@ -25,34 +29,41 @@ public final class Units {
      * Important constants of angles, lengths, times and speeds in different units expressed in SI units
      */
     public final static class Angle{
-        /**
-         * Angles units
-         */
+        // Private constructor to prevent instantiation
         private Angle(){}
+        // Angle of the arc of a circle whose length is equal to its radius
         public static final double RADIAN = 1;
+        // Angle of a whole circle
         public static final double TURN = 2*Math.PI*RADIAN;
+        // One three hundred and sixtieth of a whole circle
         public static final double DEGREE = TURN/360;
+        // One two to the power of thirty-second of a whole circle
         public static final double T32 = Math.scalb(TURN, -32);
     }
     public final static class Length{
-        /**
-         * Length units
-         */
+        // Private constructor to prevent instantiation
         private Length(){}
+        // Distance travelled by light in a vacuum in one second
         public static final double METER = 1;
+        // One hundredth of a meter
         public static final double CENTIMETER = CENTI*METER;
+        // One thousand meters
         public static final double KILOMETER = KILO*METER;
+        // Width of the thumb of Henri first of England in 1011 (approx.)
         public static final double INCH = 2.54*CENTIMETER;
+        // Size of a human foot (approx.)
         public static final double FOOT = 12*INCH;
+        // One thousand eight hundred and fifty-two meters
         public static final double NAUTICAL_MILE = 1852*METER;
     }
     public final static class Time{
-        /**
-         * Time units
-         */
+        // Private constructor to prevent instantiation
         private Time(){}
+        // Duration of 9 192 631 770 periods of the radiation corresponding to the transition between the two hyperfine levels of the ground state of the cesium 133 atom
         public static final double SECOND = 1;
+        // Sixty seconds
         public static final double MINUTE = 60*SECOND;
+        // Three thousand six hundred seconds
         public static final double HOUR = 60*MINUTE;
     }
     public final static class Speed{

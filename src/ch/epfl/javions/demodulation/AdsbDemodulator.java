@@ -22,7 +22,6 @@ public final class AdsbDemodulator {
 
     /**
      * Constructor of a demodulator
-     *
      * @param samplesStream the stream of samples
      * @throws IOException          if an I/O error occurs
      * @throws NullPointerException if the stream is null
@@ -40,7 +39,6 @@ public final class AdsbDemodulator {
 
     /**
      * Returns the next message or null if there is no message left
-     *
      * @throws IOException if an I/O error occurs
      */
     public RawMessage nextMessage() throws IOException {

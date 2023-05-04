@@ -25,7 +25,7 @@ public final class CprDecoder {
 
 
     /**
-     * decode the aircraft position
+     * Decodes the aircraft position
      * @param x0 the longitude coordinate of the first message
      * @param y0 the latitude coordinate of the first message
      * @param x1 the longitude coordinate of the second message
