@@ -44,7 +44,10 @@ public final class AircraftController {
     }
 
     private SVGPath icon(){
-//!     the svg path for the icon
+        for (ObservableAircraftState av: aircraftStates ) {
+            AircraftIcon.iconFor(av.getTypeDesignator(), av.getDescription(),
+                    av.getCategory(), av.getWakeTurbulenceCategory());
+        }
         return null;
     }
 
