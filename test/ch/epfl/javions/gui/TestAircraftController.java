@@ -5,13 +5,11 @@ import ch.epfl.javions.adsb.Message;
 import ch.epfl.javions.adsb.MessageParser;
 import ch.epfl.javions.adsb.RawMessage;
 import ch.epfl.javions.aircraft.AircraftDatabase;
-import ch.epfl.javions.demodulation.AdsbDemodulator;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.Scene;
-import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
@@ -21,11 +19,8 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
 
-class AircraftIconTest {
-
-    public final class TestAircraftController extends Application {
+public final class TestAircraftController extends Application {
         public static void main(String[] args) { launch(args); }
 
         static List<RawMessage> readAllMessages(String fileName)
@@ -72,6 +67,26 @@ class AircraftIconTest {
             var root = new StackPane(bmc.pane(), ac.pane());
             primaryStage.setScene(new Scene(root));
             primaryStage.show();
+
+            var mi = readAllMessages("resources/messages_20230318_0915.bin")
+                    .iterator();
+
+            // Animation des aéronefs
+            new AnimationTimer() {
+                @Override
+                public void handle(long now) {
+                    try {
+                        for (int i = 0; i < 10; i += 1) {
+                            Message m = MessageParser.parse(mi.next());
+                            if (m != null) asm.updateWithMessage(m);
+                        }
+                    } catch (IOException e) {
+                        throw new UncheckedIOException(e);
+                    }
+                }
+            }.start();
+        }
+    }
 
             var mi = readAllMessages("messages_20230318_0915.bin")
                     .iterator();
