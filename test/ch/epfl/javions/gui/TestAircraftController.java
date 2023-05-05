@@ -25,12 +25,14 @@ public final class TestAircraftController extends Application {
 
         static List<RawMessage> readAllMessages(String fileName)
                 throws IOException {
-            DataInputStream s = new DataInputStream(
-                    new BufferedInputStream(
-                            new FileInputStream(fileName)));
-            byte[] bytes = new byte[RawMessage.LENGTH];
             List<RawMessage> ml = new ArrayList<>();
-            while (s.available() != 0) {
+
+
+           try (DataInputStream s = new DataInputStream(
+                    new BufferedInputStream(
+                            new FileInputStream(fileName)))){
+            byte[] bytes = new byte[RawMessage.LENGTH];
+            while (true) {
                 long timeStampNs = s.readLong();
                 int bytesRead = s.readNBytes(bytes, 0, bytes.length);
                 assert bytesRead == RawMessage.LENGTH;
@@ -38,8 +40,10 @@ public final class TestAircraftController extends Application {
 
 
                 ml.add(new RawMessage(timeStampNs, message));
-            }
-            return ml;
+                }
+            } catch (EOFException e) {  /* nothing to do */ }                                                                                               catch (FileNotFoundException e) {    throw new RuntimeException(e);}
+           catch (IOException e) {    throw new RuntimeException(e);}
+           return ml;
         }
 
         @Override
@@ -87,24 +91,3 @@ public final class TestAircraftController extends Application {
             }.start();
         }
     }
-
-            var mi = readAllMessages("messages_20230318_0915.bin")
-                    .iterator();
-
-            // Animation des aéronefs
-            new AnimationTimer() {
-                @Override
-                public void handle(long now) {
-                    try {
-                        for (int i = 0; i < 10; i += 1) {
-                            Message m = MessageParser.parse(mi.next());
-                            if (m != null) asm.updateWithMessage(m);
-                        }
-                    } catch (IOException e) {
-                        throw new UncheckedIOException(e);
-                    }
-                }
-            }.start();
-        }
-    }
-}
