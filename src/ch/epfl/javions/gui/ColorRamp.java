@@ -54,8 +54,9 @@ public final class ColorRamp {
 
         for(Double key : keyset) {
             double diff  = key - alpha;
-            if (diff >= 0) {
-                color = colorMap.get(key).interpolate(colorMap.get(key - 1), diff*(colorMap.size()-1));
+            if (diff <= 0) {
+                color = colorMap.get(key - 1).interpolate(colorMap.get(key), diff*(colorMap.size()-1));
+                return color;
             }
         }
 

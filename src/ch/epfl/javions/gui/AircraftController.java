@@ -1,10 +1,13 @@
 package ch.epfl.javions.gui;
 
+import ch.epfl.javions.GeoPos;
+import ch.epfl.javions.Units;
 import ch.epfl.javions.WebMercator;
 import ch.epfl.javions.aircraft.AircraftDescription;
 import ch.epfl.javions.aircraft.AircraftTypeDesignator;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.ObjectProperty;
+import javafx.beans.value.ChangeListener;
 import javafx.collections.ObservableSet;
 import javafx.collections.SetChangeListener;
 import javafx.geometry.Bounds;
@@ -25,11 +28,13 @@ public final class AircraftController {
     public AircraftController(MapParameters mapParameters,
                               ObservableSet<ObservableAircraftState> aircraftStates,
                               ObjectProperty<ObservableAircraftState> clickedPlane){
+
         this.mapParameters = mapParameters;
         this.aircraftStates = aircraftStates;
         this.clickedPlane = clickedPlane;
         pane = new Pane();
         pane.setPickOnBounds(false);
+
         aircraftStates.addListener((SetChangeListener<ObservableAircraftState>)
                 change -> {
                     aircraft(change.getElementAdded());
@@ -94,31 +99,36 @@ public final class AircraftController {
         SVGPath icon = new SVGPath();
 
         icon.setContent(aircraftIcon.svgPath());
-        icon.rotateProperty().bind(Bindings.createObjectBinding(() ->
-                aircraftIcon.canRotate() ? state.getTrackOrHeanding() : 0, state.trackOrHeading()));
+        icon.rotateProperty().bind(Bindings.createDoubleBinding(() ->
+                aircraftIcon.canRotate() ? Units.convertTo(state.getTrackOrHeanding(), Units.Angle.DEGREE) : 0, state.trackOrHeading()));
 
-//        icon.fillProperty().bind(Bindings.createObjectBinding(() ->
-//                ColorRamp.PLASMA.at(Math.pow((state.getAltitude()/12000.d),1d/3)), state.altitudeProperty()));
+        //icon.fillProperty().bind(Bindings.createObjectBinding(() ->
+        //        ColorRamp.PLASMA.at(Math.pow((state.getAltitude()/12000.d),1.d/3)), state.altitudeProperty()));
 
         icon.getStyleClass().add("aircraft");
+        icon.setOnMousePressed(e -> clickedPlane.set(state));
+
         return icon;
     }
 
     //Icon + Label
-    private Group iconLabel(ObservableAircraftState state, boolean isClicked){
+    private Group iconLabel(ObservableAircraftState state){
         AircraftIcon aircraftIcon = iconCreation(state);
         SVGPath icon = icon(state, aircraftIcon);
 
         Group etiquette = label(state);
         etiquette.visibleProperty().bind(Bindings.createBooleanBinding(() ->
-                isClicked || mapParameters.getZoom()>=11));
+                state.equals(clickedPlane.get()) || mapParameters.getZoom()>=11, clickedPlane, mapParameters.zoom()));
 
-        Group eticon = new Group(icon, etiquette);
-        double x = WebMercator.x(mapParameters.getZoom(), state.getPosition().longitude());
-        double y = WebMercator.y(mapParameters.getZoom(), state.getPosition().latitude());
-        eticon.setLayoutX(x - mapParameters.getMinX());
-        eticon.setLayoutY(y - mapParameters.getMinY());
-        return eticon;
+        Group iconLabel = new Group(icon, etiquette);
+
+        iconLabel.layoutXProperty().bind(Bindings.createDoubleBinding(() ->
+                WebMercator.x(mapParameters.getZoom(), state.getPosition().longitude()) - mapParameters.getMinX(), state.positionProperty(), mapParameters.minX()));
+
+        iconLabel.layoutYProperty().bind(Bindings.createDoubleBinding(() ->
+                WebMercator.y(mapParameters.getZoom(), state.getPosition().latitude()) - mapParameters.getMinY(), state.positionProperty(), mapParameters.minY()));
+
+        return iconLabel;
     }
 
     //Trajectory
@@ -143,7 +153,6 @@ public final class AircraftController {
 
         Group trajectory = new Group(line);
 
-
         trajectory.getStyleClass().add("trajectory");
 
         return trajectory;
@@ -152,10 +161,9 @@ public final class AircraftController {
     //Global Group
 
     private void aircraft(ObservableAircraftState state){
-
-        Group labelicon = iconLabel(state, state.equals(clickedPlane.get()));
+        Group iconLabel = iconLabel(state);
         Group trajectory = trajectory(state);
-        Group aircraft = new Group(labelicon, trajectory);
+        Group aircraft = new Group(iconLabel, trajectory);
 
         aircraft.setId(state.getIcaoAddress().string());
         pane.getChildren().add(aircraft);
