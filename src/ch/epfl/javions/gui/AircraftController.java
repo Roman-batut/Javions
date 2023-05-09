@@ -97,11 +97,11 @@ public final class AircraftController {
         Text text = text(state);
         Rectangle rectangle = background(text);
 
-        Group etiquette = new Group(rectangle, text);
+        Group label = new Group(rectangle, text);
 
-        etiquette.getStyleClass().add("label");
+        label.getStyleClass().add("label");
 
-        return etiquette;
+        return label;
     }
 
     //Icon
@@ -110,29 +110,30 @@ public final class AircraftController {
         SVGPath icon = new SVGPath();
 
         icon.setContent(aircraftIcon.svgPath());
+
         icon.rotateProperty().bind(Bindings.createDoubleBinding(() ->
                 aircraftIcon.canRotate() ? Units.convertTo(state.getTrackOrHeanding(), Units.Angle.DEGREE) : 0, state.trackOrHeading()));
 
-        //icon.fillProperty().bind(Bindings.createObjectBinding(() ->
-        //        ColorRamp.PLASMA.at(Math.pow((state.getAltitude()/12000.d),1.d/3)), state.altitudeProperty()));
+        icon.fillProperty().bind(Bindings.createObjectBinding(() ->
+                ColorRamp.PLASMA.at(Math.pow((state.getAltitude()/12000.d),1.d/3)), state.altitudeProperty()));
+
+        icon.setOnMousePressed(e ->
+                clickedPlane.set(state));
 
         icon.getStyleClass().add("aircraft");
-        icon.setOnMousePressed(e -> clickedPlane.set(state));
 
         return icon;
     }
 
     //Icon + Label
     private Group iconLabel(ObservableAircraftState state){
-        AircraftIcon aircraftIcon = iconCreation(state);
-        SVGPath icon = icon(state, aircraftIcon);
+        SVGPath icon = icon(state, iconCreation(state));
 
-        Group etiquette = label(state);
-        etiquette.visibleProperty().bind(Bindings.createBooleanBinding(() ->
+        Group label = label(state);
+        label.visibleProperty().bind(Bindings.createBooleanBinding(() ->
                 state.equals(clickedPlane.get()) || mapParameters.getZoom()>=11, clickedPlane, mapParameters.zoom()));
 
-        Group iconLabel = new Group(icon, etiquette);
-
+        Group iconLabel = new Group(icon, label);
         iconLabel.layoutXProperty().bind(Bindings.createDoubleBinding(() ->
                 WebMercator.x(mapParameters.getZoom(), state.getPosition().longitude()) - mapParameters.getMinX(), state.positionProperty(), mapParameters.minX()));
 

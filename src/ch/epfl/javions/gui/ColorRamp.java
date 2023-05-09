@@ -26,40 +26,26 @@ public final class ColorRamp {
             Color.valueOf("0xfdb52eff"), Color.valueOf("0xfdc229ff"),
             Color.valueOf("0xfccf25ff"), Color.valueOf("0xf9dd24ff"),
             Color.valueOf("0xf5eb27ff"), Color.valueOf("0xf0f921ff"));
-    private final Map<Double, Color> colorMap;
+
+    private final Color[] colors;
 
     public ColorRamp(Color... colors){
         Preconditions.checkArgument(colors.length >= 2);
 
-        colorMap = new HashMap<>(colors.length);
-
-        double k = 0;
-        for (Color color : colors) {
-            colorMap.put(k, color);
-            k += 1.d/(colors.length-1);
-        }
+        this.colors = colors;
     }
 
     public Color at(double alpha){
-        Set<Double> keyset = colorMap.keySet();
-        Color color = null;
 
         if (alpha <= 0){
-            color = colorMap.get(0.d);
+            return colors[0];
         }
 
         if (alpha >= 1){
-            color = colorMap.get(1.d);
+            return colors[colors.length-1];
         }
 
-        for(Double key : keyset) {
-            double diff  = key - alpha;
-            if (diff <= 0) {
-                color = colorMap.get(key - 1).interpolate(colorMap.get(key), diff*(colorMap.size()-1));
-                return color;
-            }
-        }
-
-        return color;
+        int index = (int) (alpha * (colors.length-1));
+        return colors[index].interpolate(colors[index+1],  alpha * (colors.length-1) - index);
     }
 }
