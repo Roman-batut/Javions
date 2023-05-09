@@ -41,8 +41,7 @@ public final class TestAircraftController extends Application {
 
                 ml.add(new RawMessage(timeStampNs, message));
                 }
-            } catch (EOFException e) {  /* nothing to do */ }                                                                                               catch (FileNotFoundException e) {    throw new RuntimeException(e);}
-           catch (IOException e) {    throw new RuntimeException(e);}
+            } catch (EOFException e) {  /* nothing to do */ }
            return ml;
         }
 
@@ -83,6 +82,7 @@ public final class TestAircraftController extends Application {
                         for (int i = 0; i < 10; i += 1) {
                             Message m = MessageParser.parse(mi.next());
                             if (m != null) asm.updateWithMessage(m);
+                            asm.purge();
                         }
                     } catch (IOException e) {
                         throw new UncheckedIOException(e);

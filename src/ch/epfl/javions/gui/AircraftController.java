@@ -5,6 +5,7 @@ import ch.epfl.javions.Units;
 import ch.epfl.javions.WebMercator;
 import ch.epfl.javions.aircraft.AircraftDescription;
 import ch.epfl.javions.aircraft.AircraftTypeDesignator;
+import ch.epfl.javions.aircraft.WakeTurbulenceCategory;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.value.ChangeListener;
@@ -64,20 +65,30 @@ public final class AircraftController {
 
     private Text text(ObservableAircraftState state){
         Text text = new Text();
+        String name;
+        if(state.getRegistration() != null){
+            name = state.getRegistration().string();
+        }else if(state.getCallSign() != null) {
+            name = state.getCallSign().string();
+        }else {
+            name = state.getIcaoAddress().string();
+        }
 
-        String velocity = (state.getVelocity() == 0) ? "?" : state.velocityProperty().toString();
-        Text velocitytxt = new Text(velocity);
-        velocitytxt.textProperty().bind(Bindings.format("%f km/h" ,state.velocityProperty()));
-
-        String altitude = (state.getAltitude() == 0) ? "?" : state.altitudeProperty().toString();
-        Text altitudetxt = new Text(altitude);
-        altitudetxt.textProperty().bind(Bindings.format("%f m" ,state.altitudeProperty()));
-
-        String name = (state.getRegistration() != null) ? state.getRegistration().string() :
-                ((state.getCallSign() != null)? state.getCallSign().string() : state.getIcaoAddress().string());
-
+//        String velocity = (state.getVelocity() == 0) ? "?" : state.velocityProperty().toString();
+//        Text velocitytxt = new Text(velocity);
+//        velocitytxt.textProperty().bind(Bindings.format("%f km/h" ,state.velocityProperty()));
         text.textProperty().bind(Bindings.createStringBinding(() ->
-                name +"\n"+velocitytxt.textProperty() + "\u2002" + altitudetxt.textProperty()));
+                        name+"\n"+ (int) state.velocityProperty().get()+"km/h" + "\u2002" + (int)state.altitudeProperty().get() + "m",
+                state.velocityProperty(),state.altitudeProperty()));
+//        String altitude = (state.getAltitude() == 0) ? "?" : state.altitudeProperty().toString();
+//        Text altitudetxt = new Text(altitude);
+//        altitudetxt.textProperty().bind(Bindings.format("%f m" ,state.altitudeProperty()));
+//
+//        String name = (state.getRegistration() != null) ? state.getRegistration().string() :
+//                ((state.getCallSign() != null)? state.getCallSign().string() : state.getIcaoAddress().string());
+//
+//        text.textProperty().bind(Bindings.createStringBinding(() ->
+//                name +"\n"+velocitytxt.textProperty() + "\u2002" + altitudetxt.textProperty()));
 
         return text;
     }
@@ -170,13 +181,17 @@ public final class AircraftController {
     }
 
     private AircraftIcon iconCreation(ObservableAircraftState state){
+        if(state == null){
+            return AircraftIcon.iconFor(new AircraftTypeDesignator(""), new AircraftDescription("") ,0, WakeTurbulenceCategory.UNKNOWN);
+        }
         AircraftTypeDesignator typeDesignator = state.getTypeDesignator() == null ? new AircraftTypeDesignator("") : state.getTypeDesignator();
         AircraftDescription description = state.getDescription() == null ? new AircraftDescription("") : state.getDescription();
 
-        return AircraftIcon.iconFor(typeDesignator, description ,state.getCategory(), state.getWakeTurbulenceCategory());
+        return AircraftIcon.iconFor(typeDesignator, description, state.getCategory(), state.getWakeTurbulenceCategory());
     }
 
 }
 
 
 //#TODO rename en anglais bien correcte
+// #TODO faire la gestion d'error quand le state est null
