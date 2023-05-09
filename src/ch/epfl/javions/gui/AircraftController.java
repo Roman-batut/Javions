@@ -74,13 +74,14 @@ public final class AircraftController {
         if(state.getRegistration() != null){
             name.set(state.getRegistration().string());
         }else{
-            name.bind(state.callSignProperty().asString().when(Bindings.createBooleanBinding(() ->
-                    state.callSignProperty() != null, state.callSignProperty())).orElse(state.getIcaoAddress().string()));
+//            name.bind(state.callSignProperty().asString().when(Bindings.createBooleanBinding(() ->
+//                    state.callSignProperty() != null, state.callSignProperty())).orElse(state.getIcaoAddress().string()));
+//            name.bind(Bindings.createObjectBinding(() -> state.callSignProperty().when()));
         }
 
         text.textProperty().bind(Bindings.createStringBinding(() ->
-                        name.get() + "\n"+ (int) state.velocityProperty().get()+"km/h" + "\u2002" + (int)state.altitudeProperty().get() + "m",
-                name, state.velocityProperty(),state.altitudeProperty()));
+                        name.get() + "\n"+String.format("%.2f km/h" ,Units.convertTo(state.velocityProperty().get(), Units.Speed.KILOMETER_PER_HOUR))
+                                        + "\u2002" + String.format("%.2f m", state.altitudeProperty().get()), state.velocityProperty(),state.altitudeProperty()));
 
         return text;
     }
