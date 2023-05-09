@@ -3,11 +3,15 @@ package ch.epfl.javions.gui;
 import ch.epfl.javions.GeoPos;
 import ch.epfl.javions.Units;
 import ch.epfl.javions.WebMercator;
+import ch.epfl.javions.adsb.CallSign;
 import ch.epfl.javions.aircraft.AircraftDescription;
 import ch.epfl.javions.aircraft.AircraftTypeDesignator;
 import ch.epfl.javions.aircraft.WakeTurbulenceCategory;
 import javafx.beans.binding.Bindings;
+import javafx.beans.binding.BooleanBinding;
 import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.ObservableSet;
 import javafx.collections.SetChangeListener;
@@ -58,37 +62,25 @@ public final class AircraftController {
         Rectangle rectangle = new Rectangle();
 
         rectangle.widthProperty().bind(text.layoutBoundsProperty().map(b -> b.getWidth() + 4));
-        rectangle.heightProperty().bind(text.layoutBoundsProperty().map(Bounds::getHeight));
+        rectangle.heightProperty().bind(text.layoutBoundsProperty().map(b -> b.getHeight() + 4));
 
         return rectangle;
     }
 
     private Text text(ObservableAircraftState state){
         Text text = new Text();
-        String name;
+        StringProperty name = new SimpleStringProperty();
+
         if(state.getRegistration() != null){
-            name = state.getRegistration().string();
-        }else if(state.getCallSign() != null) {
-            name = state.getCallSign().string();
-        }else {
-            name = state.getIcaoAddress().string();
+            name.set(state.getRegistration().string());
+        }else{
+            name.bind(state.callSignProperty().asString().when(Bindings.createBooleanBinding(() ->
+                    state.callSignProperty() != null, state.callSignProperty())).orElse(state.getIcaoAddress().string()));
         }
 
-//        String velocity = (state.getVelocity() == 0) ? "?" : state.velocityProperty().toString();
-//        Text velocitytxt = new Text(velocity);
-//        velocitytxt.textProperty().bind(Bindings.format("%f km/h" ,state.velocityProperty()));
         text.textProperty().bind(Bindings.createStringBinding(() ->
-                        name+"\n"+ (int) state.velocityProperty().get()+"km/h" + "\u2002" + (int)state.altitudeProperty().get() + "m",
-                state.velocityProperty(),state.altitudeProperty()));
-//        String altitude = (state.getAltitude() == 0) ? "?" : state.altitudeProperty().toString();
-//        Text altitudetxt = new Text(altitude);
-//        altitudetxt.textProperty().bind(Bindings.format("%f m" ,state.altitudeProperty()));
-//
-//        String name = (state.getRegistration() != null) ? state.getRegistration().string() :
-//                ((state.getCallSign() != null)? state.getCallSign().string() : state.getIcaoAddress().string());
-//
-//        text.textProperty().bind(Bindings.createStringBinding(() ->
-//                name +"\n"+velocitytxt.textProperty() + "\u2002" + altitudetxt.textProperty()));
+                        name.get() + "\n"+ (int) state.velocityProperty().get()+"km/h" + "\u2002" + (int)state.altitudeProperty().get() + "m",
+                name, state.velocityProperty(),state.altitudeProperty()));
 
         return text;
     }
