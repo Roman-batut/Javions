@@ -131,6 +131,7 @@ public final class ObservableAircraftState implements AircraftStateSetter {
     public GeoPos getPosition(){
         return position.get();
     }
+    public AircraftData getAircraftData(){return aircraftData;}
 
     //* Getters fixed infos
 

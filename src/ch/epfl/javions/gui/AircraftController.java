@@ -4,6 +4,7 @@ import ch.epfl.javions.GeoPos;
 import ch.epfl.javions.Units;
 import ch.epfl.javions.WebMercator;
 import ch.epfl.javions.adsb.CallSign;
+import ch.epfl.javions.aircraft.AircraftData;
 import ch.epfl.javions.aircraft.AircraftDescription;
 import ch.epfl.javions.aircraft.AircraftTypeDesignator;
 import ch.epfl.javions.aircraft.WakeTurbulenceCategory;
@@ -42,9 +43,13 @@ public final class AircraftController {
 
         aircraftStates.addListener((SetChangeListener<ObservableAircraftState>)
                 change -> {
-                    aircraft(change.getElementAdded());
+                    if(change.wasAdded()){
+                        aircraft(change.getElementAdded());
+                    }
+
                     if(change.wasRemoved()){
-                        pane.getChildren().remove(change.getElementRemoved());
+                        ObservableAircraftState statermv = change.getElementRemoved();
+                        pane.getChildren().removeIf((s) -> s.getId().equals(statermv.getIcaoAddress().string()));
                     }
                 });
 
@@ -69,19 +74,21 @@ public final class AircraftController {
 
     private Text text(ObservableAircraftState state){
         Text text = new Text();
-        StringProperty name = new SimpleStringProperty();
-
-        if(state.getRegistration() != null){
-            name.set(state.getRegistration().string());
-        }else{
+//
+//        if(state.getRegistration() != null){
+//            name.set(state.getRegistration().string());
+//        }else{
 //            name.bind(state.callSignProperty().asString().when(Bindings.createBooleanBinding(() ->
 //                    state.callSignProperty() != null, state.callSignProperty())).orElse(state.getIcaoAddress().string()));
 //            name.bind(Bindings.createObjectBinding(() -> state.callSignProperty().when()));
-        }
+//        }
+
 
         text.textProperty().bind(Bindings.createStringBinding(() ->
-                        name.get() + "\n"+String.format("%.2f km/h" ,Units.convertTo(state.velocityProperty().get(), Units.Speed.KILOMETER_PER_HOUR))
-                                        + "\u2002" + String.format("%.2f m", state.altitudeProperty().get()), state.velocityProperty(),state.altitudeProperty()));
+                        String.format((state.getRegistration() == null ? (state.callSignProperty().isNull().get() ? state.getIcaoAddress().string() : state.getCallSign().string()) : state.getRegistration().string()))
+                                + "\n"+String.format("%.2f km/h" ,Units.convertTo(state.velocityProperty().get(), Units.Speed.KILOMETER_PER_HOUR))
+                                + "\u2002" + String.format("%.2f m", state.altitudeProperty().get()),
+                state.velocityProperty(),state.altitudeProperty(), state.callSignProperty()));
 
         return text;
     }
@@ -105,7 +112,7 @@ public final class AircraftController {
         icon.setContent(aircraftIcon.svgPath());
 
         icon.rotateProperty().bind(Bindings.createDoubleBinding(() ->
-                aircraftIcon.canRotate() ? Units.convertTo(state.getTrackOrHeanding(), Units.Angle.DEGREE) : 0, state.trackOrHeading()));
+                aircraftIcon.canRotate() ? Units.convertTo(state.trackOrHeading().get(), Units.Angle.DEGREE) : 0, state.trackOrHeading()));
 
         icon.fillProperty().bind(Bindings.createObjectBinding(() ->
                 ColorRamp.PLASMA.at(Math.pow((state.getAltitude()/12000.d),1.d/3)), state.altitudeProperty()));
@@ -175,13 +182,10 @@ public final class AircraftController {
     }
 
     private AircraftIcon iconCreation(ObservableAircraftState state){
-        if(state == null){
-            return AircraftIcon.iconFor(new AircraftTypeDesignator(""), new AircraftDescription("") ,0, WakeTurbulenceCategory.UNKNOWN);
-        }
-        AircraftTypeDesignator typeDesignator = state.getTypeDesignator() == null ? new AircraftTypeDesignator("") : state.getTypeDesignator();
-        AircraftDescription description = state.getDescription() == null ? new AircraftDescription("") : state.getDescription();
+        AircraftData data = state.getAircraftData();
 
-        return AircraftIcon.iconFor(typeDesignator, description, state.getCategory(), state.getWakeTurbulenceCategory());
+        return data != null ? (AircraftIcon.iconFor(state.getTypeDesignator(), state.getDescription(), state.getCategory(), state.getWakeTurbulenceCategory()))
+                : (AircraftIcon.iconFor(new AircraftTypeDesignator(""), new AircraftDescription(""), state.getCategory(), state.getWakeTurbulenceCategory()));
     }
 
 }

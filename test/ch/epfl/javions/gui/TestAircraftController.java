@@ -79,10 +79,10 @@ public final class TestAircraftController extends Application {
                 @Override
                 public void handle(long now) {
                     try {
+                        asm.purge();
                         for (int i = 0; i < 10; i += 1) {
                             Message m = MessageParser.parse(mi.next());
                             if (m != null) asm.updateWithMessage(m);
-                            asm.purge();
                         }
                     } catch (IOException e) {
                         throw new UncheckedIOException(e);
