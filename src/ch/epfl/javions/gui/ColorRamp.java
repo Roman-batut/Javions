@@ -3,9 +3,7 @@ package ch.epfl.javions.gui;
 import ch.epfl.javions.Preconditions;
 import javafx.scene.paint.Color;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public final class ColorRamp {
 
@@ -34,6 +32,13 @@ public final class ColorRamp {
 
         this.colors = colors;
     }
+
+    public ColorRamp(List<Color> colors){
+        Preconditions.checkArgument(colors.size() >= 2);
+        this.colors = new Color[colors.size()];
+        colors.toArray(this.colors);
+    }
+// #TODO voir si c'est ok ca
 
     public Color at(double alpha){
 
