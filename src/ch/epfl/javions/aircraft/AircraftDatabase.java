@@ -63,7 +63,7 @@ public class AircraftDatabase {
                             WakeTurbulenceCategory.of(infos[5]));
                 }
 
-                if(line.compareTo(sAddress) <= 0){
+                if(line.compareTo(sAddress) >= 0){
                     return null;
                 }
             }

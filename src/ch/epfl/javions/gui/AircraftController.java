@@ -11,6 +11,8 @@ import ch.epfl.javions.aircraft.WakeTurbulenceCategory;
 import javafx.beans.InvalidationListener;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.BooleanBinding;
+import javafx.beans.binding.StringBinding;
+import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
@@ -77,22 +79,28 @@ public final class AircraftController {
     }
 
     private Text text(ObservableAircraftState state){
+
+
+        StringBinding velalt = Bindings.createStringBinding(() ->{
+            double vel = state.velocityProperty().getValue();
+            double alt = state.altitudeProperty().getValue();
+            return
+                String.format("\n%s km/h" +"  " +"%s m" ,
+                        Double.isNaN(vel) ?
+                            "?" :
+                                String.format("%.2f",(Units.convertTo(vel, Units.Speed.KILOMETER_PER_HOUR))),
+                        Double.isNaN(alt) ?
+                                "?" : String.format("%.2f",alt)
+        );},state.velocityProperty(), state.altitudeProperty());
+
         Text text = new Text();
-//
-//        if(state.getRegistration() != null){
-//            name.set(state.getRegistration().string());
-//        }else{
-//            name.bind(state.callSignProperty().asString().when(Bindings.createBooleanBinding(() ->
-//                    state.callSignProperty() != null, state.callSignProperty())).orElse(state.getIcaoAddress().string()));
-//            name.bind(Bindings.createObjectBinding(() -> state.callSignProperty().when()));
-//        }
-
-
-        text.textProperty().bind(Bindings.createStringBinding(() ->
-                        String.format((state.getRegistration() == null ? (state.callSignProperty().isNull().get() ? state.getIcaoAddress().string() : state.getCallSign().string()) : state.getRegistration().string()))
-                                + "\n"+String.format("%.2f km/h" ,Units.convertTo(state.velocityProperty().get(), Units.Speed.KILOMETER_PER_HOUR))
-                                + "\u2002" + String.format("%.2f m", state.altitudeProperty().get()),
-                state.velocityProperty(),state.altitudeProperty(), state.callSignProperty()));
+        if(state.getAircraftData() == null || state.getRegistration() == null){
+            ObservableValue<String> id = (Bindings.createStringBinding(()-> state.getCallSign().string(), state.callSignProperty()))
+                    .when(Bindings.createBooleanBinding(()-> state.getCallSign().string().isEmpty(), state.callSignProperty())).orElse(state.getIcaoAddress().string());
+            text.textProperty().bind(Bindings.createStringBinding(() -> (id.getValue() + velalt.getValue()), id, velalt));
+        }else {
+            text.textProperty().bind(Bindings.createStringBinding(()-> state.getRegistration().string() + velalt.getValue(), velalt));
+        }
 
         return text;
     }
@@ -204,7 +212,6 @@ public final class AircraftController {
         });
 
         trajectory.getStyleClass().add("trajectory");
-
         return trajectory;
     }
 
@@ -226,7 +233,7 @@ public final class AircraftController {
         AircraftData data = state.getAircraftData();
 
         return data != null ? (AircraftIcon.iconFor(state.getTypeDesignator(), state.getDescription(), state.getCategory(), state.getWakeTurbulenceCategory()))
-                : (AircraftIcon.iconFor(new AircraftTypeDesignator(""), new AircraftDescription(""), state.getCategory(), state.getWakeTurbulenceCategory()));
+                : (AircraftIcon.iconFor(new AircraftTypeDesignator(""), new AircraftDescription(""), state.getCategory(), WakeTurbulenceCategory.UNKNOWN));
     }
 
 }

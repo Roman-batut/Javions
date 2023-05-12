@@ -44,7 +44,7 @@ public final class ObservableAircraftState implements AircraftStateSetter {
 
         timeStampNs = new SimpleLongProperty();
         category = new SimpleIntegerProperty();
-        callSign = new SimpleObjectProperty<>();
+        callSign = new SimpleObjectProperty<>(new CallSign(""));
         position = new SimpleObjectProperty<>();
         altitude = new SimpleDoubleProperty();
         velocity = new SimpleDoubleProperty();
@@ -105,8 +105,8 @@ public final class ObservableAircraftState implements AircraftStateSetter {
     public ReadOnlyDoubleProperty altitudeProperty(){ return altitude; }
     public ReadOnlyDoubleProperty velocityProperty(){ return velocity; }
     public ReadOnlyDoubleProperty trackOrHeading(){ return trackOrHeading; }
-    public ReadOnlyObjectProperty callSignProperty(){ return callSign;}
-    public ReadOnlyObjectProperty positionProperty(){ return position;}
+    public ReadOnlyObjectProperty<CallSign> callSignProperty(){ return callSign;}
+    public ReadOnlyObjectProperty<GeoPos> positionProperty(){ return position;}
     public ObservableList<AirbornPos> trajectoryProperty(){ return trajectoryunmodifiable; }
 
     //* Getters
@@ -139,20 +139,20 @@ public final class ObservableAircraftState implements AircraftStateSetter {
 
     public AircraftRegistration getRegistration(){
 
-        return !Objects.isNull(aircraftData) ? aircraftData.registration()  : null;
+        return aircraftData.registration();
     }
     public AircraftTypeDesignator getTypeDesignator(){
 
-        return !Objects.isNull(aircraftData) ? aircraftData.typeDesignator() : null;
+        return aircraftData.typeDesignator();
     }
     public String getModel(){
-        return !Objects.isNull(aircraftData) ? aircraftData.model() : null;
+        return aircraftData.model();
     }
     public AircraftDescription getDescription(){
-        return !Objects.isNull(aircraftData) ? aircraftData.description() : null;
+        return aircraftData.description() ;
     }
     public WakeTurbulenceCategory getWakeTurbulenceCategory(){
-        return !Objects.isNull(aircraftData) ? aircraftData.wakeTurbulenceCategory() : null;
+        return aircraftData.wakeTurbulenceCategory();
     }
 
     public record AirbornPos(double altitude, GeoPos position){
