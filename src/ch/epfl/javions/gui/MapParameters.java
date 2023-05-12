@@ -18,9 +18,9 @@ public final class MapParameters {
     }
 
     //View Getters
-    public IntegerProperty zoom(){ return zoom; }
-    public DoubleProperty minX(){ return minX; }
-    public DoubleProperty minY(){ return minY; }
+    public ReadOnlyIntegerProperty zoom(){ return zoom; }
+    public ReadOnlyDoubleProperty minX(){ return minX; }
+    public ReadOnlyDoubleProperty minY(){ return minY; }
 
     //Getters
     public int getZoom(){ return zoom.get(); }

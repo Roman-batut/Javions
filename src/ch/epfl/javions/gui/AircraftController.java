@@ -33,10 +33,12 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.SVGPath;
 import javafx.scene.text.Text;
 
+import java.sql.SQLOutput;
+
 public final class AircraftController {
 
     private MapParameters mapParameters;
-    private ObservableSet<ObservableAircraftState> aircraftStates;
+
     private  ObjectProperty<ObservableAircraftState> clickedPlane;
     private Pane pane;
 
@@ -45,7 +47,6 @@ public final class AircraftController {
                               ObjectProperty<ObservableAircraftState> clickedPlane){
 
         this.mapParameters = mapParameters;
-        this.aircraftStates = aircraftStates;
         this.clickedPlane = clickedPlane;
         pane = new Pane();
         pane.setPickOnBounds(false);
@@ -86,12 +87,12 @@ public final class AircraftController {
             double vel = state.velocityProperty().getValue();
             double alt = state.altitudeProperty().getValue();
             return
-                String.format("\n%s km/h" +"  " +"%s m" ,
+                String.format("\n%s km/h" +" " +"%s mètres" ,
                         Double.isNaN(vel) ?
                             "?" :
-                                String.format("%.2f",(Units.convertTo(vel, Units.Speed.KILOMETER_PER_HOUR))),
+                                String.format("%d",(int)(Units.convertTo(vel, Units.Speed.KILOMETER_PER_HOUR))),
                         Double.isNaN(alt) ?
-                                "?" : String.format("%.2f",alt)
+                                "?" : String.format("%d",(int)alt)
         );},state.velocityProperty(), state.altitudeProperty());
 
         Text text = new Text();
@@ -170,11 +171,6 @@ public final class AircraftController {
 
     private Group trajectory(ObservableAircraftState state){
 
-        //line.endXProperty().bind(Bindings.createDoubleBinding(() ->
-        //       WebMercator.x(mapParameters.getZoom(), state.getPosition().longitude()), state.positionProperty()));
-
-        //line.endYProperty().bind(Bindings.createDoubleBinding(() ->
-        //        WebMercator.y(mapParameters.getZoom(), state.getPosition().latitude()), state.positionProperty()));
         Group trajectory = new Group();
 
         trajectory.visibleProperty().bind(Bindings.createBooleanBinding(() ->
@@ -204,11 +200,15 @@ public final class AircraftController {
     private void aircraft(ObservableAircraftState state){
         Group iconLabel = iconLabel(state);
 
-        Group trajectory = trajectory(clickedPlane.get());
+        Group trajectory = trajectory(state);
+
+        trajectory.layoutXProperty().bind(mapParameters.minX().negate());
+        trajectory.layoutYProperty().bind(mapParameters.minY().negate());
 
         Group aircraft = new Group(trajectory, iconLabel);
 
         aircraft.setId(state.getIcaoAddress().string());
+        aircraft.viewOrderProperty().bind(state.altitudeProperty().negate());
 
         pane.getChildren().add(aircraft);
     }
@@ -249,3 +249,7 @@ public final class AircraftController {
 }
 
 //#TODO rename en anglais bien correcte
+
+// # TODO faire ca mieux et plus clair (f.getValue().callSignProperty().map(CallSign::string)); ici apprendre a utiliser map
+//#TODO utiliser map pour le texte
+
