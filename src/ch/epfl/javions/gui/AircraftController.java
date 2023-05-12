@@ -210,7 +210,8 @@ public final class AircraftController {
                         WebMercator.y(mapParameters.getZoom(), state.trajectoryProperty().get(i+1).position().latitude()) - mapParameters.getMinY()));
             }
         });
-
+//        trajectory.visibleProperty().bind(Bindings.createBooleanBinding(() ->
+//                state.equals(clickedPlane.get()), clickedPlane));
         trajectory.getStyleClass().add("trajectory");
         return trajectory;
     }
