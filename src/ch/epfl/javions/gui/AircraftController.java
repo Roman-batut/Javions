@@ -8,12 +8,15 @@ import ch.epfl.javions.aircraft.AircraftData;
 import ch.epfl.javions.aircraft.AircraftDescription;
 import ch.epfl.javions.aircraft.AircraftTypeDesignator;
 import ch.epfl.javions.aircraft.WakeTurbulenceCategory;
+import javafx.beans.InvalidationListener;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.BooleanBinding;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableSet;
 import javafx.collections.SetChangeListener;
 import javafx.geometry.Bounds;
@@ -41,17 +44,18 @@ public final class AircraftController {
         pane = new Pane();
         pane.setPickOnBounds(false);
 
-        aircraftStates.addListener((SetChangeListener<ObservableAircraftState>)
-                change -> {
-                    if(change.wasAdded()){
-                        aircraft(change.getElementAdded());
-                    }
+        aircraftStates.addListener((SetChangeListener<ObservableAircraftState>) change -> {
+                if(change.wasAdded()){
+                    aircraft(change.getElementAdded());
+                }
 
-                    if(change.wasRemoved()){
-                        ObservableAircraftState statermv = change.getElementRemoved();
-                        pane.getChildren().removeIf((s) -> s.getId().equals(statermv.getIcaoAddress().string()));
-                    }
-                });
+                if(change.wasRemoved()){
+                    ObservableAircraftState statermv = change.getElementRemoved();
+                    pane.getChildren().removeIf((s) -> s.getId().equals(statermv.getIcaoAddress().string()));
+                }
+            });
+
+
 
     }
 
@@ -145,25 +149,59 @@ public final class AircraftController {
 
     //Trajectory
 
-    private Line line(double x, double y){
+    private Line line(double startX, double startY, double endX, double endY){
         Line line = new Line();
 
-        line.setStartX(x);
-        line.setStartY(y);
+        line.setStartX(startX);
+        line.setStartY(startY);
+        line.setEndX(endX);
+        line.setEndY(endY);
 
         return line;
     }
 
     private Group trajectory(ObservableAircraftState state){
-        Line line = line(WebMercator.x(mapParameters.getZoom(), state.getPosition().longitude()), WebMercator.y(mapParameters.getZoom(), state.getPosition().latitude()));
 
-        line.endXProperty().bind(Bindings.createDoubleBinding(() ->
-                WebMercator.x(mapParameters.getZoom(), state.getPosition().longitude()), state.positionProperty()));
+        //line.endXProperty().bind(Bindings.createDoubleBinding(() ->
+        //       WebMercator.x(mapParameters.getZoom(), state.getPosition().longitude()), state.positionProperty()));
 
-        line.endYProperty().bind(Bindings.createDoubleBinding(() ->
-                WebMercator.y(mapParameters.getZoom(), state.getPosition().latitude()), state.positionProperty()));
+        //line.endYProperty().bind(Bindings.createDoubleBinding(() ->
+        //        WebMercator.y(mapParameters.getZoom(), state.getPosition().latitude()), state.positionProperty()));
+        Group trajectory = new Group();
 
-        Group trajectory = new Group(line);
+        if(state == null || state.trajectoryProperty().size() < 2){
+            System.out.println("null");
+            return trajectory;
+        }
+
+        state.trajectoryProperty().addListener((ListChangeListener<ObservableAircraftState.AirbornPos>) change -> {
+            trajectory.getChildren().clear();
+
+            for(int i=0 ; i<state.trajectoryProperty().size()-1 ; i++){
+                System.out.println(WebMercator.x(mapParameters.getZoom(), state.trajectoryProperty().get(i).position().longitude()) - mapParameters.getMinX());
+                System.out.println(WebMercator.y(mapParameters.getZoom(), state.trajectoryProperty().get(i).position().latitude()) - mapParameters.getMinY());
+                System.out.println(WebMercator.x(mapParameters.getZoom(), state.trajectoryProperty().get(i+1).position().longitude()) - mapParameters.getMinX());
+                System.out.println(WebMercator.y(mapParameters.getZoom(), state.trajectoryProperty().get(i+1).position().latitude()) - mapParameters.getMinY());
+
+                trajectory.getChildren().add(line(
+                        WebMercator.x(mapParameters.getZoom(), state.trajectoryProperty().get(i).position().longitude()) - mapParameters.getMinX(),
+                        WebMercator.y(mapParameters.getZoom(), state.trajectoryProperty().get(i).position().latitude()) - mapParameters.getMinY(),
+                        WebMercator.x(mapParameters.getZoom(), state.trajectoryProperty().get(i+1).position().longitude()) - mapParameters.getMinX(),
+                        WebMercator.y(mapParameters.getZoom(), state.trajectoryProperty().get(i+1).position().latitude()) - mapParameters.getMinY()));
+            }
+        });
+
+        mapParameters.zoom().addListener((InvalidationListener) change -> {
+            trajectory.getChildren().clear();
+
+            for(int i=0 ; i<state.trajectoryProperty().size()-1 ; i++){
+                trajectory.getChildren().add(line(
+                        WebMercator.x(mapParameters.getZoom(), state.trajectoryProperty().get(i).position().longitude()) - mapParameters.getMinX(),
+                        WebMercator.y(mapParameters.getZoom(), state.trajectoryProperty().get(i).position().latitude()) - mapParameters.getMinY(),
+                        WebMercator.x(mapParameters.getZoom(), state.trajectoryProperty().get(i+1).position().longitude()) - mapParameters.getMinX(),
+                        WebMercator.y(mapParameters.getZoom(), state.trajectoryProperty().get(i+1).position().latitude()) - mapParameters.getMinY()));
+            }
+        });
 
         trajectory.getStyleClass().add("trajectory");
 
@@ -174,10 +212,13 @@ public final class AircraftController {
 
     private void aircraft(ObservableAircraftState state){
         Group iconLabel = iconLabel(state);
-        Group trajectory = trajectory(state);
-        Group aircraft = new Group(iconLabel, trajectory);
+
+        Group trajectory = trajectory(clickedPlane.get());
+
+        Group aircraft = new Group(trajectory, iconLabel);
 
         aircraft.setId(state.getIcaoAddress().string());
+
         pane.getChildren().add(aircraft);
     }
 
@@ -192,4 +233,3 @@ public final class AircraftController {
 
 
 //#TODO rename en anglais bien correcte
-// #TODO faire la gestion d'error quand le state est null

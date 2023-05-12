@@ -12,6 +12,8 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 public final class ObservableAircraftState implements AircraftStateSetter {
@@ -78,7 +80,7 @@ public final class ObservableAircraftState implements AircraftStateSetter {
     @Override
     public void setAltitude(double altitude) {
         int index = trajectory.size()-1;
-        if(trajectory.isEmpty() || !(position.equals(trajectory.get(index).position))){
+        if(trajectory.isEmpty() || trajectory.get(trajectory.size() - 1).position() != position.get()){
             trajectory.add(new AirbornPos(altitude, getPosition()));
             oldMessageTimestampNs = getTimeStampNs();
         }else if(oldMessageTimestampNs == getTimeStampNs()){
@@ -131,7 +133,7 @@ public final class ObservableAircraftState implements AircraftStateSetter {
     public GeoPos getPosition(){
         return position.get();
     }
-    public AircraftData getAircraftData(){return aircraftData;}
+    public AircraftData getAircraftData(){ return aircraftData; }
 
     //* Getters fixed infos
 

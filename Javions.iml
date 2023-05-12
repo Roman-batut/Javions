@@ -7,7 +7,7 @@
       <sourceFolder url="file://$MODULE_DIR$/src" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/test" isTestSource="true" />
     </content>
-    <orderEntry type="inheritedJdk" />
+    <orderEntry type="jdk" jdkName="17" jdkType="JavaSDK" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module-library" scope="TEST">
       <library name="JUnit5.8.1">
@@ -25,6 +25,6 @@
         <SOURCES />
       </library>
     </orderEntry>
-    <orderEntry type="library" name="OpenJFX" level="application" />
+    <orderEntry type="library" name="OpenJFX 20" level="application" />
   </component>
 </module>
