@@ -26,7 +26,6 @@ public final class ByteString {
 
     //* Methods
 
-
     /**
      * Returns a ByteString corresponding to the given string of hexadecimal characters
      * @param hexString a string of hexadecimal characters
@@ -34,6 +33,7 @@ public final class ByteString {
      */
     public static ByteString ofHexadecimalString(String hexString){
         byte[] bytes = UPPERCASE_FORMAT.parseHex(hexString);
+
         return new ByteString(bytes);
     }
 
@@ -66,16 +66,15 @@ public final class ByteString {
      */
     public long bytesInRange(int fromIndex, int toIndex){
         Objects.checkFromToIndex(fromIndex, toIndex, size());
-        Preconditions.checkArgument((toIndex-fromIndex) <= (Long.SIZE/8));
+        Preconditions.checkArgument((toIndex - fromIndex) <= (Long.SIZE / 8));
 
         long bytesInRange = 0;
         for (int i=fromIndex ; i<toIndex ; i++){
-            bytesInRange = (bytesInRange<< Byte.SIZE) | byteAt(i);
+            bytesInRange = (bytesInRange << Byte.SIZE) | byteAt(i);
         }
 
         return bytesInRange;
     }
-
 
 
     //* Object overrides

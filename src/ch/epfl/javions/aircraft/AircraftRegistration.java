@@ -21,6 +21,6 @@ public record AircraftRegistration(String string) {
     public AircraftRegistration{
         Pattern pattern = Pattern.compile("[A-Z0-9 .?/_+-]+");
 
-        Preconditions.checkArgument(pattern.matcher(string).matches() && !string.isEmpty());
+        Preconditions.checkArgument(pattern.matcher(string).matches());
     }
 }

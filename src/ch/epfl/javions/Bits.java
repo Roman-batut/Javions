@@ -20,7 +20,6 @@ public final class Bits {
 
     //* Methods
 
-
     /**
      * Returns the value of the bit at the given index in the given value.
      * @param value the value to be extracted
@@ -31,11 +30,11 @@ public final class Bits {
      * @throws IllegalArgumentException if the size is not valid
      */
     public static int extractUInt(long value, int start, int size){
-        Preconditions.checkArgument(!(size<=0 || size >= Integer.SIZE));
+        Preconditions.checkArgument(!(size <= 0 || size >= Integer.SIZE));
         Objects.checkFromIndexSize(start, size, Long.SIZE);
 
-        long unsigner = (long)(Math.scalb(1d,size) - 1);
-        value = (value>>start) & (unsigner);
+        long unsigner = (long)(Math.scalb(1d, size) - 1);
+        value = (value >> start) & (unsigner);
 
         return (int)(value);
     }

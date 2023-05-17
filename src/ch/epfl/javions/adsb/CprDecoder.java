@@ -23,7 +23,6 @@ public final class CprDecoder {
 
     //* Methods
 
-
     /**
      * Decodes the aircraft position
      * @param x0 the longitude coordinate of the first message

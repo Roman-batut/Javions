@@ -32,7 +32,6 @@ public class AircraftDatabase {
 
     //* Methods
 
-
     /**
      *  Returns the aircraft data corresponding to the given ICAO address or null if the ICAO address is not found
      *  @param address the ICAO address
@@ -51,7 +50,6 @@ public class AircraftDatabase {
         {
             String[] infos;
             String line;
-//            boolean compare = true;
             while ((line = buffer.readLine()) != null) {
                 if (line.startsWith(sAddress)) {
                     infos = line.split(COMA, -1);
@@ -72,4 +70,3 @@ public class AircraftDatabase {
         }
     }
 }
-// #TODO prendre les responsabilités

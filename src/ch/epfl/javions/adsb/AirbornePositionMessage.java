@@ -12,8 +12,7 @@ import java.util.Objects;
  * @author Roman Batut (356158)
  * @author Guillaume Chevallier (360709)
  */
-public record AirbornePositionMessage(long timeStampNs,IcaoAddress icaoAddress,double altitude,int parity,double x,double y)
-        implements Message{
+public record AirbornePositionMessage(long timeStampNs,IcaoAddress icaoAddress,double altitude,int parity,double x,double y) implements Message{
 
     private static final double REGUL = 1 << 17;
 
@@ -27,8 +26,7 @@ public record AirbornePositionMessage(long timeStampNs,IcaoAddress icaoAddress,d
 
     private static final int ALT_START = 36;
     private static final int ALT_SIZE = 12;
-    private static final int Q_START = 4;
-    private static final int Q_SIZE = 1;
+    private static final int Q_BIT = 4;
 
     private static final int STRONGBYTE_START = 3;
     private static final int STRONGBYTE_SIZE = 9;
@@ -74,7 +72,7 @@ public record AirbornePositionMessage(long timeStampNs,IcaoAddress icaoAddress,d
         int alt  = Bits.extractUInt(payload, ALT_START, ALT_SIZE);
 
         //Q = 1
-        if (Bits.extractUInt(alt, Q_START, Q_SIZE) == 1){
+        if (Bits.testBit(alt, Q_BIT)){
            double height = (-1000 + (((alt & 0b1111_1110_0000) >>> 1 | (alt & 0b0000_0000_1111)) * 25));
            height = Units.convertFrom(height, Units.Length.FOOT);
 
@@ -122,4 +120,4 @@ public record AirbornePositionMessage(long timeStampNs,IcaoAddress icaoAddress,d
     }
 }
 
-// #TODO TOUT J4AI RIEN COMPRIS
+// #TODO TOUT J4AI RIEN COMPRIS (fait un peu)

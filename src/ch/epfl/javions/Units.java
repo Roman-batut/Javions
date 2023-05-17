@@ -14,17 +14,6 @@ public final class Units {
     // One thousand of a unit
     public static final double KILO = 1e3;
 
-    //* Constructor
-
-    /**
-     * Private constructor to prevent instantiation
-     */
-    private Units (){}
-
-
-    //* Methods
-
-
     /**
      * Important constants of angles, lengths, times and speeds in different units expressed in SI units
      */
@@ -40,40 +29,54 @@ public final class Units {
         // One two to the power of thirty-second of a whole circle
         public static final double T32 = Math.scalb(TURN, -32);
     }
+
     public final static class Length{
         // Private constructor to prevent instantiation
         private Length(){}
-        // Distance travelled by light in a vacuum in one second
+        // One meter
         public static final double METER = 1;
         // One hundredth of a meter
         public static final double CENTIMETER = CENTI*METER;
         // One thousand meters
         public static final double KILOMETER = KILO*METER;
-        // Width of the thumb of Henri first of England in 1011 (approx.)
+        // One inch
         public static final double INCH = 2.54*CENTIMETER;
-        // Size of a human foot (approx.)
+        // One foot, twelve inches
         public static final double FOOT = 12*INCH;
         // One thousand eight hundred and fifty-two meters
         public static final double NAUTICAL_MILE = 1852*METER;
     }
+
     public final static class Time{
         // Private constructor to prevent instantiation
         private Time(){}
-        // Duration of 9 192 631 770 periods of the radiation corresponding to the transition between the two hyperfine levels of the ground state of the cesium 133 atom
+        // One second
         public static final double SECOND = 1;
         // Sixty seconds
         public static final double MINUTE = 60*SECOND;
-        // Three thousand six hundred seconds
+        // Three thousand six hundred seconds, sixty minutes
         public static final double HOUR = 60*MINUTE;
     }
+
     public final static class Speed{
-        /**
-         * Speed units
-         */
+        // Private constructor to prevent instantiation
         private Speed(){}
+        // One nautical mile per hour
         public static final double KNOT = Length.NAUTICAL_MILE/Time.HOUR;
+        // One thousand meter per second
         public static final double KILOMETER_PER_HOUR = Length.KILOMETER/Time.HOUR ;
     }
+
+
+    //* Constructor
+
+    /**
+     * Private constructor to prevent instantiation
+     */
+    private Units (){}
+
+
+    //* Methods
 
     /**
      * Converts a value from one unit to another from previously defined constants
@@ -100,5 +103,3 @@ public final class Units {
         return convert(value, 1, toUnit);
     }
 }
-
-// #TODO regarder pour plus de docu ici

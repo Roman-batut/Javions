@@ -26,8 +26,7 @@ public enum WakeTurbulenceCategory {
 
 
     //* Methods
-    
-    
+
     /**
      *  Returns the string representing the wake turbulence category,
      *  or UNKNOWN if the string is not a valid wake turbulence category

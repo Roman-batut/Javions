@@ -22,7 +22,6 @@ public record GeoPos(int longitudeT32, int latitudeT32) {
 
     //* Methods
 
-
     /**
      * Returns true if the given value is a valid latitude in T32 format
      * @param latitudeT32 the latitude to be tested

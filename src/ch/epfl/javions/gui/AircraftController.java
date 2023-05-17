@@ -83,7 +83,7 @@ public final class AircraftController {
 
     private Text text(ObservableAircraftState state){
 
-        StringBinding velalt = Bindings.createStringBinding(() ->{
+        StringBinding velAlt = Bindings.createStringBinding(() ->{
             double vel = state.velocityProperty().getValue();
             double alt = state.altitudeProperty().getValue();
             return
@@ -99,9 +99,9 @@ public final class AircraftController {
         if(state.getAircraftData() == null || state.getRegistration() == null){
             ObservableValue<String> id = (Bindings.createStringBinding(()-> state.getCallSign().string(), state.callSignProperty()))
                     .when(Bindings.createBooleanBinding(()-> state.getCallSign().string().isEmpty(), state.callSignProperty())).orElse(state.getIcaoAddress().string());
-            text.textProperty().bind(Bindings.createStringBinding(() -> (id.getValue() + velalt.getValue()), id, velalt));
+            text.textProperty().bind(Bindings.createStringBinding(() -> (id.getValue() + velAlt.getValue()), id, velAlt));
         }else {
-            text.textProperty().bind(Bindings.createStringBinding(()-> state.getRegistration().string() + velalt.getValue(), velalt));
+            text.textProperty().bind(Bindings.createStringBinding(()-> state.getRegistration().string() + velAlt.getValue(), velAlt));
         }
 
         return text;
@@ -178,16 +178,16 @@ public final class AircraftController {
         ));
 
         trajectory.visibleProperty().addListener((observable, oldValue, newValue) -> {
-             ListChangeListener<ObservableAircraftState.AirbornPos> changepos = (c) -> {trajectoryLines(state, trajectory);};
-             InvalidationListener changezoom = (c) -> {trajectoryLines(state, trajectory);};
+             ListChangeListener<ObservableAircraftState.AirbornPos> changePos = (c) -> {trajectoryLines(state, trajectory);};
+             InvalidationListener changeZoom = (c) -> {trajectoryLines(state, trajectory);};
 
              if(newValue){
-                state.trajectoryProperty().addListener(changepos);
-                mapParameters.zoom().addListener(changezoom);
+                state.trajectoryProperty().addListener(changePos);
+                mapParameters.zoom().addListener(changeZoom);
              }
              if(!newValue){
-                state.trajectoryProperty().removeListener(changepos);
-                mapParameters.zoom().removeListener(changezoom);
+                state.trajectoryProperty().removeListener(changePos);
+                mapParameters.zoom().removeListener(changeZoom);
              }
         });
 
@@ -248,8 +248,6 @@ public final class AircraftController {
 
 }
 
-//#TODO rename en anglais bien correcte
-
 // # TODO faire ca mieux et plus clair (f.getValue().callSignProperty().map(CallSign::string)); ici apprendre a utiliser map
-//#TODO utiliser map pour le texte
+// # TODO utiliser map pour le texte
 
