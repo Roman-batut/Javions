@@ -38,7 +38,6 @@ public final class ColorRamp {
         this.colors = new Color[colors.size()];
         colors.toArray(this.colors);
     }
-// #TODO voir si c'est ok ca
 
     public Color at(double alpha){
 

@@ -90,11 +90,11 @@ public record AirbornePositionMessage(long timeStampNs,IcaoAddress icaoAddress,d
             //decoding
             int strongbyte = greydecode(Bits.extractUInt(untangled, STRONGBYTE_START, STRONGBYTE_SIZE), STRONGBYTE_SIZE);
             int weakbyte = greydecode(Bits.extractUInt(untangled, WEAKBYTE_START, WEAKBYTE_SIZE),WEAKBYTE_SIZE);
-            if(weakbyte == 0 || weakbyte == 5 || weakbyte == 6){
-                return null;
-            }
-            if (weakbyte == 7){
-                weakbyte = 5;
+            switch (weakbyte){
+                case 0, 5, 6 -> {
+                    return null;
+                }
+                case 7 -> weakbyte = 5;
             }
             if(strongbyte % 2 != 0){
                 weakbyte = 6 - weakbyte;
@@ -119,5 +119,3 @@ public record AirbornePositionMessage(long timeStampNs,IcaoAddress icaoAddress,d
         return decoded;
     }
 }
-
-// #TODO TOUT J4AI RIEN COMPRIS (fait un peu)

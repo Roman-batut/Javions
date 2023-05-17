@@ -26,9 +26,6 @@ public final class WebMercator {
      * @return the x coordinate
      */
     public static double x(int zoomLevel, double longitude){
-        //int power = 8 + zoomLevel;
-        //double x = Units.convertTo(longitude, Units.Angle.TURN) + (ADD_CST);
-        //return Math.scalb(x, power);
         return coordinate(zoomLevel, longitude);
     }
 
@@ -38,10 +35,6 @@ public final class WebMercator {
      * @return the y coordinate
      */
     public static double y(int zoomLevel, double latitude){
-        //int power = 8 + zoomLevel;
-        //double angle = -Math2.asinh(Math.tan(latitude));
-        //double y = Units.convertTo(angle, Units.Angle.TURN) + (ADD_CST);
-        //return Math.scalb(y, power);
         return coordinate(zoomLevel, -Math2.asinh(Math.tan(latitude)));
     }
 
@@ -54,5 +47,3 @@ public final class WebMercator {
         return Math.scalb(coordinate, power);
     }
 }
-
-// #TODO peut etre factorisé (fait ?)

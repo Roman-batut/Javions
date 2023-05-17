@@ -75,7 +75,7 @@ public final class AdsbDemodulator {
         return null;
     }
 
-    //*Private Methods
+    //* Private Methods
 
     /**
      * Returns the P sum of the 4 samples at the given index
@@ -108,5 +108,3 @@ public final class AdsbDemodulator {
     }
 
 }
-
-// #TODO peut etre mettre les cst pour 80 et tout ca et voir si pour octs c'est tjrs okay (en parler)

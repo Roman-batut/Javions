@@ -46,31 +46,6 @@ public final class SamplesDecoder {
      *  @return return the number of batch read
      */
     public int readBatch(short[] batch) throws IOException{
-//        Preconditions.checkArgument(batch.length == batchSize);
-//
-//        byte[] batchtab;
-//        batchtab = stream.readNBytes((batchSize*2));
-//
-//        int length = batchSize * 2;
-//
-//        if(batchtab.length < batchSize*2){
-//            length = batchtab.length;
-//        }
-//
-//        int k = 0;
-//        for (int i=0 ; i<length ; i+=Short.BYTES) {
-//            int weak =  Byte.toUnsignedInt(batchtab[i]);
-//            int strong = Byte.toUnsignedInt(batchtab[i+1]);
-//
-//            short fin = (short)((strong << Byte.SIZE) | weak);
-//            fin -= REGUL;
-//            batch[k] = fin;
-//            k++;
-//        }
-//
-//        return length/Short.BYTES;
-
-
         Preconditions.checkArgument(batch.length == batchSize);
 
         byte[] batchtab = new byte[batchSize * 2];
@@ -90,7 +65,3 @@ public final class SamplesDecoder {
         return bytesRead / Short.BYTES;
     }
 }
-
-// #TODO revoir le readNbytes  (fait ?)
-
-
