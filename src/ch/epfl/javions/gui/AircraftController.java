@@ -97,8 +97,8 @@ public final class AircraftController {
 
         Text text = new Text();
         if(state.getAircraftData() == null || state.getRegistration() == null){
-            ObservableValue<String> id = (Bindings.createStringBinding(()-> state.getCallSign().string(), state.callSignProperty()))
-                    .when(Bindings.createBooleanBinding(()-> state.getCallSign().string().isEmpty(), state.callSignProperty())).orElse(state.getIcaoAddress().string());
+            ObservableValue<String> id = state.callSignProperty().map(CallSign :: string)
+                    .when(state.callSignProperty().isNull().not()).orElse(state.getIcaoAddress().string());
             text.textProperty().bind(Bindings.createStringBinding(() -> (id.getValue() + velAlt.getValue()), id, velAlt));
         }else {
             text.textProperty().bind(Bindings.createStringBinding(()-> state.getRegistration().string() + velAlt.getValue(), velAlt));
@@ -248,7 +248,5 @@ public final class AircraftController {
 
 }
 
-// # TODO faire ca mieux et plus clair (f.getValue().callSignProperty().map(CallSign::string)); ici apprendre a utiliser map
-// # TODO utiliser map pour le texte et ducoup remettre les callsign correctement
 
 

@@ -44,7 +44,7 @@ public final class ObservableAircraftState implements AircraftStateSetter {
 
         timeStampNs = new SimpleLongProperty();
         category = new SimpleIntegerProperty();
-        callSign = new SimpleObjectProperty<>(new CallSign(""));
+        callSign = new SimpleObjectProperty<>();
         position = new SimpleObjectProperty<>();
         altitude = new SimpleDoubleProperty();
         velocity = new SimpleDoubleProperty();
