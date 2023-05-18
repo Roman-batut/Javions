@@ -22,7 +22,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class TestAircrafttableControllerTest extends Application {
+public final class TestAircrafttableControllerTest extends Application {
 
     public static void main(String[] args) { launch(args); }
 

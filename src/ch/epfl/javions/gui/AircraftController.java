@@ -249,5 +249,6 @@ public final class AircraftController {
 }
 
 // # TODO faire ca mieux et plus clair (f.getValue().callSignProperty().map(CallSign::string)); ici apprendre a utiliser map
-// # TODO utiliser map pour le texte
+// # TODO utiliser map pour le texte et ducoup remettre les callsign correctement
+
 
