@@ -8,6 +8,7 @@ import javafx.beans.Observable;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.DoubleExpression;
 import javafx.beans.property.*;
+import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableStringValue;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
@@ -15,6 +16,7 @@ import javafx.collections.ObservableSet;
 import javafx.collections.SetChangeListener;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.input.MouseButton;
 
 import java.text.NumberFormat;
 import java.text.ParseException;
@@ -64,13 +66,13 @@ public final class AircraftTableController {
 
 //      Value column
         TableColumn<ObservableAircraftState, String> longitudeColumn = valueColumn("Longitude(°)",4,
-                f -> DoubleExpression.doubleExpression(f.positionProperty().map(GeoPos::longitude)),Units.Angle.DEGREE);
+                f -> f.positionProperty().map(GeoPos::longitude),Units.Angle.DEGREE);
         TableColumn<ObservableAircraftState, String> latitudeColumn = valueColumn("Latitude(°)",4,
-                f -> DoubleExpression.doubleExpression(f.positionProperty().map(GeoPos::latitude)),Units.Angle.DEGREE);
+                f -> f.positionProperty().map(GeoPos::latitude),Units.Angle.DEGREE);
         TableColumn<ObservableAircraftState, String> altittudeColumn = valueColumn("Altitude(m)",0,
-                f -> DoubleExpression.doubleExpression(f.altitudeProperty()), Units.Length.METER);
+                f -> f.altitudeProperty().map(Number::doubleValue), Units.Length.METER);
         TableColumn<ObservableAircraftState, String> velocityColumn = valueColumn("Vitesse(km/h)",0,
-                f -> DoubleExpression.doubleExpression(f.velocityProperty()), Units.Speed.KILOMETER_PER_HOUR);
+                f -> f.velocityProperty().map(Number::doubleValue), Units.Speed.KILOMETER_PER_HOUR);
 
 
 //      Column synthese
@@ -86,6 +88,19 @@ public final class AircraftTableController {
             if(change.wasRemoved()){
                 tableView.getItems().remove(change.getElementRemoved());
                 tableView.sort();
+            }
+        });
+
+        clickedPlane.addListener((ChangeListener<? super ObservableAircraftState>) (observableValue, newValue, oldValue)-> {
+            if (newValue != tableView.getSelectionModel().getSelectedItem()){
+               tableView.scrollTo(newValue);
+            }
+            tableView.getSelectionModel().select(newValue);
+
+        });
+        tableView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            if(newValue != oldValue){
+                clickedPlane.set(newValue);
             }
         });
 
@@ -108,15 +123,15 @@ public final class AircraftTableController {
         return tableView;
     }
      public void setOnDoubleClick(Consumer<ObservableAircraftState> consumer){
-        clickedPlane.addListener((observable, oldValue, newValue) -> {
-            if(newValue != null){
-                consumer.accept(newValue);
+        tableView.setOnMouseClicked(event -> {
+            if ((event.getButton() == MouseButton.PRIMARY) && (event.getClickCount() >= 2)){
+                consumer.accept(clickedPlane.get());
             }
         });
     }
 
     private TableColumn<ObservableAircraftState, String> valueColumn(String columnTitle, int digitsection,
-                                                                     Function<ObservableAircraftState,DoubleExpression> property, double unit) {
+                                                                     Function<ObservableAircraftState,ObservableValue<Number>> property, double unit) {
         TableColumn<ObservableAircraftState, String> valueColumn =  new TableColumn<>();
         valueColumn.setText(columnTitle);
         valueColumn.setPrefWidth(85);
@@ -126,16 +141,20 @@ public final class AircraftTableController {
         numberFormat.setMinimumFractionDigits(digitsection);
         valueColumn.setComparator((s1, s2) -> {
             try {
-                return (s1 == null || s2 == null) ? String.CASE_INSENSITIVE_ORDER.compare(s1, s2)
-                        :  Double.compare(numberFormat.parse(s1).doubleValue(),numberFormat.parse(s2).doubleValue());
+               s1 = (s1 == null) ? "" :s1;
+               s2 = (s2 == null) ? "" :s2;
+               return (s1.equals("") || s2.equals("")) ? String.CASE_INSENSITIVE_ORDER.compare(s1, s2)
+                       :  Double.compare(numberFormat.parse(s1).doubleValue(),numberFormat.parse(s2).doubleValue());
             } catch (ParseException e) {
                 throw new Error(e);
             }
         });
-//        valueColumn.setCellValueFactory(f ->
-//               numberFormat.format(property.apply(f.getValue()).doubleValue()))  ;
-// #TODO     Post #1882 pour faire afficher et en plus updater je sais pas faire ce soir
+        valueColumn.setCellValueFactory(f->
+               property.apply(f.getValue()).map(e -> Units.convertTo(e.doubleValue(), unit)).map(e -> e == 0 ? null : e).map(numberFormat::format));
+
         return valueColumn;
     }
 
 }
+// #TODO faire le convert en unité avant ?
+// # TODO faire une classe privé pour les column textuelles
