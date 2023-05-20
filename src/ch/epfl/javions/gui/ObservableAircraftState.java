@@ -47,7 +47,7 @@ public final class ObservableAircraftState implements AircraftStateSetter {
         callSign = new SimpleObjectProperty<>();
         position = new SimpleObjectProperty<>();
         altitude = new SimpleDoubleProperty();
-        velocity = new SimpleDoubleProperty();
+        velocity = new SimpleDoubleProperty(-1);
         trackOrHeading = new SimpleDoubleProperty();
     }
 

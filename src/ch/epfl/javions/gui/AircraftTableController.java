@@ -34,6 +34,8 @@ public final class AircraftTableController {
     private final ObjectProperty<ObservableAircraftState> clickedPlane;
     private TableView<ObservableAircraftState> tableView;
 
+    private Consumer<ObservableAircraftState> consumer;
+
     public AircraftTableController(ObservableSet<ObservableAircraftState> aircraftStates,
                                    ObjectProperty<ObservableAircraftState> clickedPlane){
         this.clickedPlane = clickedPlane;
@@ -103,6 +105,12 @@ public final class AircraftTableController {
                 clickedPlane.set(newValue);
             }
         });
+        tableView.setOnMouseClicked(event -> {
+            if ((event.getButton() == MouseButton.PRIMARY) && (event.getClickCount() >= 2)){
+                setOnDoubleClick(consumer);
+                consumer.accept(clickedPlane.get());
+            }
+        });
 
 //      Lambda properties update
         callSignColumn.setCellValueFactory(f ->
@@ -123,11 +131,8 @@ public final class AircraftTableController {
         return tableView;
     }
      public void setOnDoubleClick(Consumer<ObservableAircraftState> consumer){
-        tableView.setOnMouseClicked(event -> {
-            if ((event.getButton() == MouseButton.PRIMARY) && (event.getClickCount() >= 2)){
-                consumer.accept(clickedPlane.get());
-            }
-        });
+//         consumer.accept(e -> );
+
     }
 
     private TableColumn<ObservableAircraftState, String> valueColumn(String columnTitle, int digitsection,
@@ -150,7 +155,7 @@ public final class AircraftTableController {
             }
         });
         valueColumn.setCellValueFactory(f->
-               property.apply(f.getValue()).map(e -> Units.convertTo(e.doubleValue(), unit)).map(e -> e == 0 ? null : e).map(numberFormat::format));
+               property.apply(f.getValue()).map(e -> Units.convertTo(e.doubleValue(), unit)).map(e -> e < 0 ? null : e).map(numberFormat::format));
 
         return valueColumn;
     }
@@ -158,3 +163,4 @@ public final class AircraftTableController {
 }
 // #TODO faire le convert en unité avant ?
 // # TODO faire une classe privé pour les column textuelles
+// #TODO faire le setondouble click
