@@ -106,33 +106,37 @@ public final class AircraftTableController {
             }
         });
         tableView.setOnMouseClicked(event -> {
-            if ((event.getButton() == MouseButton.PRIMARY) && (event.getClickCount() >= 2)){
-                setOnDoubleClick(consumer);
+            if ((event.getButton() == MouseButton.PRIMARY) && (event.getClickCount() >= 2) && (clickedPlane.get() != null) && (consumer != null)) {
                 consumer.accept(clickedPlane.get());
             }
         });
 
 //      Lambda properties update
         callSignColumn.setCellValueFactory(f ->
-                f.getValue().callSignProperty().map(CallSign::string));
+                f.getValue().callSignProperty().map(CallSign::string)
+        );
         typeColumn.setCellValueFactory(f ->
-                new ReadOnlyObjectWrapper<>(f.getValue().getAircraftData()).map(d -> d.typeDesignator().string()));
+                new ReadOnlyObjectWrapper<>(f.getValue().getAircraftData()).map(d -> d.typeDesignator().string())
+        );
         modelColumn.setCellValueFactory(f ->
-            new ReadOnlyObjectWrapper<>(f.getValue().getAircraftData()).map(AircraftData::model));
+                new ReadOnlyObjectWrapper<>(f.getValue().getAircraftData()).map(AircraftData::model)
+        );
         icaoColumn.setCellValueFactory(f ->
-                new ReadOnlyObjectWrapper<>(f.getValue().getIcaoAddress()).map(IcaoAddress::string));
+                new ReadOnlyObjectWrapper<>(f.getValue().getIcaoAddress()).map(IcaoAddress::string)
+        );
         registrationColumn.setCellValueFactory(f ->
-                new ReadOnlyObjectWrapper<>(f.getValue().getAircraftData()).map(d -> d.registration().string()));
+                new ReadOnlyObjectWrapper<>(f.getValue().getAircraftData()).map(d -> d.registration().string())
+        );
         descriptionColumn.setCellValueFactory(f ->
-                new ReadOnlyObjectWrapper<>(f.getValue().getAircraftData()).map(d -> d.description().string()));
+                new ReadOnlyObjectWrapper<>(f.getValue().getAircraftData()).map(d -> d.description().string())
+        );
     }
 
      public TableView<ObservableAircraftState> pane(){
         return tableView;
     }
      public void setOnDoubleClick(Consumer<ObservableAircraftState> consumer){
-//         consumer.accept(e -> );
-
+        this.consumer = consumer;
     }
 
     private TableColumn<ObservableAircraftState, String> valueColumn(String columnTitle, int digitsection,
@@ -154,13 +158,15 @@ public final class AircraftTableController {
                 throw new Error(e);
             }
         });
+
         valueColumn.setCellValueFactory(f->
-               property.apply(f.getValue()).map(e -> Units.convertTo(e.doubleValue(), unit)).map(e -> e < 0 ? null : e).map(numberFormat::format));
+               property.apply(f.getValue()).map(e -> Units.convertTo(e.doubleValue(), unit)).map(e -> e < 0 ? null : e).map(numberFormat::format)
+        );
 
         return valueColumn;
     }
 
 }
 // #TODO faire le convert en unité avant ?
-// # TODO faire une classe privé pour les column textuelles
+// #TODO faire une classe privé pour les column textuelles
 // #TODO faire le setondouble click

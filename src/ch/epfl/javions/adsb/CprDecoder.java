@@ -123,4 +123,3 @@ public final class CprDecoder {
     }
 
 }
-// #TODO Revoir de fond en comble la classe (fait?)
