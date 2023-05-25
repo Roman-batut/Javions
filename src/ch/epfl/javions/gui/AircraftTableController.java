@@ -36,17 +36,19 @@ public final class AircraftTableController {
 
     private Consumer<ObservableAircraftState> consumer;
 
+    //* Constructor
+
     public AircraftTableController(ObservableSet<ObservableAircraftState> aircraftStates,
                                    ObjectProperty<ObservableAircraftState> clickedPlane){
         this.clickedPlane = clickedPlane;
 
-//      Table view setup
-        tableView =new TableView<>();
+        //Table view setup
+        tableView = new TableView<>();
         tableView.setColumnResizePolicy(CONSTRAINED_RESIZE_POLICY_SUBSEQUENT_COLUMNS);
         tableView.setTableMenuButtonVisible(true);
         tableView.getStylesheets().add("table.css");
 
-//      String column
+        //String column
         TableColumn<ObservableAircraftState, String> icaoColumn = new TableColumn<>();
         icaoColumn.setPrefWidth(60);
         icaoColumn.setText("OACI");
@@ -66,7 +68,7 @@ public final class AircraftTableController {
         descriptionColumn.setPrefWidth(70);
         descriptionColumn.setText("Description");
 
-//      Value column
+        //Value column
         TableColumn<ObservableAircraftState, String> longitudeColumn = valueColumn("Longitude(°)",4,
                 f -> f.positionProperty().map(GeoPos::longitude),Units.Angle.DEGREE);
         TableColumn<ObservableAircraftState, String> latitudeColumn = valueColumn("Latitude(°)",4,
@@ -77,19 +79,18 @@ public final class AircraftTableController {
                 f -> f.velocityProperty().map(Number::doubleValue), Units.Speed.KILOMETER_PER_HOUR);
 
 
-//      Column synthese
+        //Column synthese
         tableView.getColumns().addAll(List.of(icaoColumn, callSignColumn,registrationColumn,modelColumn, typeColumn,
                         descriptionColumn, longitudeColumn,latitudeColumn,altittudeColumn, velocityColumn));
 
-//      Listeners
+        //Listeners
         aircraftStates.addListener((SetChangeListener<ObservableAircraftState>) change -> {
             if(change.wasAdded()){
                 tableView.getItems().add(change.getElementAdded());
                 tableView.sort();
             }
-            if(change.wasRemoved()){
+            else if(change.wasRemoved()){
                 tableView.getItems().remove(change.getElementRemoved());
-                tableView.sort();
             }
         });
 
@@ -113,7 +114,7 @@ public final class AircraftTableController {
             }
         });
 
-//      Lambda properties update
+        //Lambda properties update
         callSignColumn.setCellValueFactory(f ->
                 f.getValue().callSignProperty().map(CallSign::string)
         );
@@ -137,6 +138,7 @@ public final class AircraftTableController {
      public TableView<ObservableAircraftState> pane(){
         return tableView;
     }
+
      public void setOnDoubleClick(Consumer<ObservableAircraftState> consumer){
         this.consumer = consumer;
     }

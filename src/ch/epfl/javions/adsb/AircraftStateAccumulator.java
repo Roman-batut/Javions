@@ -67,7 +67,7 @@ public class AircraftStateAccumulator <T extends AircraftStateSetter> {
                 aircraftstatesetter.setAltitude(posm.altitude());
 
                 AirbornePositionMessage oldmessage = oldmessages[((posm.parity() + 1) % 2)];
-                if((oldmessage != null) && (posm.timeStampNs()-oldmessage.timeStampNs() < GAP_MAX_TIMESTAMPNS)) {
+                if((oldmessage != null) && (posm.timeStampNs() - oldmessage.timeStampNs() < GAP_MAX_TIMESTAMPNS)) {
                     GeoPos position;
 
                     if(posm.parity() == 0){

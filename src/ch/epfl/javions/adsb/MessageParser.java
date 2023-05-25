@@ -19,7 +19,7 @@ public class MessageParser {
 
 
     //* Methods
-    
+
 
     /**
      * Returns the ADS-B message corresponding to the raw message,

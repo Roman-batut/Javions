@@ -39,7 +39,7 @@ public final class AircraftController {
 
     private MapParameters mapParameters;
 
-    private  ObjectProperty<ObservableAircraftState> clickedPlane;
+    private ObjectProperty<ObservableAircraftState> clickedPlane;
     private Pane pane;
 
     public AircraftController(MapParameters mapParameters,
@@ -69,7 +69,7 @@ public final class AircraftController {
         return pane;
     }
 
-    //*Private Methods
+    //* Private Methods
 
     //Label
     private Rectangle background(Text text){
@@ -140,6 +140,7 @@ public final class AircraftController {
     }
 
     //Icon + Label
+
     private Group iconLabel(ObservableAircraftState state){
         SVGPath icon = icon(state, iconCreation(state));
 
@@ -244,8 +245,6 @@ public final class AircraftController {
             trajectory.getChildren().add(line);
         }
     }
-
-
 }
 
 

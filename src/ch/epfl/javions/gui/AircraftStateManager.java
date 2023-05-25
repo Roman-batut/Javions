@@ -45,11 +45,7 @@ public final class AircraftStateManager {
     }
 
     public void purge(){
-        for(AircraftStateAccumulator<ObservableAircraftState> accumulator : stateManager.values()){
-            ObservableAircraftState state = accumulator.stateSetter();
-            if ((timeStampNs - state.getTimeStampNs()) >= 6e+10){
-                observableState.remove(accumulator.stateSetter());
-            }
-        }
+        observableState.removeIf(state -> (timeStampNs - state.getTimeStampNs()) >= MINUTE_IN_NS);
+        stateManager.entrySet().removeIf(entry -> (timeStampNs - entry.getValue().stateSetter().getTimeStampNs()) >= MINUTE_IN_NS);
     }
 }
