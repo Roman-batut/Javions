@@ -12,10 +12,10 @@ import java.io.IOException;
 
 public final class BaseMapController {
 
-    private TileManager tileManager;
-    private MapParameters mapParameters;
-    private Pane pane;
-    private Canvas canvas;
+    private final TileManager tileManager;
+    private final MapParameters mapParameters;
+    private final Pane pane;
+    private final Canvas canvas;
     private boolean redrawNeeded;
 
     public BaseMapController(TileManager tileManager, MapParameters mapParameters) {

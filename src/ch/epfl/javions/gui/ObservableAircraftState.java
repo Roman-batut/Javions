@@ -22,17 +22,17 @@ public final class ObservableAircraftState implements AircraftStateSetter {
 
     private AircraftStateAccumulator accumulator;
 
-    private LongProperty timeStampNs;
+    private final LongProperty timeStampNs;
     private long oldMessageTimestampNs;
-    private IntegerProperty category;
-    private SimpleObjectProperty<CallSign> callSign;
-    private SimpleObjectProperty<GeoPos> position;
-    private DoubleProperty altitude;
-    private DoubleProperty velocity;
-    private DoubleProperty trackOrHeading;
-    private ObservableList<AirbornPos> trajectory;
-    private ObservableList<AirbornPos> trajectoryunmodifiable;
-    private IcaoAddress icaoAddress;
+    private final IntegerProperty category;
+    private final SimpleObjectProperty<CallSign> callSign;
+    private final SimpleObjectProperty<GeoPos> position;
+    private final DoubleProperty altitude;
+    private final DoubleProperty velocity;
+    private final DoubleProperty trackOrHeading;
+    private final ObservableList<AirbornPos> trajectory;
+    private final ObservableList<AirbornPos> trajectoryunmodifiable;
+    private final IcaoAddress icaoAddress;
 
 
     public ObservableAircraftState(IcaoAddress icaoAddress, AircraftDatabase aircraftDatabase) throws IOException {

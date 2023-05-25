@@ -37,10 +37,10 @@ import java.sql.SQLOutput;
 
 public final class AircraftController {
 
-    private MapParameters mapParameters;
+    private final MapParameters mapParameters;
 
-    private ObjectProperty<ObservableAircraftState> clickedPlane;
-    private Pane pane;
+    private final ObjectProperty<ObservableAircraftState> clickedPlane;
+    private final Pane pane;
 
     public AircraftController(MapParameters mapParameters,
                               ObservableSet<ObservableAircraftState> aircraftStates,

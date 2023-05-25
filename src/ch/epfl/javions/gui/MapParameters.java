@@ -5,9 +5,9 @@ import ch.epfl.javions.Preconditions;
 import javafx.beans.property.*;
 
 public final class MapParameters {
-    private IntegerProperty zoom;
-    private DoubleProperty minX;
-    private DoubleProperty minY;
+    private final IntegerProperty zoom;
+    private final DoubleProperty minX;
+    private final DoubleProperty minY;
 
     public MapParameters(int initZoom, double initMinX, double initMinY){
         Preconditions.checkArgument(6<=initZoom && initZoom<=19);
