@@ -96,17 +96,19 @@ public final class AircraftTableController {
         clickedPlane.addListener((ChangeListener<? super ObservableAircraftState>) (observableValue, newValue, oldValue)-> {
             if (newValue != tableView.getSelectionModel().getSelectedItem()){
                tableView.scrollTo(newValue);
+               tableView.getSelectionModel().select(newValue);
             }
-            tableView.getSelectionModel().select(newValue);
+        });
 
-        });
         tableView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-            if(newValue != oldValue){
-                clickedPlane.set(newValue);
-            }
+            clickedPlane.set(newValue);
         });
+
         tableView.setOnMouseClicked(event -> {
-            if ((event.getButton() == MouseButton.PRIMARY) && (event.getClickCount() >= 2) && (clickedPlane.get() != null) && (consumer != null)) {
+            if ((event.getButton() == MouseButton.PRIMARY)
+                    && (event.getClickCount() == 2)
+                    && (clickedPlane.get() != null)
+                    && (consumer != null)) {
                 consumer.accept(clickedPlane.get());
             }
         });
