@@ -12,7 +12,7 @@ import java.util.Objects;
  */
 public class AircraftStateAccumulator <T extends AircraftStateSetter> {
 
-    private static final double GAP_MAX_TIMESTAMPNS = Math.pow(10, 10);
+    private static final long GAP_MAX_TIMESTAMPNS = 10000000000L;
     private final T aircraftstatesetter;
     private final AirbornePositionMessage[] oldmessages;
 

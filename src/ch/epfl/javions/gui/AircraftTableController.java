@@ -94,10 +94,10 @@ public final class AircraftTableController {
             }
         });
 
-        clickedPlane.addListener((ChangeListener<? super ObservableAircraftState>) (observableValue, newValue, oldValue)-> {
-            if (newValue != tableView.getSelectionModel().getSelectedItem()){
+        clickedPlane.addListener((ChangeListener<? super ObservableAircraftState>) (observableValue, oldValue, newValue)-> {
+            tableView.getSelectionModel().select(newValue);
+            if (!newValue.equals(oldValue)){
                tableView.scrollTo(newValue);
-               tableView.getSelectionModel().select(newValue);
             }
         });
 
@@ -156,7 +156,8 @@ public final class AircraftTableController {
             try {
                s1 = (s1 == null) ? "" :s1;
                s2 = (s2 == null) ? "" :s2;
-               return (s1.equals("") || s2.equals("")) ? String.CASE_INSENSITIVE_ORDER.compare(s1, s2)
+               return (s1.equals("") || s2.equals("")) ?
+                       String.CASE_INSENSITIVE_ORDER.compare(s1, s2)
                        :  Double.compare(numberFormat.parse(s1).doubleValue(),numberFormat.parse(s2).doubleValue());
             } catch (ParseException e) {
                 throw new Error(e);
@@ -164,7 +165,10 @@ public final class AircraftTableController {
         });
 
         valueColumn.setCellValueFactory(f->
-               property.apply(f.getValue()).map(e -> Units.convertTo(e.doubleValue(), unit)).map(e -> e < 0 ? null : e).map(numberFormat::format)
+               property.apply(f.getValue())
+                       .map(e -> Units.convertTo(e.doubleValue(), unit))
+                       .map(e -> e < 0 ? null : e)
+                       .map(numberFormat::format)
         );
 
         return valueColumn;
@@ -173,4 +177,3 @@ public final class AircraftTableController {
 }
 // #TODO faire le convert en unité avant ?
 // #TODO faire une classe privé pour les column textuelles
-// #TODO faire le setondouble click

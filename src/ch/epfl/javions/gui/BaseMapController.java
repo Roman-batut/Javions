@@ -86,10 +86,11 @@ public final class BaseMapController {
        double coordX = WebMercator.x(mapParameters.getZoom(), geoPos.longitude());
        double coordY = WebMercator.y(mapParameters.getZoom(), geoPos.latitude());
 
-       double vectorX = coordX - pane.getWidth() - mapParameters.getMinX() ;
-       double vectorY = coordY - pane.getHeight() - mapParameters.getMinY() ;
+       double vectorX = coordX - mapParameters.getMinX() - (pane.getWidth()/2);
+       double vectorY = coordY - mapParameters.getMinY() - (pane.getHeight()/2);
 
        mapParameters.scroll(vectorX, vectorY);
+       redrawOnNextPulse();
     }
 
     private void redrawIfNeeded() {

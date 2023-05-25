@@ -13,6 +13,7 @@ import java.util.Map;
 
 public final class AircraftStateManager {
 
+    private final long MINUTE_IN_NS = 10000000000L;
     private Map<IcaoAddress,AircraftStateAccumulator<ObservableAircraftState>> stateManager;
     private ObservableSet<ObservableAircraftState> observableState;
     private ObservableSet<ObservableAircraftState> observableStateunmodif;
