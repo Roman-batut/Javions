@@ -83,10 +83,6 @@ public final class BaseMapController {
 
             redrawOnNextPulse();
         });
-
-        //Mouse Released
-        pane.setOnMouseReleased(e -> {
-        });
     }
 
     //* Getters
@@ -156,5 +152,3 @@ public final class BaseMapController {
         Platform.requestNextPulse();
     }
 }
-
-// #TODO mouse released inutile ? 

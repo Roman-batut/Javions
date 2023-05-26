@@ -19,10 +19,16 @@ public final class TileManager {
     private final LinkedHashMap<TileId, Image> cacheMemory;
     private final Path cachePath;
     private final String serverName;
-    
+
     //* Constants
 
-    public static final String HTTPS = "https://";
+    private static final String HTTPS = "https://";
+    private static final int CACHE_MEMORY_CAPACITY = 100;
+    private static final float CACHE_MEMORY_LOAD_FACTOR = 0.75f;
+    private static final String SLASH = "/";
+    private static final String PNG = ".png";
+    private static final String JAVIONS = "Javions";
+    private static final String USER_AGENT = "User-Agent";
 
     //* Constructor
 
@@ -47,9 +53,10 @@ public final class TileManager {
      * @throws IOException
      */
     public Image imageForTileAt(TileId tileId)throws IOException{
-        String pathAnnex = "/"+tileId.zoom()+"/"+tileId.coordX()+"/";
-        Path imageDiskPath = Path.of(cachePath.toString(), pathAnnex + tileId.coordY() + ".png" );
-        Image image = null;
+        String pathAnnex = SLASH +tileId.zoom()+SLASH+tileId.coordX()+SLASH;
+        Path imageDiskPath = Path.of(cachePath.toString(), pathAnnex + tileId.coordY() + PNG);
+        Image image;
+
         if(cacheMemory.get(tileId) != null){
             return cacheMemory.get(tileId);
         } else if (Files.exists(imageDiskPath)) {
@@ -77,25 +84,19 @@ public final class TileManager {
                 URLConnection c = url.openConnection();
                 c.setRequestProperty("User-Agent", "Javions");
 
-                InputStream i1 = c.getInputStream();
-                tab = i1.readAllBytes();
-                i1.close();
-                Files.createDirectories(docPath);
-                Files.createFile(imageDiskPath);
-            } catch (IOException e) {
-                System.out.println("Urlconnection fail or inputstream fail or filecreation fail");
-                throw e;
-            }
-            try(FileOutputStream o1 = new FileOutputStream(imageDiskPath.toString())) {
-                ByteArrayInputStream i2 = new ByteArrayInputStream(tab);
-                o1.write(tab);
-                o1.close();
-                image = new Image(i2);
-                i2.close();
-            } catch (IOException e) {
-                System.out.println("OutputStream write or creation fail or input streamfrombytefail");
-                throw e;
-            }
+            InputStream i1 = c.getInputStream();
+            tab = i1.readAllBytes();
+            i1.close();
+            Files.createDirectories(docPath);
+            Files.createFile(imageDiskPath);
+
+            FileOutputStream o1 = new FileOutputStream(imageDiskPath.toString());
+            ByteArrayInputStream i2 = new ByteArrayInputStream(tab);
+            o1.write(tab);
+            o1.close();
+            image = new Image(i2);
+            i2.close();
+
             if(cacheMemory.size() >= 100 ){
                 cacheMemory.remove(cacheMemory.keySet().iterator().next());
             }
@@ -129,4 +130,3 @@ public final class TileManager {
 // #TODO revoir si ca marche bien ca
 
 // #TODO ptet demoduler ?
-// #TODO constantes publiques ?

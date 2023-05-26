@@ -30,15 +30,20 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 public final class Main extends Application {
 
+    //* Constants
 
     private static final int MIN_WIDTH = 800;
     private static final int MIN_HEIGHT = 600;
     private static final String TITLE = "Javions";
     private static final double ONE_SECOND = 1e+9;
 
+    //* Main Launch
+
     public static void main(String[] args) {
         launch(args);
     }
+
+    //* Start
 
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -49,7 +54,7 @@ public final class Main extends Application {
                 new TileManager(tileCache, "tile.openstreetmap.org");
         MapParameters mp =
                 new MapParameters(8, 33_530, 23_070);
-        BaseMapController bmc = new BaseMapController(tm, mp);
+        BaseMapController baseMapController = new BaseMapController(tileManager, mapParameters);
 
         //Création de la base de données
         URL dbUrl = getClass().getResource("/aircraft.zip");
@@ -58,21 +63,21 @@ public final class Main extends Application {
         AircraftDatabase db = new AircraftDatabase(f);
 
         //Manager
-        AircraftStateManager asm = new AircraftStateManager(db);
-        ObjectProperty<ObservableAircraftState> sap =
+        AircraftStateManager aircraftStateManager = new AircraftStateManager(aircraftDatabase);
+        ObjectProperty<ObservableAircraftState> selectedAirplane =
                 new SimpleObjectProperty<>();
         //Scene
-        AircraftTableController atc =
-                new AircraftTableController(asm.states(), sap);
-        AircraftController ac =
-                new AircraftController(mp, asm.states(), sap);
-        StatusLineController slc = new StatusLineController();
+        AircraftTableController aircraftTableController =
+                new AircraftTableController(aircraftStateManager.states(), selectedAirplane);
+        AircraftController aircraftController =
+                new AircraftController(mapParameters, aircraftStateManager.states(), selectedAirplane);
+        StatusLineController statusLineController = new StatusLineController();
 
         //Scene implementation
-        StackPane stackPane = new StackPane(bmc.pane(), ac.pane());
+        StackPane stackPane = new StackPane(baseMapController.pane(), aircraftController.pane());
         BorderPane borderPane = new BorderPane();
-        borderPane.setCenter(atc.pane());
-        borderPane.setTop(slc.pane());
+        borderPane.setCenter(aircraftTableController.pane());
+        borderPane.setTop(statusLineController.pane());
         SplitPane root = new SplitPane(stackPane, borderPane);
         root.setOrientation(Orientation.VERTICAL);
         primaryStage.setScene(new Scene(root));
@@ -82,7 +87,7 @@ public final class Main extends Application {
         primaryStage.show();
 
         //Binding og the number of plane
-        slc.aircraftCountProperty().bind(Bindings.size(asm.states()));
+        statusLineController.aircraftCountProperty().bind(Bindings.size(aircraftStateManager.states()));
 
         ConcurrentLinkedQueue<RawMessage> queue = new ConcurrentLinkedQueue<>();
 
@@ -137,7 +142,7 @@ public final class Main extends Application {
         reader.setDaemon(true);
         reader.start();
 
-        sap.addListener((e) -> bmc.centerOn(sap.get().getPosition()));
+        selectedAirplane.addListener((e) -> baseMapController.centerOn(selectedAirplane.get().getPosition()));
 
         //Animation des aéronefs
         new AnimationTimer() {
@@ -146,14 +151,15 @@ public final class Main extends Application {
             public void handle(long now) {
                 try {
                     if(now-last >= ONE_SECOND){
-                        asm.purge();
+                        aircraftStateManager.purge();
                         last = now;
                     }
                     while (!queue.isEmpty()){
                         Message m = MessageParser.parse(queue.remove());
                         if (m != null) {
-                            asm.updateWithMessage(m);
-                            slc.messageCountProperty().set(slc.messageCountProperty().get()+1);
+                            aircraftStateManager.updateWithMessage(m);
+                            statusLineController.messageCountProperty()
+                                    .set(statusLineController.messageCountProperty().get()+1);
                         }
                     }
                 } catch (IOException e) {

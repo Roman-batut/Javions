@@ -24,10 +24,10 @@ public final class StatusLineController {
     
     //* Constants
 
-    public static final String STATUS_LINE_STYLE_SHEET = "status.css";
-    public static final String DATA_VALUE_FORMAT = "%03d";
-    public static final String AIRCRAFT_VISIBLE_STRING = "Aéronefs visibles : ";
-    public static final String RECEIVE_MESSAGES_STRING = "Messages reçues : ";
+    private static final String STATUS_LINE_STYLE_SHEET = "status.css";
+    private static final String DATA_VALUE_FORMAT = "%03d";
+    private static final String AIRCRAFT_VISIBLE_STRING = "Aéronefs visibles : ";
+    private static final String RECEIVE_MESSAGES_STRING = "Messages reçues : ";
     
     //* Constructor
 
@@ -83,5 +83,3 @@ public final class StatusLineController {
     }
 
 }
-
-// #TODO les constantes sont publiques ?

@@ -226,10 +226,11 @@ public final class AircraftTableController {
      * @param function the function of the column
      * @return the text column
      */
-    private TableColumn<ObservableAircraftState, String> textColumn(String columnTitle, int width
-            ,Function<ObservableAircraftState, ObservableValue<String>> function){
+    private TableColumn<ObservableAircraftState, String> textColumn(String columnTitle, int width,
+                            Function<ObservableAircraftState, ObservableValue<String>> function){
 
         TableColumn<ObservableAircraftState, String> textcolumn = new TableColumn<>();
+
         textcolumn.setText(columnTitle);
         textcolumn.setPrefWidth(width);
         textcolumn.setCellValueFactory(f -> function.apply(f.getValue()));
@@ -238,5 +239,3 @@ public final class AircraftTableController {
     }
 
 }
-
-// #TODO faire le convert en unité avant ?
