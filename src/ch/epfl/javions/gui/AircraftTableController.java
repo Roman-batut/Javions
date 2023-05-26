@@ -36,7 +36,7 @@ import static javafx.scene.control.TableView.CONSTRAINED_RESIZE_POLICY_SUBSEQUEN
  */
 public final class AircraftTableController {
 
-    private final ObjectProperty<ObservableAircraftState> clickedPlane;
+
     private final TableView<ObservableAircraftState> tableView;
     
     private Consumer<ObservableAircraftState> consumer;
@@ -76,7 +76,6 @@ public final class AircraftTableController {
      */
     public AircraftTableController(ObservableSet<ObservableAircraftState> aircraftStates,
                                    ObjectProperty<ObservableAircraftState> clickedPlane){
-        this.clickedPlane = clickedPlane;
 
         //Table view setup
         tableView = new TableView<>();
@@ -202,7 +201,7 @@ public final class AircraftTableController {
                s2 = (s2 == null) ? "" :s2;
                return (s1.equals("") || s2.equals("")) ?
                        String.CASE_INSENSITIVE_ORDER.compare(s1, s2)
-                       :  Double.compare(numberFormat.parse(s1).doubleValue(),numberFormat.parse(s2).doubleValue());
+                       : Double.compare(numberFormat.parse(s1).doubleValue(),numberFormat.parse(s2).doubleValue());
             } catch (ParseException e) {
                 throw new Error(e);
             }

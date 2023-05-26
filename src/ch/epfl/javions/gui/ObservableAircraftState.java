@@ -25,8 +25,6 @@ public final class ObservableAircraftState implements AircraftStateSetter {
 
     private final AircraftData aircraftData;
 
-    private AircraftStateAccumulator accumulator;
-
     private final LongProperty timeStampNs;
     private long oldMessageTimestampNs;
     private final IntegerProperty category;
@@ -50,7 +48,6 @@ public final class ObservableAircraftState implements AircraftStateSetter {
     public ObservableAircraftState(IcaoAddress icaoAddress, AircraftDatabase aircraftDatabase) throws IOException {
         this.icaoAddress = icaoAddress;
         aircraftData = aircraftDatabase.get(icaoAddress);
-        accumulator = new AircraftStateAccumulator<>(this);
         trajectory = FXCollections.observableArrayList();
         trajectoryunmodifiable = FXCollections.unmodifiableObservableList(trajectory);
 
@@ -70,7 +67,9 @@ public final class ObservableAircraftState implements AircraftStateSetter {
      * @param timeStampNs the new timestamp
      */
     @Override
-    public void setLastMessageTimeStampNs(long timeStampNs) { this.timeStampNs.set(timeStampNs); }
+    public void setLastMessageTimeStampNs(long timeStampNs) {
+        oldMessageTimestampNs = this.getTimeStampNs();
+        this.timeStampNs.set(timeStampNs); }
     
     /**
      * Sets the category
@@ -92,10 +91,9 @@ public final class ObservableAircraftState implements AircraftStateSetter {
      */
     @Override
     public void setPosition(GeoPos position) {
-        if(!Double.isNaN(getAltitude())){
+        if(!Double.isNaN(getAltitude())) {
             trajectory.add(new AirbornPos(getAltitude(), position));
         }
-
         this.position.set(position);
     }
 
@@ -114,7 +112,6 @@ public final class ObservableAircraftState implements AircraftStateSetter {
                 trajectory.add(index, new AirbornPos(altitude, getPosition()));
             }
         }
-
         this.altitude.set(altitude);
     }
 
@@ -268,7 +265,7 @@ public final class ObservableAircraftState implements AircraftStateSetter {
      * Fixed info getter for the wake turbulence category
      * @return the wake turbulence category
      */
-    public WakeTurbulenceCategory getWakeTurbulenceCategory(){ return aircraftData.wakeTurbulenceCategory(); }
+    public WakeTurbulenceCategory getWakeTurbulenceCategory(){ return aircraftData.wakeTurbulenceCategory();}
 
 
     //* Record

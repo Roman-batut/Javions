@@ -1,6 +1,7 @@
 package ch.epfl.javions.gui;
 
 import ch.epfl.javions.ByteString;
+import ch.epfl.javions.Units;
 import ch.epfl.javions.adsb.Message;
 import ch.epfl.javions.adsb.MessageParser;
 import ch.epfl.javions.adsb.RawMessage;
@@ -36,6 +37,10 @@ public final class Main extends Application {
     private static final int MIN_HEIGHT = 600;
     private static final String TITLE = "Javions";
     private static final double ONE_SECOND = 1e+9;
+    private static final String TILE_CACHE_PATH = "tile-cache";
+    private static final String OPENSTREETMAP_SERVER = "tile.openstreetmap.org";
+    private static final String AIRCRAFT_INFOS = "/aircraft.zip";
+    private static final double MILLI_CONVERT = 1e+6;
 
     //* Main Launch
 
@@ -49,18 +54,18 @@ public final class Main extends Application {
     public void start(Stage primaryStage) throws Exception {
 
         //Map instantiation
-        Path tileCache = Path.of("tile-cache");
-        TileManager tm =
-                new TileManager(tileCache, "tile.openstreetmap.org");
-        MapParameters mp =
+        Path tileCache = Path.of(TILE_CACHE_PATH);
+        TileManager tileManager =
+                new TileManager(tileCache, OPENSTREETMAP_SERVER);
+        MapParameters mapParameters =
                 new MapParameters(8, 33_530, 23_070);
         BaseMapController baseMapController = new BaseMapController(tileManager, mapParameters);
 
         //Création de la base de données
-        URL dbUrl = getClass().getResource("/aircraft.zip");
+        URL dbUrl = getClass().getResource(AIRCRAFT_INFOS);
         assert dbUrl != null;
         String f = Path.of(dbUrl.toURI()).toString();
-        AircraftDatabase db = new AircraftDatabase(f);
+        AircraftDatabase aircraftDatabase = new AircraftDatabase(f);
 
         //Manager
         AircraftStateManager aircraftStateManager = new AircraftStateManager(aircraftDatabase);
@@ -107,14 +112,12 @@ public final class Main extends Application {
                         assert bytesRead == RawMessage.LENGTH;
                         ByteString message = new ByteString(bytes);
 
-                        Thread.sleep((long) ((timeStampNs-lastone)/(1e+6)));
+                        Thread.sleep((long) ((timeStampNs-lastone)/ MILLI_CONVERT));
                         lastone = timeStampNs;
 
                         queue.add(new RawMessage(timeStampNs, message));
                     }
-                }catch (IOException e) {
-                    throw new RuntimeException(e);
-                }catch (InterruptedException e){
+                }catch (IOException | InterruptedException e) {
                     throw new RuntimeException(e);
                 }
             });
@@ -128,11 +131,8 @@ public final class Main extends Application {
                         RawMessage nextMessage;
                         while ((nextMessage = demodulator.nextMessage()) != null) {
                             queue.add(nextMessage);
-                            Thread.sleep(10);
                         }
                     } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    } catch (InterruptedException e) {
                         throw new RuntimeException(e);
                     }
              });

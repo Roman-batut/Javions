@@ -64,10 +64,10 @@ public final class AircraftStateManager {
 
         if(stateManager.get(icao) == null){
             stateManager.put(icao, new AircraftStateAccumulator<>(new ObservableAircraftState(icao,aircraftDatabase)));
-        }else {
-            stateManager.get(icao).update(message);
         }
-        
+
+        stateManager.get(icao).update(message);
+
         if(stateManager.get(icao).stateSetter().getPosition() != null){
             observableState.add(stateManager.get(icao).stateSetter());
         }
@@ -77,8 +77,10 @@ public final class AircraftStateManager {
      * Purges the aircraft state manager
      */
     public void purge(){
-        observableState.removeIf(state -> (timeStampNs - state.getTimeStampNs()) >= MINUTE_IN_NS);
+        observableState.removeIf(
+                state -> (timeStampNs - state.getTimeStampNs()) >= MINUTE_IN_NS);
 
-        stateManager.entrySet().removeIf(entry -> (timeStampNs - entry.getValue().stateSetter().getTimeStampNs()) >= MINUTE_IN_NS);
+        stateManager.entrySet().removeIf(
+                entry -> (timeStampNs - entry.getValue().stateSetter().getTimeStampNs()) >= MINUTE_IN_NS);
     }
 }

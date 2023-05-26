@@ -53,6 +53,5 @@ class CprDecoderTest {
         System.out.println(pos1);
     }
 
-    // #TODO METTRE AVEC LE CONVERT
 
 }

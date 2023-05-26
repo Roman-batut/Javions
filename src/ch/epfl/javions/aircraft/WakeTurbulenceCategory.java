@@ -12,17 +12,13 @@ public enum WakeTurbulenceCategory {
     HEAVY("H"),
     UNKNOWN("");
 
-    private final String letter;
-
     //* Constructor
 
     /**
      *  Constructor of a wake turbulence category
      *  @param s the string representing the wake turbulence category
      */
-    private WakeTurbulenceCategory(String s){
-        letter = s;
-    }
+    private WakeTurbulenceCategory(String s){}
 
 
     //* Methods
@@ -41,6 +37,4 @@ public enum WakeTurbulenceCategory {
         };
     }
 }
-
-// #TODO letter sert à quoi ?
 

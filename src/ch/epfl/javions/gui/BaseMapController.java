@@ -36,6 +36,7 @@ public final class BaseMapController {
         this.mapParameters = mapParameters;
         redrawNeeded = false;
 
+        // 
         canvas = new Canvas();
         pane = new Pane(canvas);
         canvas.widthProperty().bind(pane.widthProperty());
@@ -135,9 +136,13 @@ public final class BaseMapController {
             for (int y=0 ; y<ySize ; y++) {
                 try {
                     if(TileManager.TileId.isValid(mapParameters.getZoom(), tileX+x, tileY+y)){
-                        graphicsContext.drawImage(tileManager.imageForTileAt(new TileManager.TileId(mapParameters.getZoom(), tileX+x, tileY+y)), x*256+offsetX, y*256+offsetY);
+                        graphicsContext.drawImage(
+                                tileManager.imageForTileAt(
+                                        new TileManager.TileId(
+                                                mapParameters.getZoom(), tileX+x, tileY+y)),
+                                x*256+offsetX, y*256+offsetY);
                     }
-                } catch (IOException e){
+                } catch (IOException ignored){
                 }
             }
         }

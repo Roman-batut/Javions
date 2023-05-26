@@ -15,7 +15,7 @@ import java.util.LinkedHashMap;
  * @author Guillaume Chevallier (360709)
  */
 public final class TileManager {
-    
+
     private final LinkedHashMap<TileId, Image> cacheMemory;
     private final Path cachePath;
     private final String serverName;
@@ -38,7 +38,7 @@ public final class TileManager {
      * @param serverName the server name
      */
     public TileManager(Path cachePath, String serverName){
-        cacheMemory = new LinkedHashMap<>(100,0.75f,true);
+        cacheMemory = new LinkedHashMap<>(CACHE_MEMORY_CAPACITY, CACHE_MEMORY_LOAD_FACTOR,true);
         this.cachePath = cachePath;
         this.serverName = serverName;
     }
@@ -60,15 +60,11 @@ public final class TileManager {
         if(cacheMemory.get(tileId) != null){
             return cacheMemory.get(tileId);
         } else if (Files.exists(imageDiskPath)) {
-            try {
 
-                InputStream i = new FileInputStream(imageDiskPath.toString());
-                image = new Image(i);
-                i.close();
-            }catch (IOException e) {
-                System.out.println("Urlconnection fail or inputstream fail");
-                throw e;
-            }
+            InputStream i = new FileInputStream(imageDiskPath.toString());
+            image = new Image(i);
+            i.close();
+
             if (cacheMemory.size() >= 100 ){
                 cacheMemory.remove(cacheMemory.keySet().iterator().next());
             }
@@ -79,10 +75,10 @@ public final class TileManager {
             Path imageServerPath = Path.of(serverName + pathAnnex + String.valueOf(tileId.coordY())+ ".png");
             Path docPath = Path.of(cachePath.toString() + pathAnnex);
             byte[] tab = null;
-            try {
-                URL url = new URL(HTTPS + imageServerPath);
-                URLConnection c = url.openConnection();
-                c.setRequestProperty("User-Agent", "Javions");
+
+            URL url = new URL(HTTPS + imageServerPath);
+            URLConnection c = url.openConnection();
+            c.setRequestProperty(USER_AGENT, JAVIONS);
 
             InputStream i1 = c.getInputStream();
             tab = i1.readAllBytes();
@@ -126,7 +122,6 @@ public final class TileManager {
     }
 
 }
-// #TODO enlever les try and catch et laissé le throw IOexeption pour la gerer plus tard dans basemapcontroller
-// #TODO revoir si ca marche bien ca
+
 
 // #TODO ptet demoduler ?

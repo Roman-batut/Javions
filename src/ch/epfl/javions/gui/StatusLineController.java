@@ -44,13 +44,15 @@ public final class StatusLineController {
         aircraftCount = new SimpleIntegerProperty(0);
         messageCount = new SimpleLongProperty(0);
 
-        StringBinding aircraftCountValue = Bindings.createStringBinding(() ->
-            String.format(DATA_VALUE_FORMAT,aircraftCountProperty().get()),aircraftCountProperty());
-        aircraftCountText.textProperty().bind(Bindings.createStringBinding(()-> AIRCRAFT_VISIBLE_STRING + aircraftCountValue.getValue(), aircraftCountValue));
+        StringBinding aircraftCountValue = Bindings.createStringBinding(
+                () -> String.format(DATA_VALUE_FORMAT,aircraftCountProperty().get()),aircraftCountProperty());
+        aircraftCountText.textProperty().bind(Bindings.createStringBinding(
+                ()-> AIRCRAFT_VISIBLE_STRING + aircraftCountValue.getValue(), aircraftCountValue));
 
         StringBinding messageCountValue = Bindings.createStringBinding(() ->
                 String.format(DATA_VALUE_FORMAT,messageCountProperty().get()),messageCountProperty());
-        messageCountText.textProperty().bind(Bindings.createStringBinding(()-> RECEIVE_MESSAGES_STRING + messageCountValue.getValue(), messageCountValue));
+        messageCountText.textProperty().bind(Bindings.createStringBinding(
+                ()-> RECEIVE_MESSAGES_STRING + messageCountValue.getValue(), messageCountValue));
 
         pane.setLeft(aircraftCountText);
         pane.setRight(messageCountText);
