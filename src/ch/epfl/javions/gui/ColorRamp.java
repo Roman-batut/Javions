@@ -5,8 +5,18 @@ import javafx.scene.paint.Color;
 
 import java.util.*;
 
+/**
+ * Class representing a color ramp
+ * @author Roman Batut (356158)
+ * @author Guillaume Chevallier (360709)
+ */
 public final class ColorRamp {
 
+    private final Color[] colors;
+
+    //* Constants
+
+    //Plasma color ramp
     public static final ColorRamp PLASMA = new ColorRamp(
             Color.valueOf("0x0d0887ff"), Color.valueOf("0x220690ff"),
             Color.valueOf("0x320597ff"), Color.valueOf("0x40049dff"),
@@ -23,22 +33,39 @@ public final class ColorRamp {
             Color.valueOf("0xfa9d3bff"), Color.valueOf("0xfca935ff"),
             Color.valueOf("0xfdb52eff"), Color.valueOf("0xfdc229ff"),
             Color.valueOf("0xfccf25ff"), Color.valueOf("0xf9dd24ff"),
-            Color.valueOf("0xf5eb27ff"), Color.valueOf("0xf0f921ff"));
+            Color.valueOf("0xf5eb27ff"), Color.valueOf("0xf0f921ff")
+    );
 
-    private final Color[] colors;
+    //* Constructors
 
+    /**
+     * ColorRamp's constructor with varargs of colors
+     * @param colors the varargs of colors
+     */
     public ColorRamp(Color... colors){
         Preconditions.checkArgument(colors.length >= 2);
 
         this.colors = colors;
     }
 
+    /**
+     * ColorRamp's constructor with a list of colors
+     * @param colors the list of colors
+     */
     public ColorRamp(List<Color> colors){
         Preconditions.checkArgument(colors.size() >= 2);
         this.colors = new Color[colors.size()];
         colors.toArray(this.colors);
     }
 
+
+    //* Methods
+
+    /**
+     * Finds the corresponding color at the given alpha
+     * @param alpha the alpha
+     * @return the color at the given alpha
+     */
     public Color at(double alpha){
 
         if (alpha <= 0){
@@ -50,6 +77,7 @@ public final class ColorRamp {
         }
 
         int index = (int) (alpha * (colors.length-1));
+
         return colors[index].interpolate(colors[index+1],  alpha * (colors.length-1) - index);
     }
 }

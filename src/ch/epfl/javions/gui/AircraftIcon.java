@@ -9,6 +9,11 @@ import java.util.Map;
 
 import static ch.epfl.javions.aircraft.WakeTurbulenceCategory.HEAVY;
 
+/**
+ *  Enumeration of the different aircraft icons
+ *  @author Roman Batut (356158)
+ *  @author Guillaume Chevallier (360709)
+ */
 public enum AircraftIcon {
     AIRLINER("""
             M 0.01 14.75 c -0.26 0 -0.74 -0.71 -0.86 -1.41 l -3.33 0.86 L -4.5
@@ -145,18 +150,104 @@ public enum AircraftIcon {
             -1.05 0.67 H 1.27 v 3.19 l 1.61 0.59 l 1 0.36 a 1.05 1.05 0 0 1 0.8
             1.11 c -0.07 0.39 -0.47 0.86 -1.39 0.86 Z""");
 
-    private static final Map<AircraftTypeDesignator, AircraftIcon> TYPE_DESIGNATOR_TABLE = createTypeDesignatorTable();
     private final boolean canRotate;
     private final String svgPath;
 
+    //* Constants
+
+    private static final Map<AircraftTypeDesignator, AircraftIcon> TYPE_DESIGNATOR_TABLE = createTypeDesignatorTable();
+
+    //* Constructors
+
+    /**
+     * AircraftIcon constructor setting the SVG path and rotation capability
+     * @param canRotate whether the icon can be rotated
+     * @param svgPath the SVG path
+     */
     AircraftIcon(boolean canRotate, String svgPath) {
         this.canRotate = canRotate;
         this.svgPath = svgPath;
     }
 
+    /**
+     * AircraftIcon constructor setting the SVG path and rotation capability to true
+     * @param svgPath the SVG path
+     */
     AircraftIcon(String svgPath) {
         this(true, svgPath);
     }
+    
+    //* Getters  
+
+    /**
+     * A getter for the rotation capability
+     * @return canRotate the rotation capability
+     */   
+    public boolean canRotate() {
+        return canRotate;
+    }
+
+    /**
+     * A getter for the SVG path
+     * @return svgPath the SVG path
+     */
+    public String svgPath() {
+        return svgPath;
+    }
+
+
+    //* Methods
+
+    /**
+     * Finds the corresponding icon to the given aircraft
+     * @param typeDesignator the aircraft type designator
+     * @param typeDescription the aircraft type description
+     * @param category the aircraft category
+     * @param wakeTurbulenceCategory the aircraft wake turbulence category
+     * @return the icon for the given aircraft type designator, description, category and wake turbulence category
+     */
+    public static AircraftIcon iconFor(AircraftTypeDesignator typeDesignator,
+                                       AircraftDescription typeDescription,
+                                       int category,
+                                       WakeTurbulenceCategory wakeTurbulenceCategory) {
+        var maybeDesignatorIcon = TYPE_DESIGNATOR_TABLE.get(typeDesignator);
+        if (maybeDesignatorIcon != null) return maybeDesignatorIcon;
+
+        var description = typeDescription.string();
+        if (description.startsWith("H")) return HELICOPTER;
+
+        var maybeDescriptionIcon = switch (description) {
+            case "L1P", "L1T" -> CESSNA;
+            case "L1J" -> HI_PERF;
+            case "L2P" -> TWIN_SMALL;
+            case "L2T" -> TWIN_LARGE;
+            case "L2J" -> switch (wakeTurbulenceCategory) {
+                case LIGHT -> JET_SWEPT;
+                case MEDIUM -> AIRLINER;
+                case HEAVY -> HEAVY_2E;
+                default -> null;
+            };
+            case "L4T" -> HEAVY_4E;
+            case "L4J" -> wakeTurbulenceCategory == HEAVY ? HEAVY_4E : null;
+            default -> null;
+        };
+
+        if (maybeDescriptionIcon != null) return maybeDescriptionIcon;
+
+        return switch (category) {
+            case 0xA1, 0xB1, 0xB4 -> CESSNA;
+            case 0xA2 -> JET_NONSWEPT;
+            case 0xA3 -> AIRLINER;
+            case 0xA4 -> HEAVY_2E;
+            case 0xA5 -> HEAVY_4E;
+            case 0xA6 -> HI_PERF;
+            case 0xA7 -> HELICOPTER;
+            case 0xB2 -> BALLOON;
+            default -> UNKNOWN;
+        };
+    }
+
+    //* Private methods
 
     private static Map<AircraftTypeDesignator, AircraftIcon> createTypeDesignatorTable() {
         // Note: we don't use Map.ofEntries here, as IntelliJ becomes slow if we do.
@@ -399,55 +490,7 @@ public enum AircraftIcon {
         map.put(new AircraftTypeDesignator("YK40"), AIRLINER);
         map.put(new AircraftTypeDesignator("YK42"), AIRLINER);
         map.put(new AircraftTypeDesignator("YURO"), HI_PERF);
+        
         return Map.copyOf(map);
-    }
-
-    public static AircraftIcon iconFor(AircraftTypeDesignator typeDesignator,
-                                       AircraftDescription typeDescription,
-                                       int category,
-                                       WakeTurbulenceCategory wakeTurbulenceCategory) {
-        var maybeDesignatorIcon = TYPE_DESIGNATOR_TABLE.get(typeDesignator);
-        if (maybeDesignatorIcon != null) return maybeDesignatorIcon;
-
-        var description = typeDescription.string();
-        if (description.startsWith("H")) return HELICOPTER;
-
-        var maybeDescriptionIcon = switch (description) {
-            case "L1P", "L1T" -> CESSNA;
-            case "L1J" -> HI_PERF;
-            case "L2P" -> TWIN_SMALL;
-            case "L2T" -> TWIN_LARGE;
-            case "L2J" -> switch (wakeTurbulenceCategory) {
-                case LIGHT -> JET_SWEPT;
-                case MEDIUM -> AIRLINER;
-                case HEAVY -> HEAVY_2E;
-                default -> null;
-            };
-            case "L4T" -> HEAVY_4E;
-            case "L4J" -> wakeTurbulenceCategory == HEAVY ? HEAVY_4E : null;
-            default -> null;
-        };
-
-        if (maybeDescriptionIcon != null) return maybeDescriptionIcon;
-
-        return switch (category) {
-            case 0xA1, 0xB1, 0xB4 -> CESSNA;
-            case 0xA2 -> JET_NONSWEPT;
-            case 0xA3 -> AIRLINER;
-            case 0xA4 -> HEAVY_2E;
-            case 0xA5 -> HEAVY_4E;
-            case 0xA6 -> HI_PERF;
-            case 0xA7 -> HELICOPTER;
-            case 0xB2 -> BALLOON;
-            default -> UNKNOWN;
-        };
-    }
-
-    public boolean canRotate() {
-        return canRotate;
-    }
-
-    public String svgPath() {
-        return svgPath;
     }
 }

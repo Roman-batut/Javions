@@ -35,6 +35,11 @@ import javafx.scene.text.Text;
 
 import java.sql.SQLOutput;
 
+/**
+ *  Class representing the AircraftController
+ *  @author Roman Batut (356158)
+ *  @author Guillaume Chevallier (360709)
+ */
 public final class AircraftController {
 
     private final MapParameters mapParameters;
@@ -42,15 +47,25 @@ public final class AircraftController {
     private final ObjectProperty<ObservableAircraftState> clickedPlane;
     private final Pane pane;
 
+    //* Constructor
+
+    /**
+     * Constructor of the AircraftController
+     * @param mapParameters the mapParameters
+     * @param aircraftStates the aircraftStates
+     * @param clickedPlane the clickedPlane
+     */
     public AircraftController(MapParameters mapParameters,
                               ObservableSet<ObservableAircraftState> aircraftStates,
                               ObjectProperty<ObservableAircraftState> clickedPlane){
 
         this.mapParameters = mapParameters;
         this.clickedPlane = clickedPlane;
+
         pane = new Pane();
         pane.setPickOnBounds(false);
 
+        //Change Listener
         aircraftStates.addListener((SetChangeListener<ObservableAircraftState>) change -> {
                 if(change.wasAdded()){
                     aircraft(change.getElementAdded());
@@ -61,17 +76,29 @@ public final class AircraftController {
                     pane.getChildren().removeIf((s) -> s.getId().equals(statermv.getIcaoAddress().string()));
                 }
             });
-
     }
 
+    
+    //* Methods
+    /**
+     * Gets the pane and applies the css stylesheet aircraft.css
+     * @return the pane
+     */
     public Pane pane(){
         pane.getStylesheets().add("aircraft.css");
+
         return pane;
     }
 
     //* Private Methods
 
     //Label
+
+    /**
+     * Creates a rectangle and binds it to the text
+     * @param text the text
+     * @return the rectangle
+     */
     private Rectangle background(Text text){
         Rectangle rectangle = new Rectangle();
 
@@ -81,6 +108,11 @@ public final class AircraftController {
         return rectangle;
     }
 
+    /**
+     * Creates a text and binds it to the state
+     * @param state the state
+     * @return the text
+     */
     private Text text(ObservableAircraftState state){
 
         StringBinding velAlt = Bindings.createStringBinding(() ->{
@@ -107,6 +139,11 @@ public final class AircraftController {
         return text;
     }
 
+    /**
+     * Creates the label group with the rectangle and the text
+     * @param state the state
+     * @return the group
+     */
     private Group label(ObservableAircraftState state){
         Text text = text(state);
         Rectangle rectangle = background(text);
@@ -120,6 +157,12 @@ public final class AircraftController {
 
     //Icon
 
+    /**
+     * Creates the icon and binds it to the state and the aircraftIcon
+     * @param state the state
+     * @param aircraftIcon the aircraftIcon
+     * @return the icon
+     */
     private SVGPath icon(ObservableAircraftState state, AircraftIcon aircraftIcon){
         SVGPath icon = new SVGPath();
 
@@ -139,8 +182,25 @@ public final class AircraftController {
         return icon;
     }
 
+    /**
+     * Finds the aircraftIcon corresponding to the state
+     * @param state the state
+     * @return the aircraftIcon
+     */
+    private AircraftIcon iconCreation(ObservableAircraftState state){
+        AircraftData data = state.getAircraftData();
+
+        return data != null ? (AircraftIcon.iconFor(state.getTypeDesignator(), state.getDescription(), state.getCategory(), state.getWakeTurbulenceCategory()))
+                : (AircraftIcon.iconFor(new AircraftTypeDesignator(""), new AircraftDescription(""), state.getCategory(), WakeTurbulenceCategory.UNKNOWN));
+    }
+
     //Icon + Label
 
+    /**
+     * Creates the iconLabel group with the icon and the label and binds it to the state
+     * @param state the state
+     * @return the group
+     */
     private Group iconLabel(ObservableAircraftState state){
         SVGPath icon = icon(state, iconCreation(state));
 
@@ -159,6 +219,14 @@ public final class AircraftController {
 
     //Trajectory
 
+    /**
+     * Create a trajectory line
+     * @param startX the start x position
+     * @param startY the start y position
+     * @param endX the end x position
+     * @param endY the end y position
+     * @return the line
+     */
     private Line line(double startX, double startY, double endX, double endY){
         Line line = new Line();
 
@@ -170,6 +238,11 @@ public final class AircraftController {
         return line;
     }
 
+    /**
+     * Creates the trajectory group and binds it to the state
+     * @param state the state
+     * @return the group
+     */
     private Group trajectory(ObservableAircraftState state){
 
         Group trajectory = new Group();
@@ -196,31 +269,11 @@ public final class AircraftController {
         return trajectory;
     }
 
-    //Global Group
-
-    private void aircraft(ObservableAircraftState state){
-        Group iconLabel = iconLabel(state);
-
-        Group trajectory = trajectory(state);
-
-        trajectory.layoutXProperty().bind(mapParameters.minX().negate());
-        trajectory.layoutYProperty().bind(mapParameters.minY().negate());
-
-        Group aircraft = new Group(trajectory, iconLabel);
-
-        aircraft.setId(state.getIcaoAddress().string());
-        aircraft.viewOrderProperty().bind(state.altitudeProperty().negate());
-
-        pane.getChildren().add(aircraft);
-    }
-
-    private AircraftIcon iconCreation(ObservableAircraftState state){
-        AircraftData data = state.getAircraftData();
-
-        return data != null ? (AircraftIcon.iconFor(state.getTypeDesignator(), state.getDescription(), state.getCategory(), state.getWakeTurbulenceCategory()))
-                : (AircraftIcon.iconFor(new AircraftTypeDesignator(""), new AircraftDescription(""), state.getCategory(), WakeTurbulenceCategory.UNKNOWN));
-    }
-
+    /**
+     * Sets the trajectory lines in the trajectory group
+     * @param state the state
+     * @param trajectory the trajectory group
+     */
     private void trajectoryLines(ObservableAircraftState state, Group trajectory){
         trajectory.getChildren().clear();
 
@@ -245,7 +298,26 @@ public final class AircraftController {
             trajectory.getChildren().add(line);
         }
     }
+
+    //Global Group
+
+    /**
+     * Sets the aircraft group and binds it to the state
+     * @param state the state
+     */
+    private void aircraft(ObservableAircraftState state){
+        Group iconLabel = iconLabel(state);
+
+        Group trajectory = trajectory(state);
+
+        trajectory.layoutXProperty().bind(mapParameters.minX().negate());
+        trajectory.layoutYProperty().bind(mapParameters.minY().negate());
+
+        Group aircraft = new Group(trajectory, iconLabel);
+
+        aircraft.setId(state.getIcaoAddress().string());
+        aircraft.viewOrderProperty().bind(state.altitudeProperty().negate());
+
+        pane.getChildren().add(aircraft);
+    }
 }
-
-
-

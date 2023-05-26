@@ -7,6 +7,8 @@ package ch.epfl.javions;
  */
 public record GeoPos(int longitudeT32, int latitudeT32) {
 
+    //* Constants
+
     private static final int LATITUDE_RANGE = 1 << 30;
 
     //* Constructor
@@ -47,7 +49,6 @@ public record GeoPos(int longitudeT32, int latitudeT32) {
 
 
     //* Object overrides
-
 
     /**
      * @return a string representation of the object in degrees

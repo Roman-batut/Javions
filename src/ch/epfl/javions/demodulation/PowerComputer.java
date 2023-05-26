@@ -12,10 +12,13 @@ import java.io.IOException;
  */
 public final class PowerComputer {
 
-    private final static int POWER_BATCH_SIZE = 8;
     private final SamplesDecoder decoder;
     private final short[] batchP;
     private final short[] batchD;
+
+    //* Constants
+
+    private final static int POWER_BATCH_SIZE = 8;
 
     //* Constructor
 
@@ -36,7 +39,6 @@ public final class PowerComputer {
 
 
     //* Methods
-
 
     /**
      *  Returns the number of powers computed,

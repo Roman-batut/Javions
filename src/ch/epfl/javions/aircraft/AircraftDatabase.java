@@ -4,8 +4,6 @@ import java.io.*;
 import java.util.Objects;
 import java.util.zip.ZipFile;
 
-import ch.epfl.javions.Preconditions;
-
 import static java.nio.charset.StandardCharsets.UTF_8;
 
 /**
@@ -15,8 +13,11 @@ import static java.nio.charset.StandardCharsets.UTF_8;
  */
 public class AircraftDatabase {
 
-    private static final String COMA = ",";
     private final String fileName;
+
+    //* Constants
+
+    private static final String COMA = ",";
 
     //* Constructor
 

@@ -12,10 +12,12 @@ import java.util.Objects;
  */
 public final class SamplesDecoder {
 
-    private final static int REGUL = (1 << 11);
     private final InputStream stream;
     private final int batchSize;
+    
+    //* Constants
 
+    private final static int REGUL = (1 << 11);
 
     //* Constructor
 

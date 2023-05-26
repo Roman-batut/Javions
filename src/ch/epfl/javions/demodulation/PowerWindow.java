@@ -13,7 +13,6 @@ import java.util.Objects;
  */
 public final class PowerWindow {
 
-    private final static int BATCH_SIZE = (1 << 16);
     private final PowerComputer computer;
     private final int windowSize;
     private int position;
@@ -21,6 +20,9 @@ public final class PowerWindow {
     private int[] batchPowerOne;
     private int[] batchPowerTwo;
 
+    //* Constants
+
+    private final static int BATCH_SIZE = (1 << 16);
 
     //* Constructor
 
@@ -65,7 +67,6 @@ public final class PowerWindow {
 
     //* Methods
 
-
     /**
      *  @return true if the window is full
      */
@@ -74,7 +75,7 @@ public final class PowerWindow {
     }
 
     /**
-     *  getter of the number at a given value
+     *  Getter of the number at a given value
      *  @param i the position in the window
      *  @throws IndexOutOfBoundsException if the position is not in the window
      *  @return the power at the given position in the window

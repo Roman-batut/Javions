@@ -15,7 +15,11 @@ import java.util.HexFormat;
  */
 public record RawMessage(long timeStampNs, ByteString bytes) {
 
+    //* Constants
+
+    // Length of a raw message in bytes
     public static final int LENGTH = 14;
+    
     private static final byte DF = 0b00_01_00_01;
 
     private static final int DF_START = 3;
@@ -48,7 +52,6 @@ public record RawMessage(long timeStampNs, ByteString bytes) {
 
 
     //* Methods
-
 
     /**
      *  Returns a raw message or null if the CRC24 of the bytes is not 0

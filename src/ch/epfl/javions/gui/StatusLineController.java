@@ -11,18 +11,29 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Text;
 
+/**
+ * Class representing a status line controller
+ * @author Roman Batut (356158)
+ * @author Guillaume Chevallier (360709)
+ */
 public final class StatusLineController {
+
+    private final BorderPane pane;
+    private final IntegerProperty aircraftCount;
+    private final LongProperty messageCount;
+    
+    //* Constants
 
     public static final String STATUS_LINE_STYLE_SHEET = "status.css";
     public static final String DATA_VALUE_FORMAT = "%03d";
     public static final String AIRCRAFT_VISIBLE_STRING = "Aéronefs visibles : ";
     public static final String RECEIVE_MESSAGES_STRING = "Messages reçues : ";
-    private final BorderPane pane;
-    private final IntegerProperty aircraftCount;
-    private final LongProperty messageCount;
-
+    
     //* Constructor
 
+    /**
+     * StatusLineController's constructor
+    */
     public StatusLineController(){
         pane = new BorderPane();
         pane.getStylesheets().add(STATUS_LINE_STYLE_SHEET);
@@ -47,16 +58,30 @@ public final class StatusLineController {
 
     //* Getters
 
+    /**
+     * Getter of the pane
+     * @return the pane
+     */
     public BorderPane pane(){
         return pane;
     }
 
+    /**
+     * Getter of the aircraftCount
+     * @return the aircraftCount
+     */
     public IntegerProperty aircraftCountProperty(){
         return aircraftCount;
     }
 
+    /**
+     * Getter of the messageCount
+     * @return the messageCount
+     */
     public LongProperty messageCountProperty(){
         return messageCount;
     }
 
 }
+
+// #TODO les constantes sont publiques ?

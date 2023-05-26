@@ -7,6 +7,8 @@ package ch.epfl.javions.adsb;
  */
 public class MessageParser {
 
+    //* Constants
+
     private static final int VEL_TYPECODE = 19;
     private static final int[] POS_STARTS_TYCODE = new int[]{9,20};
     private static final int[] POS_ENDS_TYCODE = new int[]{18,22};
@@ -19,7 +21,6 @@ public class MessageParser {
 
 
     //* Methods
-
 
     /**
      * Returns the ADS-B message corresponding to the raw message,

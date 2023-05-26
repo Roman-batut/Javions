@@ -29,7 +29,19 @@ import java.util.function.Function;
 import static java.lang.CharSequence.compare;
 import static javafx.scene.control.TableView.CONSTRAINED_RESIZE_POLICY_SUBSEQUENT_COLUMNS;
 
+/**
+ * Class representing a controller of the aircraft table view
+ * @author Roman Batut (356158)
+ * @author Guillaume Chevallier (360709)
+ */
 public final class AircraftTableController {
+
+    private final ObjectProperty<ObservableAircraftState> clickedPlane;
+    private final TableView<ObservableAircraftState> tableView;
+    
+    private Consumer<ObservableAircraftState> consumer;
+    
+    //* Constants
 
     private static final String TABLE_STYLE_SHEET = "table.css";
     private static final String ICAO_COLUMN_TITLE = "OACI";
@@ -54,13 +66,14 @@ public final class AircraftTableController {
     private static final String VALUE_COLUMN_STYLE_SHEET = "numeric";
     private static final int MAX_UNDEFINED_VELOCITY = 0;
     private static final int VALUE_WIDTH = 85;
-    private final ObjectProperty<ObservableAircraftState> clickedPlane;
-    private final TableView<ObservableAircraftState> tableView;
-
-    private Consumer<ObservableAircraftState> consumer;
 
     //* Constructor
 
+    /**
+     * Constructor of the aircraft table controller
+     * @param aircraftStates the observable set of aircraft states
+     * @param clickedPlane the clicked plane
+     */
     public AircraftTableController(ObservableSet<ObservableAircraftState> aircraftStates,
                                    ObjectProperty<ObservableAircraftState> clickedPlane){
         this.clickedPlane = clickedPlane;
@@ -72,7 +85,6 @@ public final class AircraftTableController {
         tableView.getStylesheets().add(TABLE_STYLE_SHEET);
 
         //String column
-
         TableColumn<ObservableAircraftState, String> icaoColumn = textColumn(ICAO_COLUMN_TITLE, ICAO_WIDTH,
                 f -> new ReadOnlyObjectWrapper<>(f.getIcaoAddress()).map(IcaoAddress::string));
         
@@ -138,26 +150,52 @@ public final class AircraftTableController {
             }
         });
 
-
     }
 
-     public TableView<ObservableAircraftState> pane(){
+    //* Getters
+
+    /**
+     * Getter of the pane that is the table view
+     * @return the pane
+     */
+    public TableView<ObservableAircraftState> pane(){
         return tableView;
     }
 
-     public void setOnDoubleClick(Consumer<ObservableAircraftState> consumer){
+    
+    //* Methods
+    
+    /**
+     * Set the consumer of the double click
+     * @param consumer the consumer
+     */
+    public void setOnDoubleClick(Consumer<ObservableAircraftState> consumer){
         this.consumer = consumer;
     }
 
-    private TableColumn<ObservableAircraftState, String> valueColumn(String columnTitle, int digitsection,
+    //* Private methods
+
+    /**
+     * Creates the value column
+     * @param columnTitle the title of the column
+     * @param digitSection the number of digits after the decimal point
+     * @param property the property of the column
+     * @param unit the unit of the column
+     * @return the value column
+     */
+    private TableColumn<ObservableAircraftState, String> valueColumn(String columnTitle, int digitSection,
                                                                      Function<ObservableAircraftState,ObservableValue<Number>> property, double unit) {
+
         TableColumn<ObservableAircraftState, String> valueColumn =  new TableColumn<>();
         valueColumn.setText(columnTitle);
         valueColumn.setPrefWidth(VALUE_WIDTH);
         valueColumn.getStyleClass().add(VALUE_COLUMN_STYLE_SHEET);
+
         NumberFormat numberFormat =  NumberFormat.getInstance();
-        numberFormat.setMaximumFractionDigits(digitsection);
-        numberFormat.setMinimumFractionDigits(digitsection);
+        numberFormat.setMaximumFractionDigits(digitSection);
+        numberFormat.setMinimumFractionDigits(digitSection);
+
+        //Comparator
         valueColumn.setComparator((s1, s2) -> {
             try {
                s1 = (s1 == null) ? "" :s1;
@@ -170,6 +208,7 @@ public final class AircraftTableController {
             }
         });
 
+        //Cell factory
         valueColumn.setCellValueFactory(f->
                property.apply(f.getValue())
                        .map(e -> Units.convertTo(e.doubleValue(), unit))
@@ -180,15 +219,24 @@ public final class AircraftTableController {
         return valueColumn;
     }
 
+    /**
+     * Creates the text column
+     * @param columnTitle the title of the column
+     * @param width the width of the column
+     * @param function the function of the column
+     * @return the text column
+     */
     private TableColumn<ObservableAircraftState, String> textColumn(String columnTitle, int width
             ,Function<ObservableAircraftState, ObservableValue<String>> function){
+
         TableColumn<ObservableAircraftState, String> textcolumn = new TableColumn<>();
         textcolumn.setText(columnTitle);
         textcolumn.setPrefWidth(width);
         textcolumn.setCellValueFactory(f -> function.apply(f.getValue()));
+
         return textcolumn;
     }
 
 }
-// #TODO faire le convert en unité avant ?
 
+// #TODO faire le convert en unité avant ?

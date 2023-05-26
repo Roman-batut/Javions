@@ -51,7 +51,6 @@ public record AircraftIdentificationMessage(long timeStampNs, IcaoAddress icaoAd
 
     //* Methods
 
-
     /**
      * Returns the aircracft identification message corresponding to the raw message,
      * or null if one of the raw message's fields is invalid

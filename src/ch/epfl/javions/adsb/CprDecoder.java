@@ -13,6 +13,9 @@ public final class CprDecoder {
 
     private final static double[] Z_PHI = new double[]{60, 59};
     private final static double[] DELTA_PHI = new double[]{(1d/Z_PHI[0]), (1d/Z_PHI[1])};
+
+    //* Constants
+
     private static final double TWO_PI = 2 * Math.PI;
 
     //* Constructor
@@ -36,10 +39,10 @@ public final class CprDecoder {
     public static GeoPos decodePosition(double x0, double y0, double x1, double y1, int mostRecent){
         Preconditions.checkArgument(mostRecent == 1 || mostRecent == 0);
 
-        //latitude calculation (phi)
+        //Latitude calculation (phi)
         double[] phi = coordinateCalculation(y0, y1, Z_PHI, DELTA_PHI);
 
-        //longitude calculation (lambda)
+        //Longitude calculation (lambda)
         double A = aCalculation(phi, 0);
         double ATest = aCalculation(phi, 1);
 
@@ -51,17 +54,22 @@ public final class CprDecoder {
             return null;
         }
 
-        //exception handler
+        //Exception handler
         if(!(isValidCoordinate(lambda[mostRecent]) && isValidCoordinate(phi[mostRecent]))){
             return null;
         }
 
-        //conversion
+        //Conversion
         return new GeoPos(convertedCoordinate(lambda[mostRecent]), convertedCoordinate(phi[mostRecent]));
     }
 
     //* Private methods
 
+    /**
+     * Calculates the given coordinate
+     * @param coordinate the coordinate to calculate (longitude or latitude)
+     * @return the calculated coordinate  
+     */
     private static double[] coordinateCalculation(double coord0, double coord1, double[] specificZ, double[] specificDelta){
         double z = Math.rint(specificZ[1]*coord0 - specificZ[0]*coord1);
         double[] zTab = new double[]{z, z};
@@ -77,6 +85,12 @@ public final class CprDecoder {
         return out;
     }
 
+    /**
+     * Calculates the A value
+     * @param phi the latitude coordinate
+     * @param index the index of the coordinate
+     * @return the A value
+     */ 
     private static double aCalculation(double[] phi, int index){
         double ANum = (1 - Math.cos(TWO_PI * DELTA_PHI[0]));
 
@@ -86,6 +100,11 @@ public final class CprDecoder {
         return A;
     }
 
+    /**
+     * Calculates the Z lambda values
+     * @param A the A value
+     * @return the Z lambda values
+     */
     private static double[] lambdaCalculation(double A){
         double[] ZLambda = new double[2];
 
@@ -95,6 +114,12 @@ public final class CprDecoder {
         return ZLambda;
     }
 
+    /**
+     * Checks if the lambda value is valid
+     * @param ATest the A value
+     * @param ZLambda the Z lambda value
+     * @return true if the lambda value is valid, false otherwise
+     */
     private static boolean isValidLambda(double ATest, double ZLambda){
         double ZLambdaTest = Math.floor(TWO_PI/ATest);
         ZLambdaTest = Double.isNaN(ATest) || Double.isNaN(ZLambdaTest) ? 1 : ZLambdaTest;
@@ -110,16 +135,26 @@ public final class CprDecoder {
         return true;
     }
 
+    /**
+     * Checks if the coordinate is valid
+     * @param longitude the longitude coordinate
+     * @return true if the coordinate is valid, false otherwise
+     */
     private static boolean isValidCoordinate(double longitude) {
         return longitude > 0 && longitude <= 1;
     }
 
+    /**
+     * Converts the coordinate from turn to T32
+     * @param coordinate the coordinate to convert in turn
+     * @return the converted coordinate in T32
+     */
     private static int convertedCoordinate(double coordinate) {
         if(coordinate >= 0.5){
             coordinate--;
         }
 
-        return (int) Math.rint(Units.convert(coordinate, Units.Angle.TURN,Units.Angle.T32));
+        return (int) Math.rint(Units.convert(coordinate, Units.Angle.TURN, Units.Angle.T32));
     }
 
 }

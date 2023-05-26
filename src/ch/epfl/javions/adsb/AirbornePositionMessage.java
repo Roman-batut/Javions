@@ -14,6 +14,8 @@ import java.util.Objects;
  */
 public record AirbornePositionMessage(long timeStampNs,IcaoAddress icaoAddress,double altitude,int parity,double x,double y) implements Message{
 
+    //* Constants
+
     private static final double REGUL = 1 << 17;
 
     private static final int FORMAT_START = 34;

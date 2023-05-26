@@ -42,3 +42,5 @@ public enum WakeTurbulenceCategory {
     }
 }
 
+// #TODO letter sert à quoi ?
+

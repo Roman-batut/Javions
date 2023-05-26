@@ -11,13 +11,17 @@ import java.util.Objects;
  */
 public final class ByteString {
 
-    private final static HexFormat UPPERCASE_FORMAT = HexFormat.of().withUpperCase();
     private final byte[] byteTab;
+
+    //* Constants
+
+    private final static HexFormat UPPERCASE_FORMAT = HexFormat.of().withUpperCase();
 
     //* Constructor
 
     /**
      * Public constructor that clones the given array
+     * @param bytes the array of bytes to be cloned
      */
     public ByteString(byte[] bytes){
         byteTab = bytes.clone();
@@ -78,7 +82,6 @@ public final class ByteString {
 
 
     //* Object overrides
-    
 
     /**
      * @return true if the given object is a ByteString and has the same bytes as this ByteString

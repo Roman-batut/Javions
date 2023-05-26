@@ -15,6 +15,8 @@ import java.util.Objects;
 public record AirborneVelocityMessage(long timeStampNs,IcaoAddress icaoAddress,double speed,double trackOrHeading)
         implements Message{
 
+    //* Constants
+    
     private static final double HDG_REGUL = (1 << 10);
     private static final int VELOCITY_REGUL = 1;
 
@@ -58,7 +60,6 @@ public record AirborneVelocityMessage(long timeStampNs,IcaoAddress icaoAddress,d
 
 
     //* Methods
-
 
     /**
      * Returns the airborne velocity message corresponding to the raw message, 

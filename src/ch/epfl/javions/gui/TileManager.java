@@ -9,27 +9,43 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.LinkedHashMap;
 
+/**
+ * Class representing a tile manager
+ * @author Roman Batut (356158)
+ * @author Guillaume Chevallier (360709)
+ */
 public final class TileManager {
-
-    public static final String HTTPS = "https://";
-
-    public record TileId(int zoom, int coordX, int coordY) {
-
-        public static boolean isValid(int z, int x, int y){
-            return (0<=x && x<=(1<<z) && 0<=y && y<=(1<<z));
-        }
-    }
-
+    
     private final LinkedHashMap<TileId, Image> cacheMemory;
     private final Path cachePath;
     private final String serverName;
+    
+    //* Constants
 
+    public static final String HTTPS = "https://";
+
+    //* Constructor
+
+    /**
+     * TileManager's constructor
+     * @param cachePath the cache path
+     * @param serverName the server name
+     */
     public TileManager(Path cachePath, String serverName){
         cacheMemory = new LinkedHashMap<>(100,0.75f,true);
         this.cachePath = cachePath;
         this.serverName = serverName;
     }
 
+
+    //* Methods
+
+    /**
+     * Gets the image corresponding to the tile at the tileId
+     * @param tileId the tileId
+     * @return the image for the tile at the tileId
+     * @throws IOException
+     */
     public Image imageForTileAt(TileId tileId)throws IOException{
         String pathAnnex = "/"+tileId.zoom()+"/"+tileId.coordX()+"/";
         Path imageDiskPath = Path.of(cachePath.toString(), pathAnnex + tileId.coordY() + ".png" );
@@ -84,7 +100,27 @@ public final class TileManager {
                 cacheMemory.remove(cacheMemory.keySet().iterator().next());
             }
             cacheMemory.put(tileId, image);
+
             return image;
+        }
+    }
+
+    //* Record
+
+    /**
+     * Record representing a tileId
+     */
+    public record TileId(int zoom, int coordX, int coordY) {
+       
+        /**
+         * Checks if the tileId is valid
+         * @param z the zoom
+         * @param x the x coordinate
+         * @param y the y coordinate
+         * @return true if the tileId is valid, false otherwise
+         */
+        public static boolean isValid(int z, int x, int y){
+            return (0<=x && x<=(1<<z) && 0<=y && y<=(1<<z));
         }
     }
 
@@ -92,4 +128,5 @@ public final class TileManager {
 // #TODO enlever les try and catch et laissé le throw IOexeption pour la gerer plus tard dans basemapcontroller
 // #TODO revoir si ca marche bien ca
 
-
+// #TODO ptet demoduler ?
+// #TODO constantes publiques ?

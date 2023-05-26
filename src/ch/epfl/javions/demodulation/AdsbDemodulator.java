@@ -12,11 +12,14 @@ import java.io.InputStream;
  */
 public final class AdsbDemodulator {
 
-    private static final int WINDOW_SIZE = 1200;
     private final PowerWindow window;
     private long timeStampNs;
     private final int[] sommePtab;
     private int index;
+
+    //* Constants
+
+    private static final int WINDOW_SIZE = 1200;
 
     //* Constructor
 
@@ -35,7 +38,6 @@ public final class AdsbDemodulator {
 
 
     //* Methods
-
 
     /**
      * Returns the next message or null if there is no message left

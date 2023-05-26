@@ -10,6 +10,11 @@ import javafx.scene.layout.Pane;
 import javafx.scene.canvas.Canvas;
 import java.io.IOException;
 
+/**
+ * Class representing a base map controller
+ * @author Roman Batut (356158)
+ * @author Guillaume Chevallier (360709)
+ */
 public final class BaseMapController {
 
     private final TileManager tileManager;
@@ -18,7 +23,15 @@ public final class BaseMapController {
     private final Canvas canvas;
     private boolean redrawNeeded;
 
+    //* Constructor
+    
+    /**
+     * BaseMapController's constructor
+     * @param tileManager the tile manager
+     * @param mapParameters the map parameters
+     */
     public BaseMapController(TileManager tileManager, MapParameters mapParameters) {
+        
         this.tileManager = tileManager;
         this.mapParameters = mapParameters;
         redrawNeeded = false;
@@ -54,7 +67,6 @@ public final class BaseMapController {
             redrawOnNextPulse();
         });
 
-
         //Mouse Pressed
         DoubleProperty lastX = new SimpleDoubleProperty();
         DoubleProperty lastY = new SimpleDoubleProperty();
@@ -75,13 +87,25 @@ public final class BaseMapController {
         //Mouse Released
         pane.setOnMouseReleased(e -> {
         });
-
     }
 
+    //* Getters
+
+    /**
+     * Getter for the pane
+     * @return the pane
+     */
     public Pane pane() {
         return pane;
     }
 
+    
+    //* Methods
+
+    /**
+     * Method to set the center on a given position
+     * @param geoPos the position
+     */
     public void centerOn(GeoPos geoPos){
        double coordX = WebMercator.x(mapParameters.getZoom(), geoPos.longitude());
        double coordY = WebMercator.y(mapParameters.getZoom(), geoPos.latitude());
@@ -93,6 +117,11 @@ public final class BaseMapController {
        redrawOnNextPulse();
     }
 
+    //* Private methods
+
+    /**
+     * Method to redraw the map if needed
+     */
     private void redrawIfNeeded() {
         if (!redrawNeeded) return;
         redrawNeeded = false;
@@ -118,8 +147,14 @@ public final class BaseMapController {
         }
     }
 
+    /**
+     * Method to redraw on the next pulse
+     */
     private void redrawOnNextPulse() {
         redrawNeeded = true;
+
         Platform.requestNextPulse();
     }
 }
+
+// #TODO mouse released inutile ? 

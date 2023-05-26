@@ -7,6 +7,8 @@ package ch.epfl.javions;
  */
 public final class WebMercator {
 
+    //* Constants
+
     private final static double ADD_CST = 0.5;
 
     //* Constructor
