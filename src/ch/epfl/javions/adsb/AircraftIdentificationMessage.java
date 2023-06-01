@@ -14,6 +14,8 @@ import java.util.Objects;
 public record AircraftIdentificationMessage(long timeStampNs, IcaoAddress icaoAddress, int category, CallSign callSign)
         implements Message{
 
+    //* Constants
+
     private static final char[] CHARTAB = new char[]{'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',
             'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'};
     private static final int WEAK_START = 48;
@@ -49,12 +51,14 @@ public record AircraftIdentificationMessage(long timeStampNs, IcaoAddress icaoAd
         Objects.requireNonNull(callSign);
     }
 
+
     //* Methods
 
     /**
-     * Returns the aircracft identification message corresponding to the raw message,
-     * or null if one of the raw message's fields is invalid
+     * Creation of Identification message base of a raw one,
      * @param rawMessage the raw message
+     * @return the aircraft identification message corresponding to the raw message,
+     * or null if one of the raw message's fields is invalid
      */
     public static AircraftIdentificationMessage of(RawMessage rawMessage){
         long payload = rawMessage.payload();

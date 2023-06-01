@@ -35,7 +35,7 @@ public final class PowerWindow {
      *  @throws NullPointerException if the stream is null
      */
     public PowerWindow(InputStream stream, int windowSize) throws IOException{
-        Preconditions.checkArgument(!(windowSize <= 0 || windowSize>BATCH_SIZE));
+        Preconditions.checkArgument(!(windowSize <= 0 || windowSize > BATCH_SIZE));
 
         this.windowSize = windowSize;
         position = 0;
@@ -51,14 +51,14 @@ public final class PowerWindow {
     //* Getters
 
     /**
-     *  @return  the size of the window
+     * @return  the size of the window
      */
     public int size(){
         return windowSize;
     }
 
     /**
-     *  @return the position of the window
+     * @return the position of the window
      */
     public long position(){
         return position;
@@ -68,7 +68,7 @@ public final class PowerWindow {
     //* Methods
 
     /**
-     *  @return true if the window is full
+     * @return true if the window is full
      */
     public boolean isFull(){
         return (sizeB >= windowSize + position);

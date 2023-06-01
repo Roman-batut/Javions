@@ -46,7 +46,7 @@ public final class PowerComputer {
      *  @param batch the batch of powers
      *  @throws IOException if an I/O error occurs
      *  @throws IllegalArgumentException if the batch size is not equal to the batch size of the decoder
-     *  @return return the number of power batch read
+     *  @return the number of power batch read
      */
     public int readBatch(int[] batch) throws IOException{
         int size = decoder.readBatch(batchD);

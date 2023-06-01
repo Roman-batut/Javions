@@ -24,9 +24,10 @@ public enum WakeTurbulenceCategory {
     //* Methods
 
     /**
-     *  Returns the string representing the wake turbulence category,
-     *  or UNKNOWN if the string is not a valid wake turbulence category
+     *  Wake turbulence category of a given string
      *  @param s the string representing the wake turbulence category
+     *  @return the string representing the wake turbulence category,
+     *  or UNKNOWN if the string is not a valid wake turbulence category
      */
     public static WakeTurbulenceCategory of(String s){
         return switch (s) {

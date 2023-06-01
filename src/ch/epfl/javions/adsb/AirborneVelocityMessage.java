@@ -12,8 +12,10 @@ import java.util.Objects;
  * @author Roman Batut (356158)
  * @author Guillaume Chevallier (360709)
  */
-public record AirborneVelocityMessage(long timeStampNs,IcaoAddress icaoAddress,double speed,double trackOrHeading)
-        implements Message{
+public record AirborneVelocityMessage(long timeStampNs,
+                                      IcaoAddress icaoAddress,
+                                      double speed,
+                                      double trackOrHeading) implements Message{
 
     //* Constants
     

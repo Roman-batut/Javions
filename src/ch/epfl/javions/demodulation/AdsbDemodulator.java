@@ -40,8 +40,9 @@ public final class AdsbDemodulator {
     //* Methods
 
     /**
-     * Returns the next message or null if there is no message left
+     * Next message method
      * @throws IOException if an I/O error occurs
+     * @return the next message or null if there is no message left
      */
     public RawMessage nextMessage() throws IOException {
 
@@ -70,6 +71,7 @@ public final class AdsbDemodulator {
                     }
                 }
             }
+
             index++;
             sommePtab[(index + 2) % 3] = sommeP(2);
         }
@@ -80,24 +82,24 @@ public final class AdsbDemodulator {
     //* Private Methods
 
     /**
-     * Returns the P sum of the 4 samples at the given index
      * @param index the index of the first sample
+     * @return the P sum of the 4 samples at the given index
      */
     private int sommeP(int index) {
         return (window.get(index) + window.get(10 + index) + window.get(35 + index) + window.get(45 + index));
     }
 
     /**
-     * Returns the bit at the given index in the window
      * @param index the index of the bit
+     * @return the bit at the given index in the window
      */
     private byte bitAt(int index) {
         return (byte)((window.get(80 + (10 * index)) < window.get(85 + (10 * index))) ? 0 : 1);
     }
 
     /**
-     * Returns the byte at the given index in the window
      * @param index the index of the first bit
+     * @return the byte at the given index in the window
      */
     private byte octAt(int index) {
         byte oct = 0b00_00_00_00;

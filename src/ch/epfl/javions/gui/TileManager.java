@@ -53,7 +53,7 @@ public final class TileManager {
      * @throws IOException
      */
     public Image imageForTileAt(TileId tileId)throws IOException{
-        String pathAnnex = SLASH +tileId.zoom()+SLASH+tileId.coordX()+SLASH;
+        String pathAnnex = SLASH + tileId.zoom() + SLASH + tileId.coordX() + SLASH;
         Path imageDiskPath = Path.of(cachePath.toString(), pathAnnex + tileId.coordY() + PNG);
         Image image;
 
@@ -93,7 +93,7 @@ public final class TileManager {
             image = new Image(i2);
             i2.close();
 
-            if(cacheMemory.size() >= 100 ){
+            if(cacheMemory.size() >= CACHE_MEMORY_CAPACITY){
                 cacheMemory.remove(cacheMemory.keySet().iterator().next());
             }
             cacheMemory.put(tileId, image);
@@ -117,11 +117,8 @@ public final class TileManager {
          * @return true if the tileId is valid, false otherwise
          */
         public static boolean isValid(int z, int x, int y){
-            return (0<=x && x<=(1<<z) && 0<=y && y<=(1<<z));
+            return (0 <= x && x <= (1<<z) && 0 <= y && y <= (1<<z));
         }
     }
 
 }
-
-
-// #TODO ptet demoduler ?

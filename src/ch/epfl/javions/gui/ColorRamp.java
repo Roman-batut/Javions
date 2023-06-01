@@ -54,6 +54,7 @@ public final class ColorRamp {
      */
     public ColorRamp(List<Color> colors){
         Preconditions.checkArgument(colors.size() >= 2);
+
         this.colors = new Color[colors.size()];
         colors.toArray(this.colors);
     }

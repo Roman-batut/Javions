@@ -13,7 +13,8 @@ import java.util.HexFormat;
  *  @author Roman Batut (356158)
  *  @author Guillaume Chevallier (360709)
  */
-public record RawMessage(long timeStampNs, ByteString bytes) {
+public record RawMessage(long timeStampNs,
+                         ByteString bytes) {
 
     //* Constants
 
@@ -36,7 +37,6 @@ public record RawMessage(long timeStampNs, ByteString bytes) {
     private static final int TYPECODE_LENGHT = 5;
     private static final HexFormat HEX_FORMAT = HexFormat.of().withUpperCase();
 
-
     //* Constructor
 
     /**
@@ -54,7 +54,7 @@ public record RawMessage(long timeStampNs, ByteString bytes) {
     //* Methods
 
     /**
-     *  Returns a raw message or null if the CRC24 of the bytes is not 0
+     *  Creates a raw message from a time stamp and a byte array
      *  @param timeStampNs the time stamp of the message in nanoseconds
      *  @param bytes the bytes of the message
      */
@@ -65,9 +65,10 @@ public record RawMessage(long timeStampNs, ByteString bytes) {
     }
 
     /**
-     *  Returns the size of the message in bytes,
-     *  the constant LENGTH if the DF is 17, 0 otherwise
+     *  Size of a message in bytes
      *  @param byte0 the first byte of the message
+     *  @return the size of the message in bytes,
+     *  the constant LENGTH if the DF is 17, 0 otherwise
      */
     public static int size(byte byte0){
         int bit = Bits.extractUInt(byte0, DF_START, DF_SIZE);
@@ -76,9 +77,10 @@ public record RawMessage(long timeStampNs, ByteString bytes) {
     }
 
     /**
-     *  Returns the type code of the message,
-     *  the type code of its ME field
+     *  Type code of a message
      *  @param payload the payload of the message
+     *  @return the type code of the message,
+     *  the type code of its ME field
      */
     public static int typeCode(long payload){
         return Bits.extractUInt(payload, (ME_LENGTH - TYPECODE_LENGHT) ,TYPECODE_LENGHT);
@@ -106,7 +108,8 @@ public record RawMessage(long timeStampNs, ByteString bytes) {
     }
     
     /**
-     *  Returns the payload of the message,
+     *  Payload of the message
+     *  @return the payload of the message,
      *  it's ME field
      */
     public long payload(){
@@ -114,7 +117,8 @@ public record RawMessage(long timeStampNs, ByteString bytes) {
     }
 
     /**
-     *  Returns the type code of the message,
+     *  Type code of the message
+     *  @return the type code of the message,
      *  the five most significant bits of its ME field
      */
     public int typeCode(){

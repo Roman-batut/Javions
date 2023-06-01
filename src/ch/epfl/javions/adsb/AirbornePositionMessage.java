@@ -12,7 +12,12 @@ import java.util.Objects;
  * @author Roman Batut (356158)
  * @author Guillaume Chevallier (360709)
  */
-public record AirbornePositionMessage(long timeStampNs,IcaoAddress icaoAddress,double altitude,int parity,double x,double y) implements Message{
+public record AirbornePositionMessage(long timeStampNs,
+                                      IcaoAddress icaoAddress,
+                                      double altitude,
+                                      int parity,
+                                      double x,
+                                      double y) implements Message{
 
     //* Constants
 

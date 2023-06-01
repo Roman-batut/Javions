@@ -51,9 +51,15 @@ public final class AircraftController {
     private static final String AIRCRAFT_CSS_STYLE_SHEET = "aircraft.css";
     private static final String LABEL_STYLE_SHEET = "label";
     private static final String AIRCRAFT_STYLE_SHEET = "aircraft";
-
-
-
+    private static final int ADD_SPACING_RECTANGLE = 4;
+    private static final String UNKNOW_VALUE = "?";
+    private static final String FORMAT_NO_DECIMAL = "%.0f";
+    private static final String EN_SPACE = " ";
+    private static final String SPEED_FORMAT = "\n%s km/h";
+    private static final String ALTITUDE_FORMAT = "%s mètres";
+    private static final String EMPTY_STRING = "";
+    private static final double MAX_HEIGHT = 12000.d;
+    private static final double REGUL_POWER = 1.d / 3;
 
     //* Constructor
 
@@ -89,6 +95,7 @@ public final class AircraftController {
 
     
     //* Methods
+
     /**
      * Gets the pane and applies the css stylesheet aircraft.css
      * @return the pane
@@ -215,55 +222,9 @@ public final class AircraftController {
                 : (AircraftIcon.iconFor(new AircraftTypeDesignator(""), new AircraftDescription(""),
                 state.getCategory(), WakeTurbulenceCategory.UNKNOWN));
     }
-
-    //Icon + Label
-
-    /**
-     * Creates the iconLabel group with the icon and the label and binds it to the state
-     * @param state the state
-     * @return the group
-     */
-    private Group iconLabel(ObservableAircraftState state){
-        SVGPath icon = icon(state, iconCreation(state));
-
-        Group label = label(state);
-        label.visibleProperty().bind(Bindings.createBooleanBinding(
-            () -> state.equals(clickedPlane.get()) || mapParameters.getZoom()>=11, clickedPlane, mapParameters.zoom()));
-
-
-        Group iconLabel = new Group(icon, label);
-        iconLabel.layoutXProperty().bind(Bindings.createDoubleBinding(() ->
-                (WebMercator.x(mapParameters.getZoom(), state.getPosition().longitude()) - mapParameters.getMinX()),
-                state.positionProperty(), mapParameters.minX()));
-
-        iconLabel.layoutYProperty().bind(Bindings.createDoubleBinding(() ->
-                (WebMercator.y(mapParameters.getZoom(), state.getPosition().latitude()) - mapParameters.getMinY()),
-                state.positionProperty(), mapParameters.minY()));
-
-        return iconLabel;
-    }
-
+    
     //Trajectory
-
-    /**
-     * Create a trajectory line
-     * @param startX the start x position
-     * @param startY the start y position
-     * @param endX the end x position
-     * @param endY the end y position
-     * @return a trajectory line
-     */
-    private Line line(double startX, double startY, double endX, double endY){
-        Line line = new Line();
-
-        line.setStartX(startX);
-        line.setStartY(startY);
-        line.setEndX(endX);
-        line.setEndY(endY);
-
-        return line;
-    }
-
+    
     /**
      * Creates the trajectory group and binds it to the state
      * @param state the state

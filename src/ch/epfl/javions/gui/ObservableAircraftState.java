@@ -23,8 +23,8 @@ import java.util.Objects;
  */
 public final class ObservableAircraftState implements AircraftStateSetter {
 
-    private final AircraftData aircraftData;
 
+    private final AircraftData aircraftData;
     private final LongProperty timeStampNs;
     private long oldMessageTimestampNs;
     private final IntegerProperty category;
@@ -69,7 +69,9 @@ public final class ObservableAircraftState implements AircraftStateSetter {
     @Override
     public void setLastMessageTimeStampNs(long timeStampNs) {
         oldMessageTimestampNs = this.getTimeStampNs();
-        this.timeStampNs.set(timeStampNs); }
+
+        this.timeStampNs.set(timeStampNs);
+    }
     
     /**
      * Sets the category
@@ -94,6 +96,7 @@ public final class ObservableAircraftState implements AircraftStateSetter {
         if(!Double.isNaN(getAltitude())) {
             trajectory.add(new AirbornPos(getAltitude(), position));
         }
+
         this.position.set(position);
     }
 
@@ -112,6 +115,7 @@ public final class ObservableAircraftState implements AircraftStateSetter {
                 trajectory.add(index, new AirbornPos(altitude, getPosition()));
             }
         }
+
         this.altitude.set(altitude);
     }
 

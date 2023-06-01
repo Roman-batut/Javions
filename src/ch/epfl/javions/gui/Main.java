@@ -41,6 +41,9 @@ public final class Main extends Application {
     private static final String OPENSTREETMAP_SERVER = "tile.openstreetmap.org";
     private static final String AIRCRAFT_INFOS = "/aircraft.zip";
     private static final double MILLI_CONVERT = 1e+6;
+    private static final int INIT_ZOOM = 8;
+    private static final int INIT_MIN_X = 33_530;
+    private static final int INIT_MIN_Y = 23_070;
 
     //* Main Launch
 
@@ -58,7 +61,7 @@ public final class Main extends Application {
         TileManager tileManager =
                 new TileManager(tileCache, OPENSTREETMAP_SERVER);
         MapParameters mapParameters =
-                new MapParameters(8, 33_530, 23_070);
+                new MapParameters(INIT_ZOOM, INIT_MIN_X, INIT_MIN_Y);
         BaseMapController baseMapController = new BaseMapController(tileManager, mapParameters);
 
         //Création de la base de données
@@ -146,11 +149,11 @@ public final class Main extends Application {
 
         //Animation des aéronefs
         new AnimationTimer() {
-            long last =0;
+            long last = 0;
             @Override
             public void handle(long now) {
                 try {
-                    if(now-last >= ONE_SECOND){
+                    if(now - last >= ONE_SECOND){
                         aircraftStateManager.purge();
                         last = now;
                     }

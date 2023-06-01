@@ -15,6 +15,11 @@ public final class MapParameters {
     private final DoubleProperty minX;
     private final DoubleProperty minY;
 
+    //* Constants
+
+    private static final int MAX_ZOOM = 6;
+    private static final int MIN_ZOOM = 19;
+
     //* Constructor
 
     /**
@@ -24,7 +29,7 @@ public final class MapParameters {
      * @param initMinY the initial minY
      */
     public MapParameters(int initZoom, double initMinX, double initMinY){
-        Preconditions.checkArgument(6<=initZoom && initZoom<=19);
+        Preconditions.checkArgument(MAX_ZOOM <= initZoom && initZoom <= MIN_ZOOM);
 
         zoom = new SimpleIntegerProperty(initZoom);
         minX = new SimpleDoubleProperty(initMinX);
@@ -89,7 +94,7 @@ public final class MapParameters {
      * @param zoomChange the zoom change
      */
     public void changeZoomLevel(int zoomChange){
-        int zoom = Math2.clamp(6, this.zoom.get() + zoomChange, 19);
+        int zoom = Math2.clamp(MAX_ZOOM, this.zoom.get() + zoomChange, MIN_ZOOM);
         int offset = zoom - this.zoom.get();
 
         minX.set(getMinX()*Math.pow(2,offset));

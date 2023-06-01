@@ -23,10 +23,11 @@ public class MessageParser {
     //* Methods
 
     /**
-     * Returns the ADS-B message corresponding to the raw message,
-     * or null if one of the raw message's fields is invalid
+     * Parses a raw message and returns the corresponding ADS-B message
      * @param rawMessage the raw message
      * @throws NullPointerException if the raw message is null
+     * @return the ADS-B message corresponding to the raw message,
+     * or null if one of the raw message's fields is invalid
      */
     public static Message parse(RawMessage rawMessage){
         int typeCode = rawMessage.typeCode();

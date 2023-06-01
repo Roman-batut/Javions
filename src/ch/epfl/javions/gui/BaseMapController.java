@@ -31,12 +31,10 @@ public final class BaseMapController {
      * @param mapParameters the map parameters
      */
     public BaseMapController(TileManager tileManager, MapParameters mapParameters) {
-        
         this.tileManager = tileManager;
         this.mapParameters = mapParameters;
         redrawNeeded = false;
 
-        // 
         canvas = new Canvas();
         pane = new Pane(canvas);
         canvas.widthProperty().bind(pane.widthProperty());
