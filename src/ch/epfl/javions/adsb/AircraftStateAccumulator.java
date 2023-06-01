@@ -37,7 +37,7 @@ public class AircraftStateAccumulator <T extends AircraftStateSetter> {
     //* Getters
 
     /**
-     * Returns the aircraft state setter
+     * @return the aircraft state setter
      */
     public T stateSetter(){
         return aircraftstatesetter;

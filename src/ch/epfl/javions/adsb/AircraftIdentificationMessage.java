@@ -11,8 +11,10 @@ import java.util.Objects;
  * @author Roman Batut (356158)
  * @author Guillaume Chevallier (360709)
  */
-public record AircraftIdentificationMessage(long timeStampNs, IcaoAddress icaoAddress, int category, CallSign callSign)
-        implements Message{
+public record AircraftIdentificationMessage(long timeStampNs,
+                                            IcaoAddress icaoAddress,
+                                            int category,
+                                            CallSign callSign) implements Message{
 
     //* Constants
 

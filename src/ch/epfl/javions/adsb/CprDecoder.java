@@ -11,12 +11,11 @@ import ch.epfl.javions.Units;
  */
 public final class CprDecoder {
 
-    private final static double[] Z_PHI = new double[]{60, 59};
-    private final static double[] DELTA_PHI = new double[]{(1d/Z_PHI[0]), (1d/Z_PHI[1])};
-
     //* Constants
 
     private static final double TWO_PI = 2 * Math.PI;
+    private final static double[] Z_PHI = new double[]{60, 59};
+    private final static double[] DELTA_PHI = new double[]{(1d/Z_PHI[0]), (1d/Z_PHI[1])};
 
     //* Constructor
 
@@ -48,7 +47,8 @@ public final class CprDecoder {
 
         double[] ZLambda = Double.isNaN(A) ? new double[]{1, 0} : lambdaCalculation(A);
 
-        double[] lambda = Double.isNaN(A) ? new double[]{x0, x1} : coordinateCalculation(x0, x1, lambdaCalculation(A), new double[]{(1d / ZLambda[0]), (1d / ZLambda[1])});
+        double[] lambda = Double.isNaN(A) ? new double[]{x0, x1} :
+                                            coordinateCalculation(x0, x1, lambdaCalculation(A), new double[]{(1d / ZLambda[0]), (1d / ZLambda[1])});
 
         if(!Double.isNaN(A) && !isValidLambda(ATest, ZLambda[0])) {
             return null;
@@ -66,8 +66,11 @@ public final class CprDecoder {
     //* Private methods
 
     /**
-     * Calculates the given coordinate
-     * @param coordinate the coordinate to calculate (longitude or latitude)
+     * Calculates the given coordinate,
+     * @param coord0 the first coordinate,
+     * @param coord1 the second coordinate,
+     * @param specificZ the specific Z value,
+     * @param specificDelta the specific delta value,
      * @return the calculated coordinate  
      */
     private static double[] coordinateCalculation(double coord0, double coord1, double[] specificZ, double[] specificDelta){

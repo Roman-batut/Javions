@@ -57,6 +57,7 @@ public record RawMessage(long timeStampNs,
      *  Creates a raw message from a time stamp and a byte array
      *  @param timeStampNs the time stamp of the message in nanoseconds
      *  @param bytes the bytes of the message
+     *  @return a raw message or null if the CRC24 of the bytes is not 0
      */
     public static RawMessage of(long timeStampNs, byte[] bytes){
         Crc24 crc24 = new Crc24(Crc24.GENERATOR);
@@ -88,7 +89,8 @@ public record RawMessage(long timeStampNs,
     }
 
     /**
-     *  Returns the down link format of the message,
+     *  Down link format of a message
+     *  @return the down link format of the message,
      *  its DF field (the five most significant bits of the first byte)
      */
     public int downLinkFormat(){
@@ -98,7 +100,8 @@ public record RawMessage(long timeStampNs,
     }
 
     /**
-     *  Returns the ICAO address of the aircraft
+     *  ICAO address of the aircraft
+     *  @return the ICAO address of the aircraft
      */
     public IcaoAddress icaoAddress(){
         long icao = bytes.bytesInRange(ICAO_BYTE_START, ICAO_BYTE_SIZE);

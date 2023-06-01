@@ -37,6 +37,10 @@ public final class ObservableAircraftState implements AircraftStateSetter {
     private final ObservableList<AirbornPos> trajectoryunmodifiable;
     private final IcaoAddress icaoAddress;
 
+    //* Constants
+
+    private static final int VELOCITY_UNKNOW = -1;
+
     //* Constructor
 
     /**
@@ -56,7 +60,7 @@ public final class ObservableAircraftState implements AircraftStateSetter {
         callSign = new SimpleObjectProperty<>();
         position = new SimpleObjectProperty<>();
         altitude = new SimpleDoubleProperty();
-        velocity = new SimpleDoubleProperty(-1);
+        velocity = new SimpleDoubleProperty(VELOCITY_UNKNOW);
         trackOrHeading = new SimpleDoubleProperty();
     }
 
@@ -283,12 +287,8 @@ public final class ObservableAircraftState implements AircraftStateSetter {
 
         /**
          * AirbornPos's constructor
-         * @param altitude the altitude
-         * @param position the position
          */
-        public AirbornPos(double altitude, GeoPos position){
-            this.altitude = altitude;
-            this.position = position;
+        public AirbornPos {
         }
     }
 }

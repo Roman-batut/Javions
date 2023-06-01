@@ -23,12 +23,12 @@ public final class TileManager {
     //* Constants
 
     private static final String HTTPS = "https://";
-    private static final int CACHE_MEMORY_CAPACITY = 100;
-    private static final float CACHE_MEMORY_LOAD_FACTOR = 0.75f;
     private static final String SLASH = "/";
     private static final String PNG = ".png";
     private static final String JAVIONS = "Javions";
     private static final String USER_AGENT = "User-Agent";
+    private static final int CACHE_MEMORY_CAPACITY = 100;
+    private static final float CACHE_MEMORY_LOAD_FACTOR = 0.75f;
 
     //* Constructor
 
@@ -65,16 +65,16 @@ public final class TileManager {
             image = new Image(i);
             i.close();
 
-            if (cacheMemory.size() >= 100 ){
+            if (cacheMemory.size() >= CACHE_MEMORY_CAPACITY){
                 cacheMemory.remove(cacheMemory.keySet().iterator().next());
             }
             cacheMemory.put(tileId, image);
 
             return image;
         }else{
-            Path imageServerPath = Path.of(serverName + pathAnnex + String.valueOf(tileId.coordY())+ ".png");
-            Path docPath = Path.of(cachePath.toString() + pathAnnex);
-            byte[] tab = null;
+            Path imageServerPath = Path.of(serverName + pathAnnex + tileId.coordY() + PNG);
+            Path docPath = Path.of(cachePath + pathAnnex);
+            byte[] tab;
 
             URL url = new URL(HTTPS + imageServerPath);
             URLConnection c = url.openConnection();

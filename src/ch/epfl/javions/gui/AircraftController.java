@@ -42,9 +42,9 @@ import java.sql.SQLOutput;
  */
 public final class AircraftController {
 
-     private final MapParameters mapParameters;
-     private final ObjectProperty<ObservableAircraftState> clickedPlane;
-     private final Pane pane;
+    private final MapParameters mapParameters;
+    private final ObjectProperty<ObservableAircraftState> clickedPlane;
+    private final Pane pane;
 
      //* Constants
 
@@ -108,8 +108,76 @@ public final class AircraftController {
 
     //* Private Methods
 
-    //Label
+    //Global Group
 
+    /**
+     * Sets the aircraft group and binds it to the state
+     * @param state the state
+     */
+    private void aircraft(ObservableAircraftState state){
+        Group iconLabel = iconLabel(state);
+
+        Group trajectory = trajectory(state);
+
+        trajectory.layoutXProperty()
+                .bind(mapParameters.minX().negate());
+        trajectory.layoutYProperty()
+                .bind(mapParameters.minY().negate());
+
+        Group aircraft = new Group(trajectory, iconLabel);
+
+        aircraft.setId(state.getIcaoAddress().string());
+        aircraft.viewOrderProperty()
+                .bind(state.altitudeProperty().negate());
+
+        pane.getChildren().add(aircraft);
+    }
+    
+    //Icon + Label
+
+    /**
+     * Creates the iconLabel group with the icon and the label and binds it to the state
+     * @param state the state
+     * @return the group
+     */
+    private Group iconLabel(ObservableAircraftState state){
+        SVGPath icon = icon(state, iconCreation(state));
+
+        Group label = label(state);
+        label.visibleProperty().bind(Bindings.createBooleanBinding(
+            () -> state.equals(clickedPlane.get()) || mapParameters.getZoom()>=11, clickedPlane, mapParameters.zoom()));
+
+
+        Group iconLabel = new Group(icon, label);
+        iconLabel.layoutXProperty().bind(Bindings.createDoubleBinding(() ->
+                (WebMercator.x(mapParameters.getZoom(), state.getPosition().longitude()) - mapParameters.getMinX()),
+                state.positionProperty(), mapParameters.minX()));
+
+        iconLabel.layoutYProperty().bind(Bindings.createDoubleBinding(() ->
+                (WebMercator.y(mapParameters.getZoom(), state.getPosition().latitude()) - mapParameters.getMinY()),
+                state.positionProperty(), mapParameters.minY()));
+
+        return iconLabel;
+    }
+    
+    //Label
+    
+    /**
+     * Creates the label group with the rectangle and the text
+     * @param state the state
+     * @return the group
+     */
+    private Group label(ObservableAircraftState state){
+        Text text = text(state);
+        Rectangle rectangle = background(text);
+
+        Group label = new Group(rectangle, text);
+
+        label.getStyleClass().add(LABEL_STYLE_SHEET);
+
+        return label;
+    }
+    
     /**
      * Creates a rectangle and binds it to the text
      * @param text the text
@@ -120,10 +188,10 @@ public final class AircraftController {
 
         rectangle.widthProperty()
                 .bind(text.layoutBoundsProperty()
-                        .map(b -> b.getWidth() + 4));
+                        .map(b -> b.getWidth() + ADD_SPACING_RECTANGLE));
         rectangle.heightProperty()
                 .bind(text.layoutBoundsProperty()
-                        .map(b -> b.getHeight() + 4));
+                        .map(b -> b.getHeight() + ADD_SPACING_RECTANGLE));
 
         return rectangle;
     }
@@ -139,12 +207,12 @@ public final class AircraftController {
             double vel = state.velocityProperty().getValue();
             double alt = state.altitudeProperty().getValue();
             return
-                String.format("\n%s km/h" +" " +"%s mètres" ,
+                String.format(SPEED_FORMAT + EN_SPACE + ALTITUDE_FORMAT,
                         Double.isNaN(vel) ?
-                            "?" :
-                                String.format("%.0f",(Units.convertTo(vel, Units.Speed.KILOMETER_PER_HOUR))),
+                                UNKNOW_VALUE :
+                                String.format(FORMAT_NO_DECIMAL,(Units.convertTo(vel, Units.Speed.KILOMETER_PER_HOUR))),
                         Double.isNaN(alt) ?
-                                "?" : String.format("%.0f",alt)
+                                UNKNOW_VALUE : String.format(FORMAT_NO_DECIMAL,alt)
         );},state.velocityProperty(), state.altitudeProperty());
 
         Text text = new Text();
@@ -162,23 +230,7 @@ public final class AircraftController {
 
         return text;
     }
-
-    /**
-     * Creates the label group with the rectangle and the text
-     * @param state the state
-     * @return the group
-     */
-    private Group label(ObservableAircraftState state){
-        Text text = text(state);
-        Rectangle rectangle = background(text);
-
-        Group label = new Group(rectangle, text);
-
-        label.getStyleClass().add(LABEL_STYLE_SHEET);
-
-        return label;
-    }
-
+    
     //Icon
 
     /**
@@ -198,7 +250,7 @@ public final class AircraftController {
                         0, state.trackOrHeading()));
 
         icon.fillProperty().bind(Bindings.createObjectBinding(() ->
-                ColorRamp.PLASMA.at(Math.pow((state.getAltitude()/12000.d),1.d/3)), state.altitudeProperty()));
+                ColorRamp.PLASMA.at(Math.pow((state.getAltitude()/ MAX_HEIGHT), REGUL_POWER)), state.altitudeProperty()));
 
         icon.setOnMousePressed(e ->
                 clickedPlane.set(state));
@@ -219,7 +271,7 @@ public final class AircraftController {
         return data != null ?
                 (AircraftIcon.iconFor(state.getTypeDesignator(), state.getDescription(),
                 state.getCategory(), state.getWakeTurbulenceCategory()))
-                : (AircraftIcon.iconFor(new AircraftTypeDesignator(""), new AircraftDescription(""),
+                : (AircraftIcon.iconFor(new AircraftTypeDesignator(EMPTY_STRING), new AircraftDescription(EMPTY_STRING),
                 state.getCategory(), WakeTurbulenceCategory.UNKNOWN));
     }
     
@@ -287,28 +339,23 @@ public final class AircraftController {
         }
     }
 
-    //Global Group
-
     /**
-     * Sets the aircraft group and binds it to the state
-     * @param state the state
+     * Create a trajectory line
+     * @param startX the start x position
+     * @param startY the start y position
+     * @param endX the end x position
+     * @param endY the end y position
+     * @return a trajectory line
      */
-    private void aircraft(ObservableAircraftState state){
-        Group iconLabel = iconLabel(state);
+    private Line line(double startX, double startY, double endX, double endY){
+        Line line = new Line();
 
-        Group trajectory = trajectory(state);
+        line.setStartX(startX);
+        line.setStartY(startY);
+        line.setEndX(endX);
+        line.setEndY(endY);
 
-        trajectory.layoutXProperty()
-                .bind(mapParameters.minX().negate());
-        trajectory.layoutYProperty()
-                .bind(mapParameters.minY().negate());
-
-        Group aircraft = new Group(trajectory, iconLabel);
-
-        aircraft.setId(state.getIcaoAddress().string());
-        aircraft.viewOrderProperty()
-                .bind(state.altitudeProperty().negate());
-
-        pane.getChildren().add(aircraft);
+        return line;
     }
+
 }

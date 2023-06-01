@@ -17,11 +17,18 @@ import java.io.IOException;
  */
 public final class BaseMapController {
 
+
+
     private final TileManager tileManager;
     private final MapParameters mapParameters;
     private final Pane pane;
     private final Canvas canvas;
     private boolean redrawNeeded;
+
+    //* Constants
+
+    private static final int OSM_TILE_SIZE = 256;
+    private static final int MINSCROLLTIME_REGUL = 100;
 
     //* Constructor
     
@@ -44,6 +51,7 @@ public final class BaseMapController {
             assert oldS == null;
             newS.addPreLayoutPulseListener(this::redrawIfNeeded);
         });
+
         canvas.widthProperty().addListener(listener -> redrawOnNextPulse());
         canvas.heightProperty().addListener(listener -> redrawOnNextPulse());
 
@@ -56,7 +64,7 @@ public final class BaseMapController {
             long currentTime = System.currentTimeMillis();
             if (currentTime < minScrollTime.get()) return;
 
-            minScrollTime.set(currentTime + 100);
+            minScrollTime.set(currentTime + MINSCROLLTIME_REGUL);
 
             double x = e.getX();
             double y = e.getY();
@@ -122,13 +130,13 @@ public final class BaseMapController {
         redrawNeeded = false;
 
         GraphicsContext graphicsContext = canvas.getGraphicsContext2D();
-        int xSize = (int) Math.ceil(canvas.getWidth()/256)+1;
-        int ySize = (int) Math.ceil(canvas.getHeight()/256)+1;
+        int xSize = (int) Math.ceil(canvas.getWidth()/ OSM_TILE_SIZE)+1;
+        int ySize = (int) Math.ceil(canvas.getHeight()/OSM_TILE_SIZE)+1;
 
-        int tileX = (int) Math.floor(mapParameters.getMinX()/256);
-        double offsetX = tileX*256 - mapParameters.getMinX();
-        int tileY = (int) Math.floor(mapParameters.getMinY()/256);
-        double offsetY = tileY*256 - mapParameters.getMinY();
+        int tileX = (int) Math.floor(mapParameters.getMinX()/OSM_TILE_SIZE);
+        double offsetX = tileX*OSM_TILE_SIZE - mapParameters.getMinX();
+        int tileY = (int) Math.floor(mapParameters.getMinY()/OSM_TILE_SIZE);
+        double offsetY = tileY*OSM_TILE_SIZE - mapParameters.getMinY();
 
         for (int x=0 ; x<xSize ; x++) {
             for (int y=0 ; y<ySize ; y++) {
@@ -138,7 +146,7 @@ public final class BaseMapController {
                                 tileManager.imageForTileAt(
                                         new TileManager.TileId(
                                                 mapParameters.getZoom(), tileX+x, tileY+y)),
-                                x*256+offsetX, y*256+offsetY);
+                                x*OSM_TILE_SIZE+offsetX, y*OSM_TILE_SIZE+offsetY);
                     }
                 } catch (IOException ignored){
                 }

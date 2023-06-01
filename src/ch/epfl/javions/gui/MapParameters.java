@@ -97,8 +97,8 @@ public final class MapParameters {
         int zoom = Math2.clamp(MAX_ZOOM, this.zoom.get() + zoomChange, MIN_ZOOM);
         int offset = zoom - this.zoom.get();
 
-        minX.set(getMinX()*Math.pow(2,offset));
-        minY.set(getMinY()*Math.pow(2,offset));
+        minX.set(getMinX() * Math.scalb(1d,offset));
+        minY.set(getMinY() * Math.scalb(1d,offset));
 
         this.zoom.set(zoom);
     }

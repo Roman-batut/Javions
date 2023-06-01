@@ -17,6 +17,7 @@ public class AircraftDatabase {
 
     //* Constants
 
+    private static final String CSV = ".csv";
     private static final String COMA = ",";
 
     //* Constructor
@@ -38,10 +39,11 @@ public class AircraftDatabase {
      *  @param address the ICAO address
      *  @throws IOException if an I/O error occurs
      *  @throws NullPointerException if the ICAO address is null
+     *  @return the aircraft data corresponding to the given ICAO address or null if the ICAO address is not found
      */
     public AircraftData get(IcaoAddress address) throws IOException{
         String sAddress = address.string();
-        String file = sAddress.substring(sAddress.length() - 2) + ".csv";
+        String file = sAddress.substring(sAddress.length() - 2) + CSV;
 
         try (
                 ZipFile zipFile = new ZipFile(fileName);
