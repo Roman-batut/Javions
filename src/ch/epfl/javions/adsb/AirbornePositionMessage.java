@@ -67,7 +67,7 @@ public record AirbornePositionMessage(long timeStampNs,
     /**
      * Decode an airbone position message
      * @param rawMessage the raw message
-     * @returns the airborne position message corresponding to the raw message,
+     * @return the airborne position message corresponding to the raw message,
      * or null if the raw message is not an airborne position message
      */
     public static AirbornePositionMessage of(RawMessage rawMessage){

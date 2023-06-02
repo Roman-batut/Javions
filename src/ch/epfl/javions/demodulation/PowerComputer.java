@@ -57,15 +57,17 @@ public final class PowerComputer {
             int position = i % POWER_BATCH_SIZE;
             batchP[position] = batchD[i];
             batchP[(position+1) % POWER_BATCH_SIZE] = batchD[i+1];
+
+            int pEven;
+            int pOdd;
             if(k % 2 == 0){
-                int pEven = (batchP[6] - batchP[4] + batchP[2] - batchP[0]);
-                int pOdd = (batchP[7] - batchP[5] + batchP[3] - batchP[1]);
-                Pn = (pEven * pEven) + (pOdd * pOdd);
+                pEven = (batchP[6] - batchP[4] + batchP[2] - batchP[0]);
+                pOdd = (batchP[7] - batchP[5] + batchP[3] - batchP[1]);
             }else{
-                int pEven = (-batchP[6] + batchP[4] - batchP[2] + batchP[0]);
-                int pOdd = (-batchP[7] + batchP[5] - batchP[3] + batchP[1]);
-                Pn = (pEven * pEven) +(pOdd * pOdd);
+                pEven = (-batchP[6] + batchP[4] - batchP[2] + batchP[0]);
+                pOdd = (-batchP[7] + batchP[5] - batchP[3] + batchP[1]);
             }
+            Pn = (pEven * pEven) + (pOdd * pOdd);
             batch[k] = Pn;
 
             k++;

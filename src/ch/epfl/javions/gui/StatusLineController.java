@@ -43,7 +43,7 @@ public final class StatusLineController {
         messageCount = new SimpleLongProperty(0);
 
         StringBinding aircraftCountValue = Bindings.createStringBinding(
-                () -> String.format(DATA_VALUE_FORMAT,aircraftCountProperty().get()),aircraftCountProperty());
+                () -> String.format(DATA_VALUE_FORMAT, aircraftCountProperty().get()),aircraftCountProperty());
         aircraftCountText.textProperty().bind(Bindings.createStringBinding(
                 ()-> AIRCRAFT_VISIBLE_STRING + aircraftCountValue.getValue(), aircraftCountValue));
 

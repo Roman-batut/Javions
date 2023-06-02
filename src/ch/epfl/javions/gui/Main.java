@@ -139,7 +139,7 @@ public final class Main extends Application {
         reader.setDaemon(true);
         reader.start();
 
-        selectedAirplane.addListener((e) -> baseMapController.centerOn(selectedAirplane.get().getPosition()));
+        aircraftTableController.setOnDoubleClick(v -> baseMapController.centerOn(v.getPosition()));
 
         //Animation des aéronefs
         new AnimationTimer() {

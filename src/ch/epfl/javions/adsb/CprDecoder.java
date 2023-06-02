@@ -98,9 +98,8 @@ public final class CprDecoder {
         double ANum = (1 - Math.cos(TWO_PI * DELTA_PHI[0]));
 
         double ADen = (Math.cos(Units.convert(phi[index], Units.Angle.TURN, Units.Angle.RADIAN)) * Math.cos(Units.convert(phi[index], Units.Angle.TURN, Units.Angle.RADIAN)));
-        double A = Math.acos(1 - (ANum / ADen));
 
-        return A;
+        return Math.acos(1 - (ANum / ADen));
     }
 
     /**

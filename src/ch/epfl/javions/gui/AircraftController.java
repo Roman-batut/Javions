@@ -132,7 +132,7 @@ public final class AircraftController {
      * @return the group
      */
     private Group iconLabel(ObservableAircraftState state){
-        SVGPath icon = icon(state, iconCreation(state));
+        SVGPath icon = icon(state);
 
         Group label = label(state);
         label.visibleProperty().bind(Bindings.createBooleanBinding(
@@ -229,7 +229,7 @@ public final class AircraftController {
      * @param state the state
      * @return the icon
      */
-    private SVGPath icon(ObservableAircraftState state, AircraftIcon aircraftIcon){
+    private SVGPath icon(ObservableAircraftState state){
         SVGPath icon = new SVGPath();
 
         AircraftIcon aircraftIcon = iconCreation(state);
@@ -282,8 +282,8 @@ public final class AircraftController {
                 () -> state.equals(clickedPlane.getValue()), clickedPlane));
 
         trajectory.visibleProperty().addListener((observable, oldValue, newValue) -> {
-             ListChangeListener<ObservableAircraftState.AirbornPos> changePos = (c) -> {trajectoryLines(state, trajectory);};
-             InvalidationListener changeZoom = (c) -> {trajectoryLines(state, trajectory);};
+             ListChangeListener<ObservableAircraftState.AirbornPos> changePos = (c) -> trajectoryLines(state, trajectory);
+             InvalidationListener changeZoom = (c) -> trajectoryLines(state, trajectory);
 
              if(newValue){
                 state.trajectoryProperty().addListener(changePos);

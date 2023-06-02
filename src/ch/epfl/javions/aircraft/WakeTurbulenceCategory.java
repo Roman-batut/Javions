@@ -7,19 +7,10 @@ package ch.epfl.javions.aircraft;
  */
 public enum WakeTurbulenceCategory {
 
-    LIGHT("L"),
-    MEDIUM("M"),
-    HEAVY("H"),
-    UNKNOWN("");
-
-    //* Constructor
-
-    /**
-     *  Constructor of a wake turbulence category
-     *  @param s the string representing the wake turbulence category
-     */
-    private WakeTurbulenceCategory(String s){}
-
+    LIGHT,
+    MEDIUM,
+    HEAVY,
+    UNKNOWN;
 
     //* Methods
 
