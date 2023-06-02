@@ -13,7 +13,6 @@ import java.io.InputStream;
 public final class AdsbDemodulator {
 
     private final PowerWindow window;
-    private long timeStampNs;
     private final int[] sommePtab;
     private int index;
 
@@ -62,7 +61,7 @@ public final class AdsbDemodulator {
                         octs[i] = octAt(i);
                     }
 
-                    timeStampNs = (window.position() * 100);
+                    long timeStampNs = (window.position() * 100);
                     RawMessage v = RawMessage.of(timeStampNs, octs);
                     if (v != null) {
                         window.advanceBy(window.size());

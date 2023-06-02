@@ -1,7 +1,6 @@
 package ch.epfl.javions.gui;
 
 import ch.epfl.javions.ByteString;
-import ch.epfl.javions.Units;
 import ch.epfl.javions.adsb.Message;
 import ch.epfl.javions.adsb.MessageParser;
 import ch.epfl.javions.adsb.RawMessage;
@@ -13,20 +12,15 @@ import javafx.beans.binding.Bindings;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.geometry.Orientation;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.SplitPane;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 
 import java.io.*;
 import java.net.URL;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 public final class Main extends Application {
@@ -115,7 +109,7 @@ public final class Main extends Application {
                         assert bytesRead == RawMessage.LENGTH;
                         ByteString message = new ByteString(bytes);
 
-                        Thread.sleep((long) ((timeStampNs-lastone)/ MILLI_CONVERT));
+                        Thread.sleep((long) ((timeStampNs-lastone) / MILLI_CONVERT));
                         lastone = timeStampNs;
 
                         queue.add(new RawMessage(timeStampNs, message));

@@ -1,6 +1,5 @@
 package ch.epfl.javions.gui;
 
-import ch.epfl.javions.GeoPos;
 import ch.epfl.javions.Units;
 import ch.epfl.javions.WebMercator;
 import ch.epfl.javions.adsb.CallSign;
@@ -10,18 +9,12 @@ import ch.epfl.javions.aircraft.AircraftTypeDesignator;
 import ch.epfl.javions.aircraft.WakeTurbulenceCategory;
 import javafx.beans.InvalidationListener;
 import javafx.beans.binding.Bindings;
-import javafx.beans.binding.BooleanBinding;
 import javafx.beans.binding.StringBinding;
-import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.property.StringProperty;
-import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableSet;
 import javafx.collections.SetChangeListener;
-import javafx.geometry.Bounds;
 import javafx.scene.Group;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
@@ -32,8 +25,6 @@ import javafx.scene.shape.Line;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.SVGPath;
 import javafx.scene.text.Text;
-
-import java.sql.SQLOutput;
 
 /**
  *  Class representing the AircraftController
@@ -236,13 +227,14 @@ public final class AircraftController {
     /**
      * Creates the icon and binds it to the state and the aircraftIcon
      * @param state the state
-     * @param aircraftIcon the aircraftIcon
      * @return the icon
      */
     private SVGPath icon(ObservableAircraftState state, AircraftIcon aircraftIcon){
         SVGPath icon = new SVGPath();
 
-        icon.setContent(aircraftIcon.svgPath());
+        AircraftIcon aircraftIcon = iconCreation(state);
+        StringBinding updatedIcon = Bindings.createStringBinding(aircraftIcon::svgPath, state.categoryProperty());
+        icon.contentProperty().bind(updatedIcon);
 
         icon.rotateProperty().bind(Bindings.createDoubleBinding(() ->
                 aircraftIcon.canRotate() ?
@@ -327,10 +319,10 @@ public final class AircraftController {
             Line line = line(posX[(i+1)%2], posY[(i+1)%2], posX[i%2], posY[i%2]);
 
             if(state.trajectoryProperty().get(i-1).altitude() == state.trajectoryProperty().get(i).altitude()){
-                line.setStroke(ColorRamp.PLASMA.at(Math.pow((state.trajectoryProperty().get(i).altitude()/12000.d),1.d/3)));
+                line.setStroke(ColorRamp.PLASMA.at(Math.pow((state.trajectoryProperty().get(i).altitude()/MAX_HEIGHT),1.d/3)));
             } else {
-                Color color1 = ColorRamp.PLASMA.at(Math.pow((state.trajectoryProperty().get(i-1).altitude()/12000.d),1.d/3));
-                Color color2 = ColorRamp.PLASMA.at(Math.pow((state.trajectoryProperty().get(i).altitude()/12000.d),1.d/3));
+                Color color1 = ColorRamp.PLASMA.at(Math.pow((state.trajectoryProperty().get(i-1).altitude()/MAX_HEIGHT),1.d/3));
+                Color color2 = ColorRamp.PLASMA.at(Math.pow((state.trajectoryProperty().get(i).altitude()/MAX_HEIGHT),1.d/3));
                 line.setStroke(new LinearGradient(0,0,1,1,true,
                         CycleMethod.NO_CYCLE, new Stop(0, color1), new Stop(1, color2)));
             }

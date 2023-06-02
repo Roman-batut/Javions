@@ -4,14 +4,9 @@ import ch.epfl.javions.GeoPos;
 import ch.epfl.javions.Units;
 import ch.epfl.javions.adsb.CallSign;
 import ch.epfl.javions.aircraft.*;
-import javafx.beans.Observable;
-import javafx.beans.binding.Bindings;
-import javafx.beans.binding.DoubleExpression;
 import javafx.beans.property.*;
 import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableStringValue;
 import javafx.beans.value.ObservableValue;
-import javafx.collections.ObservableList;
 import javafx.collections.ObservableSet;
 import javafx.collections.SetChangeListener;
 import javafx.scene.control.TableColumn;
@@ -20,13 +15,10 @@ import javafx.scene.input.MouseButton;
 
 import java.text.NumberFormat;
 import java.text.ParseException;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-import static java.lang.CharSequence.compare;
 import static javafx.scene.control.TableView.CONSTRAINED_RESIZE_POLICY_SUBSEQUENT_COLUMNS;
 
 /**
@@ -136,9 +128,8 @@ public final class AircraftTableController {
             }
         });
 
-        tableView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-            clickedPlane.set(newValue);
-        });
+        tableView.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) ->
+                clickedPlane.set(newValue));
 
         tableView.setOnMouseClicked(event -> {
             if ((event.getButton() == MouseButton.PRIMARY)

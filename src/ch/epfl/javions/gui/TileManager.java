@@ -50,9 +50,9 @@ public final class TileManager {
      * Gets the image corresponding to the tile at the tileId
      * @param tileId the tileId
      * @return the image for the tile at the tileId
-     * @throws IOException
+     * @throws IOException if the image is null
      */
-    public Image imageForTileAt(TileId tileId)throws IOException{
+    public Image imageForTileAt(TileId tileId) throws IOException{
         String pathAnnex = SLASH + tileId.zoom() + SLASH + tileId.coordX() + SLASH;
         Path imageDiskPath = Path.of(cachePath.toString(), pathAnnex + tileId.coordY() + PNG);
         Image image;

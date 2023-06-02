@@ -131,11 +131,7 @@ public final class CprDecoder {
             ZLambdaTest = 1;
         }
 
-        if(ZLambdaTest != ZLambda){
-            return false;
-        }
-
-        return true;
+        return ZLambdaTest == ZLambda;
     }
 
     /**

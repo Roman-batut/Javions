@@ -1,20 +1,14 @@
 package ch.epfl.javions.gui;
 
 import ch.epfl.javions.GeoPos;
-import ch.epfl.javions.adsb.AircraftStateAccumulator;
 import ch.epfl.javions.adsb.AircraftStateSetter;
 import ch.epfl.javions.adsb.CallSign;
-import ch.epfl.javions.adsb.Message;
 import ch.epfl.javions.aircraft.*;
-import javafx.beans.Observable;
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
 
 /**
  * Class representing an observable aircraft state

@@ -3,8 +3,6 @@ package ch.epfl.javions.gui;
 import ch.epfl.javions.Preconditions;
 import javafx.scene.paint.Color;
 
-import java.util.*;
-
 /**
  * Class representing a color ramp
  * @author Roman Batut (356158)
@@ -46,17 +44,6 @@ public final class ColorRamp {
         Preconditions.checkArgument(colors.length >= 2);
 
         this.colors = colors;
-    }
-
-    /**
-     * ColorRamp's constructor with a list of colors
-     * @param colors the list of colors
-     */
-    public ColorRamp(List<Color> colors){
-        Preconditions.checkArgument(colors.size() >= 2);
-
-        this.colors = new Color[colors.size()];
-        colors.toArray(this.colors);
     }
 
 
